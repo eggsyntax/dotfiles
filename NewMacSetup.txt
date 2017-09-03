@@ -1,0 +1,224 @@
+Mac setup:
+
+Preferences: Dvorak, trackpad speed, unnatural scroll
+Download & install: chrome, git, dropbox, Little Snitch, iterm2, macvim
+Turn off mail and web results in spotlight preferences
+
+Dotfiles are under source control at:
+    https://github.com/eggsyntax/dotfiles.git
+
+DNS servers:
+   8.8.8.8
+   8.8.4.4
+   208.67.222.222
+
+Install XCode command line tools: (under 10.9 and later) xcode-select --install
+
+Chrome prefs:
+	Advanced Sync Settings - password std
+
+Show hidden files:
+	defaults write com.apple.Finder AppleShowAllFiles YES; killall -HUP Finder
+
+Destroy the desktop forever:
+    defaults write com.apple.finder CreateDesktop -bool false; killall Finder
+
+Put screenshots somewhere sensible:
+    defaults write com.apple.screencapture location ~/tmp/;killall SystemUIServer
+
+Install up-to-date Java
+  <haven't tried this yet (3/16) but maybe just homebrew!
+    Multiple Java versions seem to run pretty smoothly these days - eg
+    one for intellij (v1.6), one for lein/clojure & main stuff (v1.8). I
+    installed:
+        java 8 jre: http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
+        java 6 jre from apple: https://support.apple.com/kb/DL1572?locale=en_US
+        java 8 jdk: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+        jenv supposedly makes this easy to manage, but I haven't tried it yet.
+            http://www.jenv.be/
+
+Scrobbling:
+	 http://www.last.fm/download
+
+Get fonts:
+    Hack:
+        brew cask install caskroom/fonts/font-hack
+    Inconsolata:
+        *must get from google, other versions have problems*
+        http://www.google.com/fonts/
+    Consolas (because IntelliJ has problems with Inconsolata):
+        http://www.fontpalace.com/font-download/Consolas/
+
+Intellij:
+    - Nice to have key repeat on hold for the editor:
+      defaults write com.jetbrains.intellij.ce ApplePressAndHoldEnabled -bool false
+
+Dev tools:
+    Homebrew: http://mxcl.github.io/homebrew/
+            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+	Python general:
+        Mostly just do Anaconda now.
+            https://store.continuum.io/cshop/anaconda/
+		virtualenv: pip install virtualenv
+		pylint: pip install pylint
+		ipython. ipython config?
+
+Set up for crypto:
+    brew install gpg
+    Or MAYBE: install bin from https://gpgtools.org/installer/index.html (installs
+       gpg2 as gpg, because the brew version of gpg won't work with gpg-agent). See:
+       https://unix.stackexchange.com/questions/231386/how-to-make-gpg-find-gpg-agent
+
+Clojure:
+    Vim:
+        vim-fireplace: https://github.com/tpope/vim-fireplace.git
+        rainbow-parenthesis: https://github.com/kien/rainbow_parentheses.vim.git
+        vim-leiningen: https://github.com/tpope/vim-leiningen.git
+        vim-projectionist: https://github.com/tpope/vim-projectionist.git
+        paredit: https://github.com/vim-scripts/paredit.vim.git
+        vim-dispatch?: git://github.com/tpope/vim-dispatch.git
+        Vim Links:
+            http://www.neo.com/2014/02/25/getting-started-with-clojure-in-vim
+            http://clojure-doc.org/articles/tutorials/vim_fireplace.html
+            http://endot.org/2014/02/12/setting-up-vim-for-clojure/
+    Leiningen:
+        Install from http://leiningen.org/
+
+	IDE:
+		Pycharm
+		Eclipse: http://www.eclipse.org/downloads/
+			Pydev: http://pydev.org/updates (point to python and pylint executables)
+			Vrapper: http://vrapper.sourceforge.net/update-site/stable
+			EGit or SourceTree?
+		 http://eblog.chrononsystems.com/dark-eclipse-theme
+			Notes! The jar file actually goes in the plugins directory, not the dropins directory.
+				Must look under general/appearance/theme to activate.
+		Vim as Python IDE
+		Komodo Edit
+        tkdiff for git. http://jeetworks.org/node/90
+
+
+Remap keyboard:
+    Download Seil & Karabiner:
+       https://pqrs.org/osx/karabiner/seil.html.en
+       https://pqrs.org/osx/karabiner/
+    Open "System Preferences > Keyboard > Modifier Keys..." and change caps lock configuration to "No Action".
+	Caps-lock to 110 (PC application key) with Seil:
+		See https://pqrs.org/osx/karabiner/faq.html.en#capslock
+	 110 (Application key) to escape (shift + 110 -> caps-lock) with Karabiner:
+        found under 'For PC Users'
+    See KarabinerSettings.png for other Karabiner settings.
+    Consider using Karabiner to do the qwerty-to-dvorak conversion instead of OS X
+        There's a low-level bug that affects, among other things, PyCharm.
+        https://youtrack.jetbrains.com/issue/IDEABKL-6493
+
+Solarized: http://ethanschoonover.com/solarized
+	Solarized for iterm2: http://michaelheap.com/solarized-with-iterm2/
+Extra iTerm color schemes - https://github.com/mbadolato/iTerm2-Color-Schemes
+    git clone https://github.com/mbadolato/iTerm2-Color-Schemes.git
+iTerm prefs:
+      in "keys": set alt-backspace to: Send Hex Code, 0x17
+
+iStat Pro is discontinued, but stored in my Software Archive dir, and also currently found at:
+	http://download.cnet.com/iStat-pro/3000-12565_4-71074.html
+
+vim:
+    Install splice as mergetool.
+        http://sjl.bitbucket.org/splice.vim/
+    May have to reinstall bundles.
+    Reinstall solarized, at least (instructions in solarized download).
+    grab a better ctags:
+        brew install ctags-exuberant
+    Current bundles:
+        command-t
+        csound-vim
+        paredit.vim
+        rainbow_parentheses.vim
+        tcomment_vim
+        vim-airline
+        vim-autoswap
+        vim-classpath
+        vim-colors-solarized
+        vim-dispatch
+        vim-fireplace
+        vim-gitgutter
+        vim-leiningen
+        vim-projectionist
+        vim-surround
+
+Sharing:
+	 Turn on remote login
+
+Patch iTunes:
+     https://github.com/thebitguru/play-button-itunes-patch
+
+Miscellaneous Software
+	 SocialSafe
+	 Tor browser
+	 Cog
+     Calibre - http://calibre-ebook.com/download_osx
+     Airfoil
+     Lynxlet - http://habilis.net/lynxlet/
+     Spectacle (window management) - http://spectacleapp.com/
+     ncdu (console-based disk usage analyzer): http://dev.yorhel.nl/ncdu
+        brew install ncdu
+    Perl rename:
+        brew install rename
+    CopyClip:
+      https://itunes.apple.com/us/app/copyclip-clipboard-history/id595191960?mt=12
+    Postgres? brew install postgres
+        and see http://exponential.io/blog/2015/02/21/install-postgresql-on-mac-os-x-via-brew/
+        run postgres at startup:
+            ln -sfv /usr/local/opt/postgresql/*.plist ~/Library/LaunchAgents
+    Trouble w/ rlwrap? Try `brew install socat` and `socat READLINE,history=$HOME/.figwheel_history SYSTEM:"lein figwheel"`
+
+--------
+Main server:
+
+Duckdns
+	Note that duck.sh script should exist as ~/scripts/duck.sh
+	10.9+ -- gotta enable cron
+		http://www.mattcannon.co.uk/using-cron-os-x-mavericks/
+	http://duckdns.org/install.jsp
+	(login to get better copypasta)
+Subsonic
+	http://www.subsonic.org/pages/download.jsp
+    Set server (in settings/network) to be http://home.novonon.com:4040 - for now, at least
+	To start when you log in: open System Preferences > Accounts and add Subsonic to the list of Login Items.
+    Install problems? May need to create /Library/Application\ Support/Subsonic with lax permissions, then reinstall.
+        http://forum.subsonic.org/forum/viewtopic.php?f=2&t=14150
+Web server
+	First: set DocumentRoot in apache configuration.
+		http://stackoverflow.com/a/17608746/284564
+    Also see the 'Optionally enable user Web sites' section:
+      http://www.cnet.com/how-to/how-to-enable-web-sharing-in-os-x-mountain-lion/
+    Yosemite instructions: https://discussions.apple.com/docs/DOC-3083
+    Set defaults to start server on boot:
+        (from cnet article)
+        sudo defaults write /System/Library/LaunchDaemons/org.apache.httpd Disabled -bool false
+
+
+FTP Server?
+Crashplan
+
+
+Consider importing iphoto library
+Consider importing itunes library
+
+
+
+--------
+Outdated:
+
+	brew doctor
+	Via homebrew: (http://hackercodex.com/guide/python-virtualenv-on-mac-osx-mountain-lion-10.8/)
+		python: brew install python (python24 or python 27 or whatever)
+		pip: brew install pip
+	Download python.org version of python
+
+# I really wanted to like vifm:
+vifm:
+    brew install vifm
+    http://vifm.info/
+    customized in ~/.vifm, which is in repo.

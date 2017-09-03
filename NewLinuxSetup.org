@@ -1,0 +1,41 @@
+* Preferences: dvorak
+* sudo apt install [vim, terminator?
+** Vim:
+*** vim: pathogen - mkdir -p ~/.vim/autoload ~/.vim/bundle && \
+ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+*** mkdir -p ~/tmp/vim_backup
+*** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
+* Download & install:
+** Chrome
+** LastPass
+** Dropbox
+*** Then clone dotfiles
+**** Dropbox/dotfiles-linux.git
+**** ln -s dotfiles-linux/[.spacemacs, .vimrc, .bashrc]
+** Spacemacs
+*** sudo apt install emacs<25>
+*** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+
+
+ -
+* Fonts:
+** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
+
+* Clojure:
+** Java:
+** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
+** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
+      sudo apt-get install python-software-properties
+      sudo add-apt-repository ppa:webupd8team/java
+      sudo apt-get update
+** install:
+      sudo apt-get install oracle-java8-installer
+      oracle-java8-installer
+** Leiningen:
+*** https://github.com/technomancy/leiningen
+
+* TODO TODO
+** Commit new dotfiles repo
+** Change aliases in homedir to point to dotfiles repo
+** Change files on mac boxes to be aliases to dotfiles repo
+** Remove actual dotfiles from old homedir repo

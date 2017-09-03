@@ -1,0 +1,44 @@
+set editing-mode vi
+
+# .vimrc equivalents for cmd mode
+# http://vim.wikia.com/wiki/Use_vi_shortcuts_in_terminal
+# full readline manual at http://linux.die.net/man/3/readline
+set keymap vi-command
+
+# shut up readline
+set bell-style none
+# colored completions
+set colored-stats on
+set show-all-if-ambiguous on
+
+# good on mac but not linux:
+# set show-mode-in-prompt on
+
+# TRIPLE DAMMIT. Can't get these to work. Dunno why not. -egg, 1/21/15
+# use =\ as start_line/end_line
+# "=": beginning-of-line
+# "\\": end-of-line
+
+# 'paste' means 'paste args from last command'
+# "p": "i !!*\n"
+
+# MAPPINGS ABOVE ARE FOR COMMAND MODE
+
+# MAPPINGS BELOW ARE FOR INSERT MODE
+
+# .vimrc equivalents for insert mode
+set keymap vi-insert
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+# ctrl-g: abort command but add to history
+# \e is ESC, then I to insert at beginning of line.
+# space before history so the history cmd itself won't 
+# be added to history (since HISTCONTROL is ignorespace
+# or ignoreboth, see .bashrc)
+"\C-g": "\eI history -s \C-j"
+
+$if Bash
+Space: magic-space
+$endif
