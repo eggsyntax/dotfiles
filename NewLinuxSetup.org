@@ -23,6 +23,7 @@
 ** TODO LibreOffice
 ** TODO VLC
 ** TODO Filezilla
+** TODO DarkTable
 * Fonts:
 ** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 
