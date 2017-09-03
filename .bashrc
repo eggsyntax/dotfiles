@@ -56,9 +56,6 @@ function vol {
 # Start the Emacs GUI App, aka Emacs.app (installed by homebrew spacemacs)
 alias spacemacs='emacs &'
 
-# Similarly, unix programs like `more` should do the same
-export VISUAL="/usr/local/bin/emacsclient -c -a /usr/local/bin/mvim -n $@"
-
 # Map ctrl-x/c/v to work as system clipboard cut/copy/paste
 #nnoremap <C-x> "*d
 #nnoremap <C-c> "*y
