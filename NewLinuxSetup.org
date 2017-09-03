@@ -11,7 +11,7 @@
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 * Download & install:
-** Chrome
+** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
 ** LastPass
 ** Dropbox
 *** Then clone dotfiles
@@ -23,6 +23,12 @@
 
 
  -
+** TODO Ubuntu Restricted Extras
+** TODO Gnome Sushi - spacebar preview
+** TODO LibreOffice
+** TODO VLC
+** TODO Filezilla
+** TODO DarkTable
 * Fonts:
 ** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 
@@ -39,10 +45,10 @@
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
 
-* TODO TODO
+* TODO
 ** DONE Commit new dotfiles repo
-   CLOSED: [2017-09-02 Sat 20:49]
+   CLOSED: [2017-09-03 Sun 12:35]
 ** DONE Change aliases in homedir to point to dotfiles repo
-   CLOSED: [2017-09-02 Sat 20:49]
-** Change files on mac boxes to be aliases to dotfiles repo
-** Remove actual dotfiles from old homedir repo
+   CLOSED: [2017-09-03 Sun 12:36]
+** TODO Change files on imac to be aliases to dotfiles repo
+** TODO Remove actual dotfiles from old homedir repo
