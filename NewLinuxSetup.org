@@ -5,6 +5,11 @@
  curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** mkdir -p ~/tmp/vim_backup
 *** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
+* Enable repos:
+** sudo -i software-properties-gtk
+*** In "other software": add (s/zesty/current-release-nickname/): deb http://archive.canonical.com/ubuntu zesty partner
+*** check desired repos in 1st & 2nd tab
+*** in updates tab, check desired updates
 * Download & install:
 ** Chrome
 ** LastPass
@@ -35,7 +40,9 @@
 *** https://github.com/technomancy/leiningen
 
 * TODO TODO
-** Commit new dotfiles repo
-** Change aliases in homedir to point to dotfiles repo
+** DONE Commit new dotfiles repo
+   CLOSED: [2017-09-02 Sat 20:49]
+** DONE Change aliases in homedir to point to dotfiles repo
+   CLOSED: [2017-09-02 Sat 20:49]
 ** Change files on mac boxes to be aliases to dotfiles repo
 ** Remove actual dotfiles from old homedir repo
