@@ -396,7 +396,7 @@ function linux-bashrc {
     echo "Executing linux bash startup"
 
     alias v='vim'
-    alias topp='top -o P'
+    alias topp='top -o %CPU'
 
     # Open a file in a new emacs window (server must be running)
     # Called in subshell to silence job control, and send to /dev/null to

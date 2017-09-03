@@ -1,10 +1,5 @@
 set editing-mode vi
 
-# .vimrc equivalents for cmd mode
-# http://vim.wikia.com/wiki/Use_vi_shortcuts_in_terminal
-# full readline manual at http://linux.die.net/man/3/readline
-set keymap vi-command
-
 # shut up readline
 set bell-style none
 # colored completions
@@ -13,23 +8,24 @@ set colored-stats on
 # misc
 set show-all-if-ambiguous  on
 # maybe not doing anything:
-set blink-matching-parens  on
+# set blink-matching-parens  on
 set expand-tilde on
 set history-preserve-point on
 
+# .vimrc equivalents
+# http://vim.wikia.com/wiki/Use_vi_shortcuts_in_terminal
+# full readline manual at http://linux.die.net/man/3/readline
+
+### COMMAND MODE BINDINGS: ###
+set keymap vi-command
+
 # TRIPLE DAMMIT. Can't get these to work. Dunno why not. -egg, 1/21/15
 # use =\ as start_line/end_line
-# "=": beginning-of-line
-# "\\": end-of-line
+"=": beginning-of-line
+"\\": end-of-line
 
-# 'paste' means 'paste args from last command'
-# "p": "i !!*\n"
 
-# MAPPINGS ABOVE ARE FOR COMMAND MODE
-
-# MAPPINGS BELOW ARE FOR INSERT MODE
-
-# .vimrc equivalents for insert mode
+### INSERT MODE BINDINGS: ###
 set keymap vi-insert
 
 "\e[A": history-search-backward
