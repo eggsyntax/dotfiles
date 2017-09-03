@@ -20,15 +20,10 @@
 ** Spacemacs
 *** sudo apt install emacs<25>
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-
-
- -
-** TODO Ubuntu Restricted Extras
-** TODO Gnome Sushi - spacebar preview
-** TODO LibreOffice
-** TODO VLC
-** TODO Filezilla
-** TODO DarkTable
+** VLC
+** Filezilla
+** DarkTable
+*** sudo add-apt-repository ppa:pmjdebruijn/darktable-release && sudo apt-get update
 * Fonts:
 ** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 
