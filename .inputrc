@@ -9,10 +9,13 @@ set keymap vi-command
 set bell-style none
 # colored completions
 set colored-stats on
-set show-all-if-ambiguous on
 
-# good on mac but not linux:
-# set show-mode-in-prompt on
+# misc
+set show-all-if-ambiguous  on
+# maybe not doing anything:
+set blink-matching-parens  on
+set expand-tilde on
+set history-preserve-point on
 
 # TRIPLE DAMMIT. Can't get these to work. Dunno why not. -egg, 1/21/15
 # use =\ as start_line/end_line
@@ -34,7 +37,7 @@ set keymap vi-insert
 
 # ctrl-g: abort command but add to history
 # \e is ESC, then I to insert at beginning of line.
-# space before history so the history cmd itself won't 
+# space before history so the history cmd itself won't
 # be added to history (since HISTCONTROL is ignorespace
 # or ignoreboth, see .bashrc)
 "\C-g": "\eI history -s \C-j"
