@@ -224,8 +224,11 @@ function runit {
 # This should be copied into .local-bashrc and the number (setaf _) changed for unique
 # color per-box
 # Can generate prompts at http://bashrcgenerator.com/
-prompt="\n\[$(tput bold)\]\[$(tput setaf 5)\]\W> \[$(tput sgr0)\]"
-export PS1=$prompt
+if [[ $- == *i* ]]; then # if in interactive terminal (else tput breaks)
+    prompt="\n\[$(tput bold)\]\[$(tput setaf 5)\]\W> \[$(tput sgr0)\]"
+    export PS1=$prompt
+fi
+
 
 ###################   PATH   ######################
 
