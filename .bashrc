@@ -56,9 +56,6 @@ function vol {
 # Start the Emacs GUI App, aka Emacs.app (installed by homebrew spacemacs)
 alias spacemacs='emacs &'
 
-# Similarly, unix programs like `more` should do the same
-export VISUAL="/usr/local/bin/emacsclient -c -a /usr/local/bin/mvim -n $@"
-
 # Map ctrl-x/c/v to work as system clipboard cut/copy/paste
 #nnoremap <C-x> "*d
 #nnoremap <C-c> "*y
@@ -227,34 +224,16 @@ function runit {
 # This should be copied into .local-bashrc and the number (setaf _) changed for unique
 # color per-box
 # Can generate prompts at http://bashrcgenerator.com/
-prompt="\n\[$(tput bold)\]\[$(tput setaf 5)\]\W>\[$(tput sgr0)\]"
-export PS1=$prompt
+if [[ $- == *i* ]]; then # if in interactive terminal (else tput breaks)
+    prompt="\n\[$(tput bold)\]\[$(tput setaf 5)\]\W> \[$(tput sgr0)\]"
+    export PS1=$prompt
+fi
+
 
 ###################   PATH   ######################
 
 # And a local /bin and /script are nice.
 PATH="${HOME}/bin:${HOME}/scripts:${PATH}"
-
-# Add git path
-PATH="/usr/local/git/bin:${PATH}"
-
-# /usr/local/sbin/ contains rabbitmq tools
-PATH="/usr/local/sbin:${PATH}"
-
-# Add Haskell stack's bin directory, per
-# https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Blang/haskell
-PATH="$PATH:${HOME}/.local/bin"
-
-
-
-# Added by the Heroku Toolbelt
-PATH="/usr/local/heroku/bin:$PATH"
-
-PATH="$PATH:/Library/Ruby/Gems/1.8"
-
-# Setting PATH for MacPython 2.6
-# The orginal version is saved in .bash_login.pysave
-#PATH="/Library/Frameworks/Python.framework/Versions/2.6/bin:${PATH}"
 
 export PATH
 
@@ -262,11 +241,11 @@ export PATH
 
 # make history function sanely
 shopt -s histappend
-PROMPT_COMMAND='history -a'
+export PROMPT_COMMAND='history -a'
 # Unlimited history size
-# When I get to bash >= 4.3, set these to -1 instead of blank.
-HISTSIZE=
-HISTFILESIZE=
+# On bash < 4.3 (ie mac), This should be blank instead of -1.
+export HISTSIZE=-1
+export HISTFILESIZE=-1
 # Ignore duplicate commands, and commands with leading whitespace
 export HISTCONTROL=ignoreboth
 # Show datetime in `history`
@@ -335,6 +314,11 @@ function mac-bashrc {
     #TODO some of these are mac-only!
     # Give /usr/local/bin precedence over /usr/bin (for homebrew)
     PATH="/usr/local/bin:${PATH}"
+
+    # Add git path
+    PATH="/usr/local/git/bin:${PATH}"
+
+    export PATH
 
     # keychain -- make a single ssh-agent per login session (& inherit mac keychain keys)
     # http://www.funtoo.org/Keychain

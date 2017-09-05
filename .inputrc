@@ -19,8 +19,7 @@ set history-preserve-point on
 ### COMMAND MODE BINDINGS: ###
 set keymap vi-command
 
-# TRIPLE DAMMIT. Can't get these to work. Dunno why not. -egg, 1/21/15
-# use =\ as start_line/end_line
+# use = and \ as start_line/end_line
 "=": beginning-of-line
 "\\": end-of-line
 
@@ -32,10 +31,9 @@ set keymap vi-insert
 "\e[B": history-search-forward
 
 # ctrl-g: abort command but add to history
-# \e is ESC, then I to insert at beginning of line.
-# space before history so the history cmd itself won't
-# be added to history (since HISTCONTROL is ignorespace
-# or ignoreboth, see .bashrc)
+# \e is ESC (to ensure I'm in command mode), then I to insert at beginning of
+# line. space before history so the history cmd itself won't be added to history
+# (since HISTCONTROL is ignorespace or ignoreboth, see .bashrc)
 "\C-g": "\eI history -s \C-j"
 
 $if Bash

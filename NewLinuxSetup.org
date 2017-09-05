@@ -1,12 +1,18 @@
 * Preferences: dvorak
-* sudo apt install [vim, terminator?
-** Vim:
-*** vim: pathogen - mkdir -p ~/.vim/autoload ~/.vim/bundle && \
- curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-*** mkdir -p ~/tmp/vim_backup
-*** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
+* Enable repos:
+** sudo -i software-properties-gtk
+*** In "other software": add (s/zesty/current-release-nickname/): deb http://archive.canonical.com/ubuntu zesty partner
+*** check desired repos in 1st & 2nd tab
+*** in updates tab, check desired updates
+*** Additional Drivers -- autosearch
+* sudo apt install: vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc
+* Vim setup:
+** vim: pathogen - mkdir -p ~/.vim/autoload ~/.vim/bundle && \
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+** mkdir -p ~/tmp/vim_backup
+** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.gi
 * Download & install:
-** Chrome
+** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
 ** LastPass
 ** Dropbox
 *** Then clone dotfiles
@@ -15,12 +21,31 @@
 ** Spacemacs
 *** sudo apt install emacs<25>
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+** DarkTable
+*** sudo add-apt-repository ppa:pmjdebruijn/darktable-release && sudo apt-get update
 
+** TODO Bleachbit and/or Stacer (optimizer)
 
- -
-* Fonts:
-** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
-
+*** Stacer (sourceforge, ick) - https://github.com/oguzhaninan/Stacer/releases
+** TODO Redshift
+** TODO Indicator Multiload — monitor system resources
+** TODO Bulletin — A searchable clipboard manager
+** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
+* Customization tweaks:
+** Fonts:
+*** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
+** Icons:
+*** Numix
+**** sudo add-apt-repository ppa:numix/ppa
+**** sudo apt update && sudo apt install numix-icon-theme-circle
+**** sudo apt-get update
+**** sudo apt-get install numix-icon-theme-circle
+**** sudo apt-get install numix-icon-theme-square
+*** Papirus
+**** sudo add-apt-repository ppa:papirus/papirus
+**** sudo apt update && sudo apt install papirus-icon-theme
+** Theme:
+*** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
 * Clojure:
 ** Java:
 ** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
@@ -34,8 +59,17 @@
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
 
-* TODO TODO
-** Commit new dotfiles repo
-** Change aliases in homedir to point to dotfiles repo
-** Change files on mac boxes to be aliases to dotfiles repo
-** Remove actual dotfiles from old homedir repo
+* Gnome-tweak-tool to change various settings
+** Under typing:
+*** Under caps-lock I can switch caps & esc
+*** Under ctrl-key-position I can switch ctrl/alt/command
+** Under fonts: can scale fonts
+** Under extensions: 'window list' provides something dockish
+
+* TODO
+** DONE Commit new dotfiles repo
+   CLOSED: [2017-09-03 Sun 12:35]
+** DONE Change aliases in homedir to point to dotfiles repo
+   CLOSED: [2017-09-03 Sun 12:36]
+** TODO Change files on imac to be aliases to dotfiles repo
+** TODO Remove actual dotfiles from old homedir repo
