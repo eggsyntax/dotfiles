@@ -460,15 +460,16 @@ before layers configuration."
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
 
-    ;; Use clojure-based definition of words
-    ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
-    (dolist (c (string-to-list ":_-?!#*"))
-      (modify-syntax-entry c "w" lisp-mode-syntax-table ))
-
     ;; Define an "eval" operator
     (evil-define-operator generic-evil-eval-operator (beg end)
       (cider-eval-region beg end))
-    (define-key evil-normal-state-map (kbd "A-e") 'generic-evil-eval-operator))
+    (define-key evil-normal-state-map (kbd "A-e") 'generic-evil-eval-operator)
+
+    ;; Use lispy definition of words
+    ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
+    (dolist (c (string-to-list ":_-?!#*"))
+      (modify-syntax-entry c "w" lisp-mode-syntax-table ))
+    )
 
   ;;;;;;;;; clojure function-key bindings (hyper) ;;;;;;
 
@@ -683,6 +684,8 @@ Setting this to nil disables the timeout functionality."
   ;; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
 
+  ;; (setq helm-boring-file-regexp-list )
+  ;; (setq helm-ff-skip-boring-files true)
   )
 
 (custom-set-variables
@@ -733,6 +736,7 @@ Setting this to nil disables the timeout functionality."
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
+ '(projectile-globally-ignored-file-suffixes (quote ("haml" "*.haml")))
  '(safe-local-variable-values
    (quote
     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)

@@ -73,7 +73,7 @@ alias weather="curl wttr.in/asheville | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m
 alias moon="curl wttr.in/Moon | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m:g'"
 
 ################ Begin git stuff ###################
-export stsh="stash@{0}}" # annoying to type
+export sth="stash@{0}}" # less annoying to type
 
 alias st="git status"
 alias gd="git diff -w"
