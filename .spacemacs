@@ -427,6 +427,10 @@ before layers configuration."
     (evil-lisp-state-sp-kill-sexp)
     (pop kill-ring))
 
+  (defun copy-current-ns ()
+    (interactive)
+    (kill-new (cider-current-ns)))
+
   (with-eval-after-load 'lisp-mode ; anything with sexps
     ;; Use cap L and H to move forward/back by sexp
     (define-key evil-normal-state-map (kbd "L") 'sp-next-sexp)
@@ -456,6 +460,7 @@ before layers configuration."
     (define-key evil-normal-state-map (kbd "A-t") "ct-") ; change-to-hyphen
     (define-key evil-normal-state-map (kbd "A--") 'jump-past-hyphen)
     (define-key evil-normal-state-map (kbd "A-_") 'jump-past-hyphen-back)
+    (define-key evil-normal-state-map (kbd "A-n") 'copy-current-ns)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
