@@ -461,6 +461,7 @@ before layers configuration."
     (define-key evil-normal-state-map (kbd "A--") 'jump-past-hyphen)
     (define-key evil-normal-state-map (kbd "A-_") 'jump-past-hyphen-back)
     (define-key evil-normal-state-map (kbd "A-n") 'copy-current-ns)
+    (define-key evil-insert-state-map (kbd "A-n") 'copy-current-ns)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
