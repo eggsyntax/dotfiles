@@ -400,6 +400,8 @@ function linux-bashrc {
     # export JAVA_HOME="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
     # export JAVA_HOME=""
 
+    # like pbcopy on mac -- pipe it input & it goes to the clipboard
+    alias clip='xsel --clipboard --input'
 }
 
 unamestr=`uname`

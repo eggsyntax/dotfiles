@@ -5,7 +5,9 @@
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 *** Additional Drivers -- autosearch
-* sudo apt install: vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc
+* sudo apt install: vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel
+** Windows emulation (maybe):
+*** wine, winetricks, playonlinux
 * Vim setup:
 ** vim: pathogen - mkdir -p ~/.vim/autoload ~/.vim/bundle && \
 curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
@@ -24,16 +26,28 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 ** DarkTable
 *** sudo add-apt-repository ppa:pmjdebruijn/darktable-release && sudo apt-get update
 
-** TODO Bleachbit and/or Stacer (optimizer)
+** Bleachbit and/or Stacer (optimizer)
 
 *** Stacer (sourceforge, ick) - https://github.com/oguzhaninan/Stacer/releases
-** TODO Redshift
-** TODO Indicator Multiload — monitor system resources
-** TODO Bulletin — A searchable clipboard manager
+** Redshift
+** NitroShare (file sharing to mac)
+** Indicator Multiload — monitor system resources
+*** sudo apt install indicator-multiload
+** Clipboard Manager:
+*** CopyQ:
+**** sudo add-apt-repository ppa:hluk/copyq
+**** sudo apt update
+**** sudo apt install copyq
+*** Or look for a faster one
+
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
 * Customization tweaks:
 ** Fonts:
 *** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
+* Window managers:
+** Openbox -- super minimal, elegant
+*** With tint2
+*** See https://www.youtube.com/watch?v=hWmikVpbrtY
 ** Icons:
 *** Numix
 **** sudo add-apt-repository ppa:numix/ppa
@@ -46,6 +60,12 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** sudo apt update && sudo apt install papirus-icon-theme
 ** Theme:
 *** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
+** Other:
+*** Show indicators on top bar, not just that little bottom tray.
+**** https://extensions.gnome.org/extension/615/appindicator-support/
+**** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
+*** Modifier keys -> parens:
+**** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
 * Clojure:
 ** Java:
 ** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
@@ -62,7 +82,7 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 * Gnome-tweak-tool to change various settings
 ** Under typing:
 *** Under caps-lock I can switch caps & esc
-*** Under ctrl-key-position I can switch ctrl/alt/command
+*** Under ctrl-key-position I can switch ctrl and cmd
 ** Under fonts: can scale fonts
 ** Under extensions: 'window list' provides something dockish
 
@@ -72,4 +92,7 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 ** DONE Change aliases in homedir to point to dotfiles repo
    CLOSED: [2017-09-03 Sun 12:36]
 ** TODO Change files on imac to be aliases to dotfiles repo
-** TODO Remove actual dotfiles from old homedir repo
+** TODO Remove actual dotfiles from old homedir report-emacs-bug-address
+** TODO Backups:
+*** backups app lets you back up home folder w/ (nearly) all settings
+*** There's also dconf-backup: https://github.com/pixelastic/dconf-export
