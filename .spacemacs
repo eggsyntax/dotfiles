@@ -427,6 +427,10 @@ before layers configuration."
     (evil-lisp-state-sp-kill-sexp)
     (pop kill-ring))
 
+  (defun copy-current-ns ()
+    (interactive)
+    (kill-new (cider-current-ns)))
+
   (with-eval-after-load 'lisp-mode ; anything with sexps
     ;; Use cap L and H to move forward/back by sexp
     (define-key evil-normal-state-map (kbd "L") 'sp-next-sexp)
@@ -456,19 +460,22 @@ before layers configuration."
     (define-key evil-normal-state-map (kbd "A-t") "ct-") ; change-to-hyphen
     (define-key evil-normal-state-map (kbd "A--") 'jump-past-hyphen)
     (define-key evil-normal-state-map (kbd "A-_") 'jump-past-hyphen-back)
+    (define-key evil-normal-state-map (kbd "A-n") 'copy-current-ns)
+    (define-key evil-insert-state-map (kbd "A-n") 'copy-current-ns)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
 
-    ;; Use clojure-based definition of words
-    ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
-    (dolist (c (string-to-list ":_-?!#*"))
-      (modify-syntax-entry c "w" lisp-mode-syntax-table ))
-
     ;; Define an "eval" operator
     (evil-define-operator generic-evil-eval-operator (beg end)
       (cider-eval-region beg end))
-    (define-key evil-normal-state-map (kbd "A-e") 'generic-evil-eval-operator))
+    (define-key evil-normal-state-map (kbd "A-e") 'generic-evil-eval-operator)
+
+    ;; Use lispy definition of words
+    ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
+    (dolist (c (string-to-list ":_-?!#*"))
+      (modify-syntax-entry c "w" lisp-mode-syntax-table ))
+    )
 
   ;;;;;;;;; clojure function-key bindings (hyper) ;;;;;;
 
@@ -683,6 +690,8 @@ Setting this to nil disables the timeout functionality."
   ;; Set to <your Dropbox root directory>/MobileOrg.
   (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
 
+  ;; (setq helm-boring-file-regexp-list )
+  ;; (setq helm-ff-skip-boring-files true)
   )
 
 (custom-set-variables
@@ -736,6 +745,7 @@ Setting this to nil disables the timeout functionality."
     (paradox clojure-cheatsheet clj-refactor inflections edn paredit peg cider seq spinner queue adaptive-wrap yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit string-inflection spaceline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc jinja2-mode info+ inf-clojure indent-guide hydra hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav dumb-jump diff-hl define-word cython-mode company-web company-tern company-statistics company-quickhelp company-ansible company-anaconda column-enforce-mode coffee-mode clojure-snippets clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile ansible-doc ansible aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pos-tip-background-color "#eee8d5")
  '(pos-tip-foreground-color "#586e75")
+ '(projectile-globally-ignored-file-suffixes (quote ("haml" "*.haml")))
  '(safe-local-variable-values
    (quote
     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)

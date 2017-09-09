@@ -70,7 +70,7 @@ alias weather="curl wttr.in/asheville | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m
 alias moon="curl wttr.in/Moon | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m:g'"
 
 ################ Begin git stuff ###################
-export stsh="stash@{0}}" # annoying to type
+export sth="stash@{0}" # less annoying to type
 
 alias st="git status"
 alias gd="git diff -w"
@@ -244,6 +244,7 @@ shopt -s histappend
 export PROMPT_COMMAND='history -a'
 # Unlimited history size
 # On bash < 4.3 (ie mac), This should be blank instead of -1.
+# (or bash will BREAK!)
 export HISTSIZE=-1
 export HISTFILESIZE=-1
 # Ignore duplicate commands, and commands with leading whitespace
@@ -283,6 +284,11 @@ alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 ######### Mac-specific ########
 
 function mac-bashrc {
+
+    # Should be -1 (see above) on bash >= 4.3, aka non-mac
+    export HISTSIZE=
+    export HISTFILESIZE=
+
     echo "Executing mac bash startup"
     alias v="/Applications/MacVim.app/Contents/MacOS/Vim" #TODO mac-specific
     alias vm="/usr/local/bin/mvim" # See vm below
