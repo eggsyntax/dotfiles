@@ -39,15 +39,19 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** sudo apt update
 **** sudo apt install copyq
 *** Or look for a faster one
-
+** TODO Conky - Very nice, themable system info/clock/weather/whatever overlay:
+*** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
+*** https://devuno.deviantart.com/art/Dirty-Conky-179991956
+*** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
+*** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
 * Customization tweaks:
 ** Fonts:
 *** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
-* Window managers:
-** Openbox -- super minimal, elegant
-*** With tint2
-*** See https://www.youtube.com/watch?v=hWmikVpbrtY
+** Window managers:
+*** Openbox -- super minimal, elegant
+**** With tint2
+**** See https://www.youtube.com/watch?v=hWmikVpbrtY
 ** Icons:
 *** Numix
 **** sudo add-apt-repository ppa:numix/ppa
@@ -60,12 +64,52 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** sudo apt update && sudo apt install papirus-icon-theme
 ** Theme:
 *** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
-** Other:
+** (Gnome) extensions::
 *** Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-*** Modifier keys -> parens:
-**** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
+*** Keyboard layout:
+**** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
+***** But maybe better to handle it all in the same place.
+**** Handled by: xmodmap (basic key customization), xcape (tweak modifier keys), and xkb (?).
+**** Documentation
+***** Example webpages:
+****** http://tiborsimko.org/capslock-escape-control.html
+****** http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful/
+****** https://flenniken.net/blog/xcape/
+****** xcape + xkb: https://unix.stackexchange.com/questions/326904/make-an-ordinary-key-act-as-modifier-with-xcape-and-xkb
+****** http://emacsredux.com/blog/2013/11/12/a-crazy-productivity-boost-remap-return-to-control/
+****** https://superuser.com/questions/679284/how-do-i-get-a-valid-xmodmap-while-using-xcape
+***** Useful web pages:
+****** Keyboard configuration in Xorg: https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg
+****** "An Unreliable Guide to XKB Configuration": https://www.charvolant.org/doug/xkb/
+****** XKB guide: https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+****** https://unix.stackexchange.com/questions/158765/using-xcape-xmodmap-to-change-some-keys
+***** Reference:
+****** List of keysyms (ie names for keys):
+******* https://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h
+****** List of built-in rules (?):
+******* https://github.com/Webconverger/webc/blob/master/usr/share/X11/xkb/rules/base.lst
+***** Modifier keys -> parens:
+****** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
+****** Great explanation of customizing keyboard layout with xmodmap! 1st I've ever seen that clarifies the *process*.
+******* https://forum.xfce.org/viewtopic.php?pid=40253#p40253
+****** Xcape on github: https://github.com/alols/xcape
+**** xcape: https://flenniken.net/blog/xcape/
+***** install:
+****** sudo apt install git gcc make pkg-config libx11-dev libxtst-dev libxi-dev
+****** build:
+******* cd ~/tmp
+******* git clone https://github.com/alols/xcape.git
+******* cd xcape
+******* make
+******* sudo make install
+***** Approximate xcape command (in startup, or in .bashrc with check to make sure only run once):
+****** xcape -e 'Super_L=Shift_L|parenleft;Super_R=Shift_R|parenright;Caps_Lock=Escape'
+****** Or maybe...
+****** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright;Caps_Lock=Escape'
+****** I've seen the paren ones work, but not the caps<->escape.
+
 * Clojure:
 ** Java:
 ** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
