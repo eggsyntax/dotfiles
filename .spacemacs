@@ -692,6 +692,11 @@ Setting this to nil disables the timeout functionality."
 
   ;; (setq helm-boring-file-regexp-list )
   ;; (setq helm-ff-skip-boring-files true)
+
+  ;; Stop helm from screwing stuff up. TODO ditch once this PR is merged:
+  ;; https://github.com/syl20bnr/spacemacs/pull/9547
+  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer--elpa-archives)
+  (push '(helm . "melpa-stable") package-pinned-packages)
   )
 
 (custom-set-variables
