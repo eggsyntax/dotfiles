@@ -511,6 +511,9 @@ before layers configuration."
  This function is called at the very end of Spacemacs initialization after
 layers configuration."
 
+  ;; Prevent recent error 09/13/17, see https://github.com/syl20bnr/spacemacs/issues/9549
+  (require 'helm-bookmark)
+
   ;; auto-revert buffers when they're changed on filesystem
   ;; only works sometimes, unfortunately :/
   (global-auto-revert-mode 1)
@@ -693,10 +696,6 @@ Setting this to nil disables the timeout functionality."
   ;; (setq helm-boring-file-regexp-list )
   ;; (setq helm-ff-skip-boring-files true)
 
-  ;; Stop helm from screwing stuff up. TODO ditch once this PR is merged:
-  ;; https://github.com/syl20bnr/spacemacs/pull/9547
-  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer--elpa-archives)
-  (push '(helm . "melpa-stable") package-pinned-packages)
   )
 
 (custom-set-variables
