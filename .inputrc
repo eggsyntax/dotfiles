@@ -5,10 +5,8 @@ set bell-style none
 # colored completions
 set colored-stats on
 
-# misc
+# misc - added 09/2017
 set show-all-if-ambiguous  on
-# maybe not doing anything:
-# set blink-matching-parens  on
 set expand-tilde on
 set history-preserve-point on
 
