@@ -285,11 +285,14 @@ alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 
 function mac-bashrc {
 
+    if [[ $- == *i* ]]; then # if in interactive terminal (else tput breaks)
+        echo "Executing mac bash startup"
+    fi
+
     # Should be -1 (see above) on bash >= 4.3, aka non-mac
     export HISTSIZE=
     export HISTFILESIZE=
 
-    echo "Executing mac bash startup"
     alias v="/Applications/MacVim.app/Contents/MacOS/Vim" #TODO mac-specific
     alias vm="/usr/local/bin/mvim" # See vm below
     alias ec="open -a Eclipse"
@@ -383,7 +386,9 @@ function mac-bashrc {
 ######### Linux-specific ########
 
 function linux-bashrc {
-    echo "Executing linux bash startup"
+    if [[ $- == *i* ]]; then # if in interactive terminal (else tput breaks)
+        echo "Executing linux bash startup"
+    fi
 
     alias v='vim'
     alias topp='top -o %CPU'
