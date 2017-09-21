@@ -404,7 +404,8 @@ function linux-bashrc {
 
     # Load autojump
     # ie 'j foo' takes you to fuzzy-matched foo directory
-    . /usr/share/autojump/autojump.sh
+    # WRONG? . /usr/share/autojump/autojump.sh
+    . /usr/share/autojump/autojump.bash
 
     # TODO do I need this in linux?
     # Set JAVA_HOME
