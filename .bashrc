@@ -414,6 +414,11 @@ function linux-bashrc {
 
     # like pbcopy on mac -- pipe it input & it goes to the clipboard
     alias clip='xsel --clipboard --input'
+
+    # Set ctrl keys to produce parens:
+    # Only ever want one xcape running at a time:
+    killall xcape || true # the || true is to capture the error if none are running.
+    xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
 }
 
 unamestr=`uname`

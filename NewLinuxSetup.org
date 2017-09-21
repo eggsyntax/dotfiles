@@ -72,6 +72,22 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
 * Keyboard layout:
+** Final solution for the P51:
+*** 1. Do some switching in tweak-tool/typing:
+**** Typing / CapsLock / 'Swap ESC and CapsLock'
+**** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
+*** 2. config file for xkd, at 'sudo vi /usr/share/X11/xkb/keycodes/evdev'
+**** Switch the keycodes for the two keys, eg if former containes
+      <RCTL> = 105;
+      <RALT> = 108;
+     Then we switch it to:
+      <RCTL> = 108;
+      <RALT> = 105;
+      & now we have overridden keycodes at low level.
+*** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
+**** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
+**** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+*** 4. Everything below this is showing my work; only the above is necessary (for the P51).
 ** P51: right-alt is 108, right-ctrl is 105.
 ** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
 *** But maybe better to handle it all in the same place.
@@ -85,6 +101,11 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** http://emacsredux.com/blog/2013/11/12/a-crazy-productivity-boost-remap-return-to-control/
 **** https://superuser.com/questions/679284/how-do-i-get-a-valid-xmodmap-while-using-xcape
 *** Useful web pages:
+**** Key swapping with xkb config file (workaround for xmodmap bug):
+***** https://bugs.launchpad.net/ubuntu/+source/xorg-server/+bug/524774/comments/12
+***** Crap, this ALMOST works for me. But now my paren modificatinos with xcape are messed up --
+****** ctrl_l becomes (((((
+***** SOLVED! I had multiple instances of xcape running.
 **** Keyboard configuration in Xorg: https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg
 **** "An Unreliable Guide to XKB Configuration": https://www.charvolant.org/doug/xkb/
 **** XKB guide: https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
@@ -113,6 +134,8 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** Or maybe...
 **** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright;Caps_Lock=Escape'
 **** xcape -e 'Alt_R=Control_R;Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+**** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
+***** xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
 **** I've seen the paren ones work, but not the caps<->escape.
 
 * Clojure:
