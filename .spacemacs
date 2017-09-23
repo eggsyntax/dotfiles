@@ -31,6 +31,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -47,7 +48,7 @@ values."
                       auto-completion-enable-sort-by-usage t)
      ;; better-defaults
      emacs-lisp
-     ;; git
+     git
      ;; markdown
      ;; org
      ;; (shell :variables
@@ -478,11 +479,24 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (interactive)
     (kill-new (cider-current-ns)))
 
+  (defun save-and-send-to-switch-to-repl ()
+    (interactive)
+    (save-buffer)
+    (cider-load-buffer-and-switch-to-repl-buffer))
+
+  (defun cider-format-region-or-buffer (start end)
+    (interactive "r")
+    (if mark-active
+        (cider-format-region start end)
+      (cider-format-defun)))
+
   (with-eval-after-load 'lisp-mode ; anything with sexps
     ;; Use cap L and H to move forward/back by sexp
     (define-key evil-normal-state-map (kbd "L") 'sp-next-sexp)
     (define-key evil-normal-state-map (kbd "H") 'sp-beginning-of-previous-sexp)
+    (define-key evil-normal-state-map (kbd "A-b") 'save-and-send-to-switch-to-repl)
     (define-key evil-normal-state-map (kbd "A-c") 'sp-copy-sexp) ; yank sexp
+    (define-key evil-normal-state-map (kbd "¢")   'sp-copy-sexp) ; A-c gets corrupted somehow
     (define-key evil-normal-state-map (kbd "A-d") 'sp-kill-sexp) ; kill sexp
     (define-key evil-normal-state-map (kbd "A-m") 'delete-sexp) ; murder sexp (don't put on kill ring)
     (define-key evil-normal-state-map (kbd "A-r") 'evil-lisp-state-sp-raise-sexp) ; raise sexp
@@ -509,6 +523,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "A-_") 'jump-past-hyphen-back)
     (define-key evil-normal-state-map (kbd "A-n") 'copy-current-ns)
     (define-key evil-insert-state-map (kbd "A-n") 'copy-current-ns)
+    (define-key evil-normal-state-map (kbd "A-f") 'cider-format-region-or-buffer)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
@@ -755,7 +770,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (markdown-toc mmm-mode markdown-mode gh-md smeargle orgit magit-gitflow helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
