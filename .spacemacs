@@ -2,6 +2,22 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
+(defun right-mod (keychar)
+  "Return the appropriate modkey + keychar reference (ie for (right-mod \"*\",
+'M-*' on mac, 'C-*' on linux [because I swap alt & ctrl on linux])"
+  (interactive)
+  (if (string-equal system-type "darwin")
+      (concat "M-" keychar)
+    (concat "C-" keychar)))
+
+(defun left-mod (keychar)
+  "Return the appropriate modkey + keychar reference (ie for (right-mod \"*\",
+'M-*' on mac, 'C-*' on linux [because I swap alt & ctrl on linux])"
+  (interactive)
+  (if (string-equal system-type "darwin")
+      (concat "A-" keychar)
+    (concat "M-" keychar)))
+
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
@@ -47,7 +63,7 @@ values."
                       auto-completion-enable-sort-by-usage t)
      ;; better-defaults
      emacs-lisp
-     ;; git
+     git
      ;; markdown
      ;; org
      ;; (shell :variables
@@ -166,8 +182,8 @@ values."
    dotspacemacs-command-key ";"
    dotspacemacs-ex-command-key ";"
    ;; The leader key accessible in `emacs state' and `insert state'
-   ;; (default "M-m")
-   dotspacemacs-emacs-leader-key "M-m"
+   ;; (default (right-mod "m"))
+   dotspacemacs-emacs-leader-key (right-mod "m")
    ;; Major mode leader key is a shortcut key which is the equivalent of
    ;; pressing `<leader> m`. Set it to `nil` to disable it. (default ",")
    dotspacemacs-major-mode-leader-key ","
@@ -352,10 +368,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-motion-state-map (kbd "\\") 'move-end-of-line)
 
   ;; Let Cmd-movement keys work as movement keys in insert mode
-  (define-key evil-insert-state-map (kbd "M-l") 'evil-forward-char)
-  (define-key evil-insert-state-map (kbd "M-h") 'evil-backward-char)
-  (define-key evil-insert-state-map (kbd "M-j") 'evil-next-line)
-  (define-key evil-insert-state-map (kbd "M-k") 'evil-previous-line)
+  (define-key evil-insert-state-map (kbd (right-mod "l")) 'evil-forward-char)
+  (define-key evil-insert-state-map (kbd (right-mod "h")) 'evil-backward-char)
+  (define-key evil-insert-state-map (kbd (right-mod "j")) 'evil-next-line)
+  (define-key evil-insert-state-map (kbd (right-mod "k")) 'evil-previous-line)
 
   ;; Have to redefine the few fn-modified-keys I use, since we've
   ;; coopted fn as hyper
@@ -367,7 +383,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
 
   (evil-define-key '(normal insert) cider-repl-mode-map
-    (kbd "M-k") 'cider-repl-clear-buffer)
+    (kbd (right-mod "k")) 'cider-repl-clear-buffer)
 
   (evil-define-key 'normal cider-repl-mode-map
     (kbd "<up>") 'cider-repl-previous-input)
@@ -378,28 +394,28 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (evil-define-key 'normal cider-repl-mode-map
     (kbd "<down>") 'cider-repl-next-input)
 
-  (global-set-key (kbd "M-.") 'completion-at-point)
-  (global-set-key (kbd "M-c") 'evil-yank)
-  (global-set-key (kbd "M-v") 'maclike-paste)
-  (global-set-key (kbd "A-<backspace>") 'backward-kill-word)
-  (global-set-key (kbd "A-<left>") 'evil-backward-WORD-begin)
-  (global-set-key (kbd "A-<right>") 'evil-forward-WORD-begin)
-  (global-set-key (kbd "M-q") 'save-buffers-kill-emacs)
-  (global-set-key (kbd "M-a") 'mark-whole-buffer)
-  (global-set-key (kbd "M-s") 'save-buffer)
-  ;; (global-set-key (kbd "M-n") 'lunaryorn-new-buffer-frame)
-  (global-set-key (kbd "M-n") 'new-frame)
-  (global-set-key (kbd "M-w") 'delete-frame)
-  (global-set-key (kbd "M-`") 'ns-next-frame)
-  (global-set-key (kbd "M-~") 'ns-prev-frame)
+  (global-set-key (kbd (right-mod ".")) 'completion-at-point)
+  (global-set-key (kbd (right-mod "c")) 'evil-yank)
+  (global-set-key (kbd (right-mod "v")) 'maclike-paste)
+  (global-set-key (kbd (left-mod "<backspace>")) 'backward-kill-word)
+  (global-set-key (kbd (left-mod "<left>")) 'evil-backward-WORD-begin)
+  (global-set-key (kbd (left-mod "<right>")) 'evil-forward-WORD-begin)
+  (global-set-key (kbd (right-mod "q")) 'save-buffers-kill-emacs)
+  (global-set-key (kbd (right-mod "a")) 'mark-whole-buffer)
+  (global-set-key (kbd (right-mod "s")) 'save-buffer)
+  ;; (global-set-key (kbd (right-mod "n")) 'lunaryorn-new-buffer-frame)
+  (global-set-key (kbd (right-mod "n")) 'new-frame)
+  (global-set-key (kbd (right-mod "w")) 'delete-frame)
+  (global-set-key (kbd (right-mod "`")) 'ns-next-frame)
+  (global-set-key (kbd (right-mod "~")) 'ns-prev-frame)
 
   ;; A few more borrowed from the osx layer
   ;; See http://spacemacs.org/layers/osx/README
-  (global-set-key (kbd "M-=") 'spacemacs/scale-up-font)
+  (global-set-key (kbd (right-mod "=")) 'spacemacs/scale-up-font)
   ;; This one's not working, dunno why:
-  (global-set-key (kbd "M--") 'spacemacs/scale-down-font)
-  (global-set-key (kbd "M-z") 'undo-tree-undo)
-  (global-set-key (kbd "M-Z") 'undo-tree-redo)
+  (global-set-key (kbd (right-mod "-")) 'spacemacs/scale-down-font)
+  (global-set-key (kbd (right-mod "z")) 'undo-tree-undo)
+  (global-set-key (kbd (right-mod "Z")) 'undo-tree-redo)
 
   (define-key evil-normal-state-map (kbd ":")
     'evil-search-highlight-persist-remove-all)
@@ -482,15 +498,15 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; Use cap L and H to move forward/back by sexp
     (define-key evil-normal-state-map (kbd "L") 'sp-next-sexp)
     (define-key evil-normal-state-map (kbd "H") 'sp-beginning-of-previous-sexp)
-    (define-key evil-normal-state-map (kbd "A-c") 'sp-copy-sexp) ; yank sexp
-    (define-key evil-normal-state-map (kbd "A-d") 'sp-kill-sexp) ; kill sexp
-    (define-key evil-normal-state-map (kbd "A-m") 'delete-sexp) ; murder sexp (don't put on kill ring)
-    (define-key evil-normal-state-map (kbd "A-r") 'evil-lisp-state-sp-raise-sexp) ; raise sexp
-    (define-key evil-normal-state-map (kbd "A-w") 'evil-lisp-state-wrap) ; wrap in sexp
+    (define-key evil-normal-state-map (kbd (left-mod "c")) 'sp-copy-sexp) ; yank sexp
+    (define-key evil-normal-state-map (kbd (left-mod "d")) 'sp-kill-sexp) ; kill sexp
+    (define-key evil-normal-state-map (kbd (left-mod "m")) 'delete-sexp) ; murder sexp (don't put on kill ring)
+    (define-key evil-normal-state-map (kbd (left-mod "r")) 'evil-lisp-state-sp-raise-sexp) ; raise sexp
+    (define-key evil-normal-state-map (kbd (left-mod "w")) 'evil-lisp-state-wrap) ; wrap in sexp
     )
 
   (with-eval-after-load 'clojure-mode
-    (define-key evil-normal-state-map (kbd "M-k") nil) ; kill-sentence -- bad if I think I'm in repl
+    (define-key evil-normal-state-map (kbd (right-mod "k")) nil) ; kill-sentence -- bad if I think I'm in repl
     (define-key evil-normal-state-map (kbd "SPC m t s") 'cider-test-run-test)
     (define-key evil-normal-state-map (kbd "SPC b x") 'jump-to-cider-error)
     (define-key evil-normal-state-map (kbd ", t s") 'cider-test-run-test)
@@ -502,13 +518,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC b C") 'jump-to-cljs-repl)
     (define-key evil-normal-state-map (kbd "SPC b S") 'jump-to-nrepl-server)
     (define-key evil-normal-state-map (kbd "SPC b E") 'jump-to-personal-file)
-    (define-key evil-normal-state-map (kbd "A-a") "ya(") ; yank-around-parens (only in normal)
-    (define-key evil-normal-state-map (kbd "A-a") "da(") ; delete-around-parens (only in normal)
-    (define-key evil-normal-state-map (kbd "A-t") "ct-") ; change-to-hyphen
-    (define-key evil-normal-state-map (kbd "A--") 'jump-past-hyphen)
-    (define-key evil-normal-state-map (kbd "A-_") 'jump-past-hyphen-back)
-    (define-key evil-normal-state-map (kbd "A-n") 'copy-current-ns)
-    (define-key evil-insert-state-map (kbd "A-n") 'copy-current-ns)
+    (define-key evil-normal-state-map (kbd (left-mod "a")) "ya(") ; yank-around-parens (only in normal)
+    (define-key evil-normal-state-map (kbd (left-mod "a")) "da(") ; delete-around-parens (only in normal)
+    (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
+    (define-key evil-normal-state-map (kbd (left-mod "-")) 'jump-past-hyphen)
+    (define-key evil-normal-state-map (kbd (left-mod "_")) 'jump-past-hyphen-back)
+    (define-key evil-normal-state-map (kbd (left-mod "n")) 'copy-current-ns)
+    (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
@@ -516,7 +532,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; Define an "eval" operator
     (evil-define-operator generic-evil-eval-operator (beg end)
       (cider-eval-region beg end))
-    (define-key evil-normal-state-map (kbd "A-e") 'generic-evil-eval-operator)
+    (define-key evil-normal-state-map (kbd (left-mod "e")) 'generic-evil-eval-operator)
 
     ;; Use lispy definition of words
     ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
@@ -698,7 +714,7 @@ you should place your code here."
   ;; TODO doesn't work
   ;; (defvar my-keys-minor-mode-map
   ;;   (let ((map (make-sparse-keymap)))
-  ;;     (define-key map (kbd "M-s") 'save-buffer)
+  ;;     (define-key map (kbd (right-mod "s")) 'save-buffer)
   ;;     (define-key map (kbd "}") 'evil-forward-paragraph)
   ;;     (define-key map (kbd "{") 'evil-backward-paragraph)
   ;;     map)
@@ -714,7 +730,7 @@ you should place your code here."
   ;; TODO doesn't work
   ;; (with-eval-after-load 'clojure-mode
   ;;   (evil-define-key '(normal insert) 'clojure-mode-map
-  ;;     (kbd "M-s") 'save-buffer-always)
+  ;;     (kbd (right-mod "s")) 'save-buffer-always)
   ;;   (evil-define-key '(normal insert) 'clojure-mode-map
   ;;     (kbd  "}") 'evil-forward-paragraph)
   ;;   (evil-define-key '(normal insert) 'clojure-mode-map
