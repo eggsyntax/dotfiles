@@ -8,7 +8,7 @@
                     ;; https://github.com/clojure-emacs/cider/issues/1717#issuecomment-218908109
                     ;; (& some of the rest of that page).
                     ;; [lein-exec "0.3.6"]
-                    ;; [venantius/yagni "0.1.4"]
+                    [venantius/yagni "0.1.4"]
                     ;; [lein-ns-dep-graph "0.1.0-SNAPSHOT"]
                     [lein-kibit "0.1.3"]
                     [jonase/eastwood "0.2.3"]
