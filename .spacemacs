@@ -47,6 +47,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -494,10 +495,23 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (interactive)
     (kill-new (cider-current-ns)))
 
+  (defun save-and-send-to-switch-to-repl ()
+    (interactive)
+    (save-buffer)
+    (cider-load-buffer-and-switch-to-repl-buffer))
+
+  (defun cider-format-region-or-buffer (start end)
+    (interactive "r")
+    (if mark-active
+        (cider-format-region start end)
+      (cider-format-defun)))
+
   (with-eval-after-load 'lisp-mode ; anything with sexps
     ;; Use cap L and H to move forward/back by sexp
     (define-key evil-normal-state-map (kbd "L") 'sp-next-sexp)
     (define-key evil-normal-state-map (kbd "H") 'sp-beginning-of-previous-sexp)
+    (define-key evil-normal-state-map (kbd (left-mod "b")) 'save-and-send-to-switch-to-repl)
+    (define-key evil-normal-state-map (kbd "¢")   'sp-copy-sexp) ; A-c gets corrupted somehow
     (define-key evil-normal-state-map (kbd (left-mod "c")) 'sp-copy-sexp) ; yank sexp
     (define-key evil-normal-state-map (kbd (left-mod "d")) 'sp-kill-sexp) ; kill sexp
     (define-key evil-normal-state-map (kbd (left-mod "m")) 'delete-sexp) ; murder sexp (don't put on kill ring)
@@ -525,6 +539,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (left-mod "_")) 'jump-past-hyphen-back)
     (define-key evil-normal-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
+    (define-key evil-normal-state-map (kbd (left-mod "f")) 'cider-format-region-or-buffer)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
