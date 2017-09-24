@@ -157,7 +157,6 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** Under caps-lock I can switch caps & esc
 *** Under ctrl-key-position I can switch ctrl and cmd
 ** Under fonts: can scale fonts
-** Under extensions: 'window list' provides something dockish
 
 * TODO
 ** DONE Commit new dotfiles repo

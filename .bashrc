@@ -419,6 +419,10 @@ function linux-bashrc {
     # Only ever want one xcape running at a time:
     killall xcape || true # the || true is to capture the error if none are running.
     xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+
+    export EDITOR='vim'
+    export VISUAL='vim'
+
 }
 
 unamestr=`uname`
