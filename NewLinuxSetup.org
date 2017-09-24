@@ -1,5 +1,5 @@
 * Preferences: dvorak
-* Enable repos:
+* TODO Enable repos:
 ** sudo -i software-properties-gtk
 *** In "other software": add (s/zesty/current-release-nickname/): deb http://archive.canonical.com/ubuntu zesty partner
 *** check desired repos in 1st & 2nd tab
@@ -21,16 +21,18 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 **** Dropbox/dotfiles-linux.git
 **** ln -s dotfiles-linux/[.spacemacs, .vimrc, .bashrc]
 ** Spacemacs
-*** sudo apt install emacs<25>
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 ** DarkTable
 *** sudo add-apt-repository ppa:pmjdebruijn/darktable-release && sudo apt-get update
+** autojump
+*** have to manually set up on ubuntu (done in .bashrc)
+*** have to manually set up on ubuntu
 
 ** Bleachbit and/or Stacer (optimizer)
 
 *** Stacer (sourceforge, ick) - https://github.com/oguzhaninan/Stacer/releases
 ** Redshift
-** NitroShare (file sharing to mac)
+** TODO NitroShare (file sharing to mac)
 ** Indicator Multiload — monitor system resources
 *** sudo apt install indicator-multiload
 ** Clipboard Manager:
@@ -46,6 +48,7 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
 * Customization tweaks:
+* NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
 *** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 ** Window managers:
@@ -68,51 +71,75 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-*** Keyboard layout:
-**** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
-***** But maybe better to handle it all in the same place.
-**** Handled by: xmodmap (basic key customization), xcape (tweak modifier keys), and xkb (?).
-**** Documentation
-***** Example webpages:
-****** http://tiborsimko.org/capslock-escape-control.html
-****** http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful/
-****** https://flenniken.net/blog/xcape/
-****** xcape + xkb: https://unix.stackexchange.com/questions/326904/make-an-ordinary-key-act-as-modifier-with-xcape-and-xkb
-****** http://emacsredux.com/blog/2013/11/12/a-crazy-productivity-boost-remap-return-to-control/
-****** https://superuser.com/questions/679284/how-do-i-get-a-valid-xmodmap-while-using-xcape
-***** Useful web pages:
-****** Keyboard configuration in Xorg: https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg
-****** "An Unreliable Guide to XKB Configuration": https://www.charvolant.org/doug/xkb/
-****** XKB guide: https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
-****** https://unix.stackexchange.com/questions/158765/using-xcape-xmodmap-to-change-some-keys
-***** Reference:
-****** List of keysyms (ie names for keys):
-******* https://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h
-****** List of built-in rules (?):
-******* https://github.com/Webconverger/webc/blob/master/usr/share/X11/xkb/rules/base.lst
-***** Modifier keys -> parens:
-****** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
-****** Great explanation of customizing keyboard layout with xmodmap! 1st I've ever seen that clarifies the *process*.
-******* https://forum.xfce.org/viewtopic.php?pid=40253#p40253
-****** Xcape on github: https://github.com/alols/xcape
-**** xcape: https://flenniken.net/blog/xcape/
-***** install:
-****** sudo apt install git gcc make pkg-config libx11-dev libxtst-dev libxi-dev
-****** build:
-******* cd ~/tmp
-******* git clone https://github.com/alols/xcape.git
-******* cd xcape
-******* make
-******* sudo make install
-***** Approximate xcape command (in startup, or in .bashrc with check to make sure only run once):
-****** xcape -e 'Super_L=Shift_L|parenleft;Super_R=Shift_R|parenright;Caps_Lock=Escape'
-****** Or maybe...
-****** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright;Caps_Lock=Escape'
-****** I've seen the paren ones work, but not the caps<->escape.
+* Keyboard layout:
+** Final solution for the P51:
+*** 1. Do some switching in tweak-tool/typing:
+**** Typing / CapsLock / 'Swap ESC and CapsLock'
+**** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
+*** 2. config file for xkd, at 'sudo vi /usr/share/X11/xkb/keycodes/evdev'
+**** Switch the keycodes for the two keys, eg if former containes
+      <RCTL> = 105;
+      <RALT> = 108;
+     Then we switch it to:
+      <RCTL> = 108;
+      <RALT> = 105;
+      & now we have overridden keycodes at low level.
+*** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
+**** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
+**** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+*** 4. Everything below this is showing my work; only the above is necessary (for the P51).
+** P51: right-alt is 108, right-ctrl is 105.
+** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
+*** But maybe better to handle it all in the same place.
+** Handled by: xmodmap (basic key customization), xcape (tweak modifier keys), and xkb (?).
+** Documentation
+*** Example webpages:
+**** http://tiborsimko.org/capslock-escape-control.html
+**** http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful/
+**** https://flenniken.net/blog/xcape/
+**** xcape + xkb: https://unix.stackexchange.com/questions/326904/make-an-ordinary-key-act-as-modifier-with-xcape-and-xkb
+**** http://emacsredux.com/blog/2013/11/12/a-crazy-productivity-boost-remap-return-to-control/
+**** https://superuser.com/questions/679284/how-do-i-get-a-valid-xmodmap-while-using-xcape
+*** Useful web pages:
+**** Key swapping with xkb config file (workaround for xmodmap bug):
+***** https://bugs.launchpad.net/ubuntu/+source/xorg-server/+bug/524774/comments/12
+***** Crap, this ALMOST works for me. But now my paren modificatinos with xcape are messed up --
+****** ctrl_l becomes (((((
+***** SOLVED! I had multiple instances of xcape running.
+**** Keyboard configuration in Xorg: https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg
+**** "An Unreliable Guide to XKB Configuration": https://www.charvolant.org/doug/xkb/
+**** XKB guide: https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+**** https://unix.stackexchange.com/questions/158765/using-xcape-xmodmap-to-change-some-keys
+*** Reference:
+**** List of keysyms (ie names for keys):
+***** https://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h
+**** List of built-in rules (?):
+***** https://github.com/Webconverger/webc/blob/master/usr/share/X11/xkb/rules/base.lst
+*** Modifier keys -> parens:
+**** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
+**** Great explanation of customizing keyboard layout with xmodmap! 1st I've ever seen that clarifies the *process*.
+***** https://forum.xfce.org/viewtopic.php?pid=40253#p40253
+**** Xcape on github: https://github.com/alols/xcape
+** xcape: https://flenniken.net/blog/xcape/
+*** install:
+**** sudo apt install git gcc make pkg-config libx11-dev libxtst-dev libxi-dev
+**** build:
+***** cd ~/tmp
+***** git clone https://github.com/alols/xcape.git
+***** cd xcape
+***** make
+***** sudo make install
+*** Approximate xcape command (in startup, or in .bashrc with check to make sure only run once):
+**** xcape -e 'Super_L=Shift_L|parenleft;Super_R=Shift_R|parenright;Caps_Lock=Escape'
+**** Or maybe...
+**** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright;Caps_Lock=Escape'
+**** xcape -e 'Alt_R=Control_R;Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+**** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
+***** xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
+**** I've seen the paren ones work, but not the caps<->escape.
 
 * Clojure:
 ** Java:
-** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 ** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
       sudo apt-get install python-software-properties
       sudo add-apt-repository ppa:webupd8team/java
@@ -120,6 +147,8 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 ** install:
       sudo apt-get install oracle-java8-installer
       oracle-java8-installer
+** Discussion of the above at
+*** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
 
