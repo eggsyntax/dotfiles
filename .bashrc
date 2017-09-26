@@ -16,6 +16,9 @@ function rc {
     . ~/.bashrc
 }
 
+# see also LESSOPEN below
+export LESS=' -R '
+
 # Clojure
 alias lr="lein repl :start :port 6666"
 # Speed up leiningen start time:
@@ -308,7 +311,6 @@ function mac-bashrc {
     # See http://superuser.com/questions/71588/how-to-syntax-highlight-via-less
     # To add clojure support: https://gist.github.com/zamaterian/1472076
     export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
-    export LESS=' -R '
 
     # Start docker terminal
     alias dockerterm=". '/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/start.sh'"
@@ -423,7 +425,29 @@ function linux-bashrc {
     export EDITOR='vim'
     export VISUAL='vim'
 
+    # Create cd history function (cd --, cd -l, cd -3)
+    # https://github.com/bulletmark/cdhist
+    source /etc/cdhist.bashrc
+
+    # Color etc -- copypasted from web, not really vetted.
+    # More info at https://ubuntuforums.org/showthread.php?t=41538
+    export TERM=xterm-color
+    export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
+    export CLICOLOR=1
+    export LSCOLORS=ExFxCxDxBxegedabagacad
+    if [ "$TERM" != "dumb" ]; then
+        [ -e "$HOME/.dircolors" ] && DIR_COLORS="$HOME/.dircolors"
+        [ -e "$DIR_COLORS" ] || DIR_COLORS=""
+        eval "`dircolors -b $DIR_COLORS`"
+        alias ls='ls --color=auto'
+        alias l='ls --color=auto'
+        alias dir='ls --color=auto --format=vertical'
+        #alias vdir='ls --color=auto --format=long'
+    fi
+
+    export LESSOPEN='|~/.lessfilter %s'
 }
+
 
 unamestr=`uname`
 if [[ "$unamestr" == 'Linux' ]]; then
