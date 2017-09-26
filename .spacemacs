@@ -55,6 +55,7 @@ values."
      ;; ----------------------------------------------------------------
      helm
      clojure
+     ;; themes-megapack
      ;; parinfer
      (auto-completion :variables
                       auto-completion-complete-with-key-sequence-delay 0.4
@@ -150,12 +151,12 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
+   dotspacemacs-themes '(alect-light-alt
+                         ample-light
                          spacemacs-light
+                         spacemacs-dark
                          solarized-dark
-                         solarized-light
-                         alect-light-alt
-                         ample-light)
+                         solarized-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -170,10 +171,17 @@ values."
    ;;                             :weight normal
    ;;                             :width condensed)
    ;; Hack is nicer, but Fira Mono is supposedly faster
-   dotspacemacs-default-font '("Fira Mono"
-                               :size 26
-                               :weight normal
-                               :width normal)
+   dotspacemacs-default-font
+   (if (string-equal system-type "darwin")
+       '("Fira Mono"
+         :size 10
+         :weight normal
+         :width normal)
+     '("Hack"
+       :size 23
+       :weight normal
+       :width condensed))
+
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands (M-x) (after pressing on the leader key).
@@ -183,8 +191,8 @@ values."
    dotspacemacs-command-key ";"
    dotspacemacs-ex-command-key ";"
    ;; The leader key accessible in `emacs state' and `insert state'
-   ;; (default (right-mod "m"))
-   dotspacemacs-emacs-leader-key (right-mod "m")
+   ;; (default "M-m")
+   dotspacemacs-emacs-leader-key "M-m"
    ;; Major mode leader key is a shortcut key which is the equivalent of
    ;; pressing `<leader> m`. Set it to `nil` to disable it. (default ",")
    dotspacemacs-major-mode-leader-key ","
@@ -397,7 +405,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (global-set-key (kbd (right-mod ".")) 'completion-at-point)
   (global-set-key (kbd (right-mod "c")) 'evil-yank)
+  ;; Put paste on both mod keys, because C-v can't be used in linux
   (global-set-key (kbd (right-mod "v")) 'maclike-paste)
+  (global-set-key (kbd (left-mod "v")) 'maclike-paste)
   (global-set-key (kbd (left-mod "<backspace>")) 'backward-kill-word)
   (global-set-key (kbd (left-mod "<left>")) 'evil-backward-WORD-begin)
   (global-set-key (kbd (left-mod "<right>")) 'evil-forward-WORD-begin)
@@ -407,6 +417,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; (global-set-key (kbd (right-mod "n")) 'lunaryorn-new-buffer-frame)
   (global-set-key (kbd (right-mod "n")) 'new-frame)
   (global-set-key (kbd (right-mod "w")) 'delete-frame)
+  (define-key evil-normal-state-map (kbd "SPC f d") 'delete-frame)
   (global-set-key (kbd (right-mod "`")) 'ns-next-frame)
   (global-set-key (kbd (right-mod "~")) 'ns-prev-frame)
 
@@ -661,7 +672,7 @@ you should place your code here."
 
   ;; Use narrow modeline
   (setq powerline-narrow t)
-  ;; (setq powerline-nano-theme t)
+  (setq powerline-nano-theme t)
 
   ;; Use greek letter for lambda (or fn in clj)
   (global-prettify-symbols-mode 1)
@@ -705,6 +716,9 @@ you should place your code here."
   (setq buffer-encoding-abbrev-p nil)
   ;; Or the size of the friggin file
   (setq buffer-sizep nil)
+  ;; Or the major mode because I just don't have room
+  (setq mode-name nil)
+  (setq mode-line-modes nil)
 
 
   ;; Don't show hidden files by default in neotree
@@ -721,7 +735,7 @@ you should place your code here."
   (setq dotspacemacs-mode-line-unicode-symbols nil)
 
   ;; Speed boost, ibid link
-  (setq modeline-scale 1.0)
+  (setq modeline-scale 0.5)
 
   ;; time in modeline
   (setq display-time-mode 1)
@@ -775,6 +789,8 @@ you should place your code here."
   ;; (setq helm-boring-file-regexp-list )
   ;; (setq helm-ff-skip-boring-files true)
 
+  ;; Maybe prevent bug https://github.com/syl20bnr/spacemacs/issues/9563
+  ;; (require 'tramp)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -784,9 +800,10 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (powerline parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f dash diminish hydra s highlight seq spinner pkg-info epl bind-map bind-key packed helm avy helm-core async popup helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (silkworm-theme zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme espresso-theme dracula-theme django-theme darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor powerline parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f dash diminish hydra s highlight seq spinner pkg-info epl bind-map bind-key packed helm avy helm-core async popup helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
