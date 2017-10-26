@@ -401,11 +401,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (evil-define-key 'normal cider-repl-mode-map
     (kbd "<up>") 'cider-repl-previous-input)
 
-  (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
-  (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
-
   (evil-define-key 'normal cider-repl-mode-map
     (kbd "<down>") 'cider-repl-next-input)
+  (evil-define-key 'normal cider-repl-mode-map
+    (kbd (left-mod "n")) 'cider-repl-next-input)
+
+  (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
+  (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
 
   (global-set-key (kbd (right-mod ".")) 'completion-at-point)
   (global-set-key (kbd (right-mod "c")) 'evil-yank)
@@ -454,6 +456,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "SPC r p") 'evil-paste-from-register)
   (define-key evil-normal-state-map (kbd "SPC g c") 'vc-resolve-conflicts)
   (define-key evil-normal-state-map (kbd "SPC f m") 'toggle-frame-maximized)
+
+  ;; ctrl-g is redundant with <esc> by default -- use it to trigger git
+  (global-set-key (kbd (right-mod "g")) 'magit-status)
 
   ;;;;;;;; Mode-specific key bindings ;;;;;;;
 
