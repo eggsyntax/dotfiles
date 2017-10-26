@@ -283,6 +283,8 @@ alias dat-console="cd ~/datomic* &&  bin/console -p 9000 dev datomic:dev://local
 # (must run from cmd line to see python (& other) logs)
 alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 
+# export DISPLAY for ssh
+# export DISPLAY=:0.0
 
 # fuzzy finder -- I haven't actually liked it that much.
 # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -295,6 +297,9 @@ alias whereami='echo `uname -n` "(" `uname` ")"'
 alias sub='sed -i --'
 
 ######### Mac-specific ########
+
+"How to alter system-wide $PATH for non-interactive, non-login bash shells invoked via sshd?"
+# see http://lists.apple.com/archives/macos-x-server/2008/Jun/msg00251.html
 
 function mac-bashrc {
 
@@ -317,12 +322,6 @@ function mac-bashrc {
     alias hiddenno='defaults write com.apple.finder AppleShowAllFiles -bool false; killall Finder /System/Library/CoreServices/Finder.app'
 
     # Support gnu highlighting. Must install it:
-    # brew install source-highlight
-    # See http://superuser.com/questions/71588/how-to-syntax-highlight-via-less
-    # To add clojure support: https://gist.github.com/zamaterian/1472076
-    export LESSOPEN="| /usr/local/bin/src-hilite-lesspipe.sh %s"
-
-    # Start docker terminal
     alias dockerterm=". '/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/start.sh'"
 
     # Make tkdiff available ( http://www.gitguys.com/topics/merging-with-a-gui/ )
@@ -403,14 +402,15 @@ function linux-bashrc {
     fi
 
     alias v='vim'
-    alias topp='top -o %CPU'
 
     # Open a file in a new emacs window (server must be running)
     # Called in subshell to silence job control, and send to /dev/null to
-    #    silence the 'Waiting for Emacs...' output. Fall back to macvim if
+    #    silence the 'Waiting for Emacs...' output. Fall back to vim if
     #    server is not running.
     # (alternate approach: start the server, sleep a few secs, then run)
     function em {
+        # TODO temp: don't send to /dev/null until I know things are working well
+        # ( /usr/bin/emacsclient -c -a /usr/bin/vim -n "$@" >/dev/null & )
         ( /usr/bin/emacsclient -c -a /usr/bin/vim -n "$@" >/dev/null & )
     }
 
@@ -429,8 +429,9 @@ function linux-bashrc {
 
     # Set ctrl keys to produce parens:
     # Only ever want one xcape running at a time:
-    killall xcape || true # the || true is to capture the error if none are running.
-    xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+    # MOVED to /etc/rc.local
+    # killall xcape || true # the || true is to capture the error if none are running.
+    # xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
 
     export EDITOR='vim'
     export VISUAL='vim'
@@ -442,7 +443,8 @@ function linux-bashrc {
     # Color etc -- copypasted from web, not really vetted.
     # More info at https://ubuntuforums.org/showthread.php?t=41538
     export TERM=xterm-color
-    export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
+    # GREP_OPTIONS is deprecated
+    # export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
     export CLICOLOR=1
     export LSCOLORS=ExFxCxDxBxegedabagacad
     if [ "$TERM" != "dumb" ]; then
@@ -456,6 +458,12 @@ function linux-bashrc {
     fi
 
     export LESSOPEN='|~/.lessfilter %s'
+
+    # Use bash-completion, if available
+    [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
+        . /usr/share/bash-completion/bash_completion
+
+    alias top=htop
 }
 
 
