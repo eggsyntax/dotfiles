@@ -548,6 +548,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC m t n") 'cider-test-run-ns-tests)
     (define-key evil-normal-state-map (kbd ", t n") 'cider-test-run-ns-tests)
     (define-key evil-normal-state-map (kbd "SPC h c") 'clojure-cheatsheet)
+    ;; TODO what I want is the next one, but I have to figure out how to get it
+    ;; to load in the current buffer, not some arbitrary one.
+    ;; (define-key evil-normal-state-map (kbd "SPC b c") 'cider-switch-to-repl-buffer)
     (define-key evil-normal-state-map (kbd "SPC b c") 'jump-to-clj-repl)
     (define-key evil-normal-state-map (kbd "SPC b C") 'jump-to-cljs-repl)
     (define-key evil-normal-state-map (kbd "SPC b S") 'jump-to-nrepl-server)
@@ -619,6 +622,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     )
 )
 
+;; TODO create key binding to toggle boolean
 ;; Jump target MAIN
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -629,18 +633,18 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (require 'helm-bookmark)
 
+  ;; Defining inside user-config so that evil is already loaded
+  (evil-define-command maclike-paste (count &optional register)
+    (interactive "P<x>")
+    (evil-paste-before count register)
+    (forward-char))
+
   ;; Set all my key bindings:
   (set-egg-key-bindings)
 
   ;; auto-revert buffers when they're changed on filesystem
   ;; only works sometimes, unfortunately :/
   (global-auto-revert-mode 1)
-
-  ;; Defining inside user-config so that evil is already loaded
-  (evil-define-command maclike-paste (count &optional register)
-    (interactive "P<x>")
-    (evil-paste-before count register)
-    (forward-char))
 
   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
 
@@ -703,7 +707,8 @@ you should place your code here."
 
   ;; Use aggressive indent
   ;; https://github.com/Malabarba/aggressive-indent-mode
-  ;; (global-aggressive-indent-mode 1)
+  (global-aggressive-indent-mode -1)
+  ;; (aggressive-indent-mode nil)
   ;; Supposed alternate to only use in lisp modes (although I've had trouble with it)
   ;; (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
 
@@ -800,6 +805,10 @@ you should place your code here."
 
   ;; Maybe prevent bug https://github.com/syl20bnr/spacemacs/issues/9563
   ;; (require 'tramp)
+
+  ;; t: auto-save; prompt: ask every time; nil: don't save
+  (setq cider-save-file-on-load nil)
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
