@@ -1,0 +1,33 @@
+[user]
+	email = egg@novonon.com
+	name = Egg Syntax
+[credential]
+	helper = cache --timeout 36000000
+[color]
+	diff = auto
+	status = auto
+	branch = auto
+	ui = true
+[core]
+	excludesfile = ~/.gitignore_global
+	editor = /usr/bin/vim
+	ignorecase = true
+[push]
+	default = simple
+[alias]
+	allfiles = ls-tree -r master --name-only
+	unstage = reset HEAD --
+	g = grep --heading --line-number --break
+	diffstat=diff --stat -r
+
+    # Pretty graphs
+    lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(blue)%s%C(reset) %C(bold blue)- %an%C(reset)%C(bold cyan)%d%C(reset)' --all
+    lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold blue)%d%C(reset)%n''          %C(blue)%s%C(reset) %C(bold blue)- %an%C(reset)' --all
+    graph = !"git lg1"
+
+    # Sometimes you want to REALLY ignore whitespace
+    diffchar = diff --word-diff-regex=[^[:space:]]
+
+[grep]
+	extendRegexp = true
+	lineNumber = true
