@@ -284,7 +284,15 @@ alias dat-console="cd ~/datomic* &&  bin/console -p 9000 dev datomic:dev://local
 alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# fuzzy finder -- I haven't actually liked it that much.
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# what computer am I using?
+alias whereami='echo `uname -n` "(" `uname` ")"'
+
+# NOTE! sub works on mac, but only after running `brew install gnu-sed --with-default-names`
+
+alias sub='sed -i --'
 
 ######### Mac-specific ########
 
