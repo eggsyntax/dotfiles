@@ -5,14 +5,15 @@
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 *** Additional Drivers -- autosearch
-* sudo apt install: vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygments
+* sudo apt install: vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygmentsi, openssh-server, php-memcached memcached
+** tkinter for python (for /usr/bin/player): sudo apt install python-tk
 ** Windows emulation (maybe):
-*** wine, winetricks, playonlinux
+*** wine, winetricks, playonlinu
 * Vim setup:
-** vim: pathogen - mkdir -p ~/.vim/autoload ~/.vim/bundle && \
-curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+** vim: pathogen -
+*** mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 ** mkdir -p ~/tmp/vim_backup
-** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.gi
+** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
 * Download & install:
 ** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
 ** LastPass
@@ -47,6 +48,7 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
+** BackInTime - rsync-based backup util that will back up over ssh
 * Customization tweaks:
 * NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
@@ -55,6 +57,8 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** Openbox -- super minimal, elegant
 **** With tint2
 **** See https://www.youtube.com/watch?v=hWmikVpbrtY
+*** Pantheon (from Elementary OS)
+**** Installing: https://www.linuxhelp.com/how-to-install-pantheon-desktop-in-ubuntu/
 ** Icons:
 *** Numix
 **** sudo add-apt-repository ppa:numix/ppa
@@ -71,6 +75,9 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
+** Other:
+*** X11-forwarding setup
+**** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
 * Keyboard layout:
 ** Final solution for the P51:
 *** 1. Do some switching in tweak-tool/typing:
@@ -84,9 +91,12 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
       <RCTL> = 108;
       <RALT> = 105;
       & now we have overridden keycodes at low level.
-*** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
-**** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
-**** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+*** 3. And then to set left & rt control to l & r parens:
+****  Copy dotfiles/linux-etc-rc.local to /etc/rc.local (so that it runs once on startup)
+**** Previous version, in .bashrc (which is bad because it runs on every new terminal window etc)):
+***** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
+****** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
+****** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
 *** 4. Everything below this is showing my work; only the above is necessary (for the P51).
 ** P51: right-alt is 108, right-ctrl is 105.
 ** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
@@ -157,13 +167,20 @@ curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 *** Under caps-lock I can switch caps & esc
 *** Under ctrl-key-position I can switch ctrl and cmd
 ** Under fonts: can scale fonts
-
+* Terminal:
+** Favorites so far:
+*** Default Gnome terminal
+*** Pantheon terminal
+**** Installation: https://askubuntu.com/a/631201/325838
+**** gsettings set org.pantheon.terminal.settings tab-bar-behavior "Hide When Single Tab"
+**** Ctrl-c copies if text is selected; otherwise sends interrupt as usual. Ctrl-v pastes.
+**** Decent search
 * TODO
 ** DONE Commit new dotfiles repo
    CLOSED: [2017-09-03 Sun 12:35]
 ** DONE Change aliases in homedir to point to dotfiles repo
    CLOSED: [2017-09-03 Sun 12:36]
-** TODO Change files on imac to be aliases to dotfiles repo
+** DONE Change files on imac to be aliases to dotfiles repo
 ** TODO Remove actual dotfiles from old homedir report-emacs-bug-address
 ** TODO Backups:
 *** backups app lets you back up home folder w/ (nearly) all settings

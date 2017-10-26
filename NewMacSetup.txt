@@ -150,10 +150,16 @@ vim:
 Sharing:
 	 Turn on remote login
 
+X11 Forwarding setup:
+   https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
+   From mac client to linux server, must do `ssh -Y hostname`, NOT `ssh -X`!
+
 Patch iTunes:
      https://github.com/thebitguru/play-button-itunes-patch
 
 Miscellaneous Software
+   gnu versions of CLI tools - see
+     https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
 	 SocialSafe
 	 Tor browser
 	 Cog
