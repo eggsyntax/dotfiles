@@ -17,15 +17,19 @@
                     ;; [cider/cider-nrepl "0.12.0"]
                     ;; [refactor-nrepl "2.2.0"]
                     ;; [refactor-nrepl "2.0.0-SNAPSHOT"]
+                    ;; Me:
+                    [reconstructorepl "0.1.0-SNAPSHOT"]
                     ]
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
+                        [datawalk "0.1.3-SNAPSHOT"]
                         ;; [cljfmt "0.1.10"]
 
                         ;; Experiment with Sayid
                         [com.billpiel/sayid "0.0.14"]
 
                         [clj-stacktrace "0.2.8"]
+                        [pjstadig/humane-test-output "0.8.3"]
                         [john2x/repload "0.0.3"] ; https://github.com/john2x/repload
                         ;; [im.chit/vinyasa "0.4.7"] ; https://github.com/zcaudate/vinyasa
                         [im.chit/lucid.core.inject "1.3.6"] ; formerly vinyasa. http://docs.caudate.me/lucidity/lucid-core.html#core-inject
