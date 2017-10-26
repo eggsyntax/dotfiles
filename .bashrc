@@ -7,9 +7,11 @@
 alias l="ls -G "
 alias ltr="ls -ltr "
 alias dir="ls -lG "
+alias grep='grep --color=auto'
 
 alias tf='less +F' # better than tail -f
 alias serve='python -m SimpleHTTPServer' # Must be followed by a port of your choice.
+
 # Quick alias to edit then source .bashrc
 function rc {
     vi ~/.bashrc
