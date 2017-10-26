@@ -176,8 +176,7 @@ values."
    ;;                             :weight normal
    ;;                             :width condensed)
    ;; Hack is nicer, but Fira Mono is supposedly faster
-   dotspacemacs-default-font
-   (if (string-equal system-type "darwin")
+   dotspacemacs-default-font (if (string-equal system-type "darwin")
        '("Fira Mono"
          :size 10
          :weight normal
@@ -352,7 +351,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-)
+  )
 
 ;; TARGET: bindings
 (defun set-egg-key-bindings ()
