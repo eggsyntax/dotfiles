@@ -329,6 +329,9 @@ function mac-bashrc {
     # Add git path
     PATH="/usr/local/git/bin:${PATH}"
 
+    # Add GNU coreutils precedence over mac versions:
+    PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
     export PATH
 
     # keychain -- make a single ssh-agent per login session (& inherit mac keychain keys)
