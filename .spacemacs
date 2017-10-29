@@ -47,6 +47,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     html
      markdown
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -79,7 +80,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(flatui-theme apropospriate-theme alect-themes ample-theme dracula-theme zenburn-theme flatland-theme)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -151,12 +152,16 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(alect-light-alt
+   dotspacemacs-themes '(solarized-light
+                         flatui
+                         apropospriate-light
+                         leuven
+                         alect-light-alt
                          ample-light
                          spacemacs-light
                          spacemacs-dark
                          solarized-dark
-                         solarized-light)
+                         )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -171,8 +176,7 @@ values."
    ;;                             :weight normal
    ;;                             :width condensed)
    ;; Hack is nicer, but Fira Mono is supposedly faster
-   dotspacemacs-default-font
-   (if (string-equal system-type "darwin")
+   dotspacemacs-default-font (if (string-equal system-type "darwin")
        '("Fira Mono"
          :size 10
          :weight normal
@@ -347,7 +351,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-)
+  )
 
 ;; TARGET: bindings
 (defun set-egg-key-bindings ()
@@ -397,11 +401,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (evil-define-key 'normal cider-repl-mode-map
     (kbd "<up>") 'cider-repl-previous-input)
 
-  (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
-  (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
-
   (evil-define-key 'normal cider-repl-mode-map
     (kbd "<down>") 'cider-repl-next-input)
+  (evil-define-key 'normal cider-repl-mode-map
+    (kbd (left-mod "n")) 'cider-repl-next-input)
+
+  (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
+  (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
 
   (global-set-key (kbd (right-mod ".")) 'completion-at-point)
   (global-set-key (kbd (right-mod "c")) 'evil-yank)
@@ -450,6 +456,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "SPC r p") 'evil-paste-from-register)
   (define-key evil-normal-state-map (kbd "SPC g c") 'vc-resolve-conflicts)
   (define-key evil-normal-state-map (kbd "SPC f m") 'toggle-frame-maximized)
+
+  ;; ctrl-g is redundant with <esc> by default -- use it to trigger git
+  (global-set-key (kbd (right-mod "g")) 'magit-status)
 
   ;;;;;;;; Mode-specific key bindings ;;;;;;;
 
@@ -539,6 +548,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC m t n") 'cider-test-run-ns-tests)
     (define-key evil-normal-state-map (kbd ", t n") 'cider-test-run-ns-tests)
     (define-key evil-normal-state-map (kbd "SPC h c") 'clojure-cheatsheet)
+    ;; TODO what I want is the next one, but I have to figure out how to get it
+    ;; to load in the current buffer, not some arbitrary one.
+    ;; (define-key evil-normal-state-map (kbd "SPC b c") 'cider-switch-to-repl-buffer)
     (define-key evil-normal-state-map (kbd "SPC b c") 'jump-to-clj-repl)
     (define-key evil-normal-state-map (kbd "SPC b C") 'jump-to-cljs-repl)
     (define-key evil-normal-state-map (kbd "SPC b S") 'jump-to-nrepl-server)
@@ -610,6 +622,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     )
 )
 
+;; TODO create key binding to toggle boolean
 ;; Jump target MAIN
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -620,18 +633,18 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (require 'helm-bookmark)
 
+  ;; Defining inside user-config so that evil is already loaded
+  (evil-define-command maclike-paste (count &optional register)
+    (interactive "P<x>")
+    (evil-paste-before count register)
+    (forward-char))
+
   ;; Set all my key bindings:
   (set-egg-key-bindings)
 
   ;; auto-revert buffers when they're changed on filesystem
   ;; only works sometimes, unfortunately :/
   (global-auto-revert-mode 1)
-
-  ;; Defining inside user-config so that evil is already loaded
-  (evil-define-command maclike-paste (count &optional register)
-    (interactive "P<x>")
-    (evil-paste-before count register)
-    (forward-char))
 
   (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
 
@@ -694,7 +707,8 @@ you should place your code here."
 
   ;; Use aggressive indent
   ;; https://github.com/Malabarba/aggressive-indent-mode
-  ;; (global-aggressive-indent-mode 1)
+  (global-aggressive-indent-mode -1)
+  ;; (aggressive-indent-mode nil)
   ;; Supposed alternate to only use in lisp modes (although I've had trouble with it)
   ;; (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
 
@@ -791,6 +805,10 @@ you should place your code here."
 
   ;; Maybe prevent bug https://github.com/syl20bnr/spacemacs/issues/9563
   ;; (require 'tramp)
+
+  ;; t: auto-save; prompt: ask every time; nil: don't save
+  (setq cider-save-file-on-load nil)
+
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

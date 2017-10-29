@@ -1,35 +1,19 @@
 [user]
-	name = Egg Syntax
 	email = egg@novonon.com
+	name = Egg Syntax
+[credential]
+	helper = cache --timeout 36000000
 [color]
 	diff = auto
 	status = auto
 	branch = auto
 	ui = true
-[credential]
-	helper = osxkeychain
 [core]
-	excludesfile = /Users/egg/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	editor = /usr/bin/vim
 	ignorecase = true
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
-
-[merge]
-	tool = diffmerge
-
-[mergetool "splice"]
-    cmd = "mvim -f $BASE $LOCAL $REMOTE $MERGED -c 'SpliceInit'"
-    trustExitCode = true
-
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-
 [push]
 	default = simple
-
 [alias]
 	allfiles = ls-tree -r master --name-only
 	unstage = reset HEAD --
@@ -47,14 +31,3 @@
 [grep]
 	extendRegexp = true
 	lineNumber = true
-[filter "media"]
-	clean = git media clean %f
-	smudge = git media smudge %f
-	required = true
-[diff]
-	tool = diffmerge
-[difftool "diffmerge"]
-	cmd = /usr/bin/diffmerge \"$LOCAL\" \"$REMOTE\"
-[mergetool "diffmerge"]
-	trustExitCode = true
-	cmd = /usr/bin/diffmerge --merge --result=\"$MERGED\" \"$LOCAL\" \"$BASE\" \"$REMOTE\"
