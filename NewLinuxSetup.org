@@ -1,3 +1,6 @@
+* TODO new setup:
+** redshift setup
+
 * Preferences: dvorak
 * TODO Enable repos:
 ** sudo -i software-properties-gtk
@@ -5,7 +8,9 @@
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 *** Additional Drivers -- autosearch
-* sudo apt install: vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygmentsi, openssh-server, php-memcached memcached
+* sudo apt install:
+** vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached memcached, xcape
+** tmux, htop, make, chrome-gnome-shell,
 ** tkinter for python (for /usr/bin/player): sudo apt install python-tk
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
@@ -48,36 +53,51 @@
 *** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
-** BackInTime - rsync-based backup util that will back up over ssh
+** NO: BackInTime - rsync-based backup util that will back up over ssh
+** Virtualbox -- potential problems -- see linux-on-p51.org
+** Aptik to auto-reinstall apps & ppas after upgrade:
+*** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
+*** sudo apt-add-repository ppa:teejee2008/ppa
+*** sudo apt update
+*** sudo apt install aptik
+
 * Customization tweaks:
-* NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
-** Fonts:
-*** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
-** Window managers:
-*** Openbox -- super minimal, elegant
-**** With tint2
-**** See https://www.youtube.com/watch?v=hWmikVpbrtY
-*** Pantheon (from Elementary OS)
-**** Installing: https://www.linuxhelp.com/how-to-install-pantheon-desktop-in-ubuntu/
-** Icons:
-*** Numix
-**** sudo add-apt-repository ppa:numix/ppa
-**** sudo apt update && sudo apt install numix-icon-theme-circle
-**** sudo apt-get update
-**** sudo apt-get install numix-icon-theme-circle
-**** sudo apt-get install numix-icon-theme-square
-*** Papirus
-**** sudo add-apt-repository ppa:papirus/papirus
-**** sudo apt update && sudo apt install papirus-icon-theme
-** Theme:
-*** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
-** (Gnome) extensions::
-*** Show indicators on top bar, not just that little bottom tray.
-**** https://extensions.gnome.org/extension/615/appindicator-support/
-**** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-** Other:
-*** X11-forwarding setup
-**** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
+** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
+*** Fonts:
+**** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
+**** Hack: https://sourcefoundry.org/hack/
+*** Window managers:
+**** Openbox -- super minimal, elegant
+***** With tint2
+***** See https://www.youtube.com/watch?v=hWmikVpbrtY
+**** Pantheon (from Elementary OS)
+***** Installing: https://www.linuxhelp.com/how-to-install-pantheon-desktop-in-ubuntu/
+*** Icons:
+**** Numix
+***** sudo add-apt-repository ppa:numix/ppa
+***** sudo apt update
+***** sudo apt-get update
+***** sudo apt-get install numix-icon-theme-circle
+***** sudo apt-get install numix-icon-theme-square
+**** Papirus
+***** sudo add-apt-repository ppa:papirus/papirus
+***** sudo apt update && sudo apt install papirus-icon-theme
+*** Theme:
+**** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
+*** (Gnome) extensions::
+**** Show indicators on top bar, not just that little bottom tray.
+***** https://extensions.gnome.org/extension/615/appindicator-support/
+***** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
+**** gnome-sushi -- preview from file browser with space bar
+*** Other:
+**** X11-forwarding setup
+***** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
+*** Nautilus (file manager):
+**** Remove some of the default Nautilus bookmarks:
+***** vim ~/.config/user-dirs.dirs
+***** sudo vim /etc/xdg/user-dirs.defaults
+***** via http://www.arj.no/2017/01/03/nautilus-bookmarks/
+
 * Keyboard layout:
 ** Final solution for the P51:
 *** 1. Do some switching in tweak-tool/typing:
@@ -147,34 +167,42 @@
 **** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
 ***** xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
 **** I've seen the paren ones work, but not the caps<->escape.
-
+* Keyboard shortcuts:
+** settings/devices/keyboard:
+** Set win/space to open overview
+** Close: super-q
 * Clojure:
 ** Java:
-** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
-      sudo apt-get install python-software-properties
-      sudo add-apt-repository ppa:webupd8team/java
-      sudo apt-get update
-** install:
-      sudo apt-get install oracle-java8-installer
-      oracle-java8-installer
-** Discussion of the above at
-*** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
+*** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
+       sudo apt-get install python-software-properties
+       sudo add-apt-repository ppa:webupd8team/java
+       sudo apt-get update
+*** install:
+       sudo apt-get install oracle-java8-installer
+       oracle-java8-installer
+*** Discussion of the above at
+**** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
 
 * Gnome-tweak-tool to change various settings
-** Under typing:
+** Under keyboard:
 *** Under caps-lock I can switch caps & esc
 *** Under ctrl-key-position I can switch ctrl and cmd
+*** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
 ** Under fonts: can scale fonts
 * Terminal:
 ** Favorites so far:
-*** Default Gnome terminal
 *** Pantheon terminal
 **** Installation: https://askubuntu.com/a/631201/325838
+***** sudo add-apt-repository ppa:elementary-os/stable
+***** Have to then tweak it to point to (xenial as of 2017) instead of most current
+***** sudo apt-get update
+***** sudo apt-get install pantheon-terminal
 **** gsettings set org.pantheon.terminal.settings tab-bar-behavior "Hide When Single Tab"
 **** Ctrl-c copies if text is selected; otherwise sends interrupt as usual. Ctrl-v pastes.
 **** Decent search
+*** Default Gnome terminal
 * TODO
 ** DONE Commit new dotfiles repo
    CLOSED: [2017-09-03 Sun 12:35]
