@@ -69,6 +69,7 @@ values."
      git
      ;; markdown
      ;; org
+     ;; TODO newest .spacemacs-template has an explicit neotree layer -- do I need it?
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
@@ -152,15 +153,16 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(solarized-light
-                         flatui
+   dotspacemacs-themes '(zenburn
+                         solarized-light
                          apropospriate-light
-                         leuven
+                         ;; leuven
                          alect-light-alt
                          ample-light
                          spacemacs-light
                          spacemacs-dark
                          solarized-dark
+                         flatui
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -192,7 +194,7 @@ values."
    ;; (default "SPC")
    dotspacemacs-emacs-command-key "SPC"
    ;; The key used for Vim Ex commands (default ":")
-   dotspacemacs-command-key ";"
+   dotspacemacs-command-key ";" ; No longer used in newest?
    dotspacemacs-ex-command-key ";"
    ;; The leader key accessible in `emacs state' and `insert state'
    ;; (default "M-m")
@@ -264,7 +266,13 @@ values."
    ;; right; if there is insufficient space it displays it at the bottom.
    ;; (default 'bottom)
    dotspacemacs-which-key-position 'bottom
-   ;; If non nil a progress bar is displayed when spacemacs is loading. This
+   ;; Control where `switch-to-buffer' displays the buffer. If nil,
+   ;; `switch-to-buffer' displays the buffer in the current window even if
+   ;; another same-purpose window is available. If non-nil, `switch-to-buffer'
+   ;; displays the buffer in a same-purpose window even if the buffer can be
+   ;; displayed in the current window. (default nil)
+   dotspacemacs-switch-to-buffer-prefers-purpose nil
+   ;; If non-nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
    ;; nil to boost the loading time. (default t)
    dotspacemacs-loading-progress-bar t
@@ -328,21 +336,48 @@ values."
    ;; (default nil)
    dotspacemacs-persistent-server nil
    ;; List of search tool executable names. Spacemacs uses the first installed
-   ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
-   ;; (default '("ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("ag" "pt" "ack" "grep")
+   ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
+   ;; (default '("rg" "ag" "pt" "ack" "grep"))
+   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
    ;; The default package repository used if no explicit repository has been
    ;; specified with an installed package.
    ;; Not used for now. (default nil)
    dotspacemacs-default-package-repository nil
+   ;; Format specification for setting the frame title.
+   ;; %a - the `abbreviated-file-name', or `buffer-name'
+   ;; %t - `projectile-project-name'
+   ;; %I - `invocation-name'
+   ;; %S - `system-name'
+   ;; %U - contents of $USER
+   ;; %b - buffer name
+   ;; %f - visited file name
+   ;; %F - frame name
+   ;; %s - process status
+   ;; %p - percent of buffer above top of window, or Top, Bot or All
+   ;; %P - percent of buffer above bottom of window, perhaps plus Top, or Bot or All
+   ;; %m - mode name
+   ;; %n - Narrow if appropriate
+   ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
+   ;; %Z - like %z, but including the end-of-line format
+   ;; (default "%I@%S")
+   dotspacemacs-frame-title-format "%I@%S"
+   ;; Format specification for setting the icon title format
+   ;; (default nil - same as frame-title-format)
+   dotspacemacs-icon-title-format nil
    ;; Delete whitespace while saving buffer. Possible values are `all'
    ;; to aggressively delete empty line and long sequences of whitespace,
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-  )
-)
+   ;; Either nil or a number of seconds. If non-nil zone out after the specified
+   ;; number of seconds. (default nil)
+   dotspacemacs-zone-out-when-idle nil
+   ;; Run `spacemacs/prettify-org-buffer' when
+   ;; visiting README.org files of Spacemacs.
+   ;; (default nil)
+   dotspacemacs-pretty-docs nil
+   ))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -352,6 +387,29 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   )
+
+;; clj-find-var courtesy of @ag on Clojurians
+(defun clj-find-var ()
+  "Attempts to jump-to-definition of the symbol-at-point. If CIDER fails, or not available, falls back to dumb-jump"
+  (interactive)
+  (let ((var (cider-symbol-at-point)))
+    (if (and (cider-connected-p) (cider-var-info var))
+        (unless (eq 'symbol (type-of (cider-find-var nil var)))
+          (dumb-jump-go))
+      (dumb-jump-go))))
+
+(with-eval-after-load 'clojure-mode
+  (add-hook 'clojure-mode-hook #'spacemacs//init-jump-handlers-clojure-mode)
+  (add-hook 'clojurescript-mode-hook #'spacemacs//init-jump-handlers-clojurescript-mode)
+  (add-hook 'clojurec-mode-hook #'spacemacs//init-jump-handlers-clojurec-mode)
+  (add-hook 'cider-repl-mode-hook #'spacemacs//init-jump-handlers-cider-repl-mode)
+
+  (dolist (x '(spacemacs-jump-handlers-clojure-mode
+               spacemacs-jump-handlers-clojurec-mode
+               spacemacs-jump-handlers-clojurescript-mode
+               spacemacs-jump-handlers-clojurex-mode
+               spacemacs-jump-handlers-cider-repl-mode))
+    (set x '(clj-find-var))))
 
 ;; TARGET: bindings
 (defun set-egg-key-bindings ()
@@ -422,6 +480,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd (right-mod "s")) 'save-buffer)
   ;; (global-set-key (kbd (right-mod "n")) 'lunaryorn-new-buffer-frame)
   (global-set-key (kbd (right-mod "n")) 'new-frame)
+  (define-key evil-normal-state-map (kbd "SPC f n") 'new-frame)
   (global-set-key (kbd (right-mod "w")) 'delete-frame)
   (define-key evil-normal-state-map (kbd "SPC f d") 'delete-frame)
   (global-set-key (kbd (right-mod "`")) 'ns-next-frame)
@@ -435,8 +494,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd (right-mod "z")) 'undo-tree-undo)
   (global-set-key (kbd (right-mod "Z")) 'undo-tree-redo)
 
-  (define-key evil-normal-state-map (kbd ":")
-    'evil-search-highlight-persist-remove-all)
+  (define-key evil-normal-state-map (kbd ":") 'spacemacs/evil-search-clear-highlight)
   ;; U ("union") joins line to the PRECEDING line
   (define-key evil-normal-state-map (kbd "U") "kJ")
   ;; ;; bind E to end of _previous_ word
@@ -458,7 +516,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "SPC f m") 'toggle-frame-maximized)
 
   ;; ctrl-g is redundant with <esc> by default -- use it to trigger git
-  (global-set-key (kbd (right-mod "g")) 'magit-status)
+  (global-set-key (kbd (left-mod "g")) 'magit-status)
 
   ;;;;;;;; Mode-specific key bindings ;;;;;;;
 
@@ -576,6 +634,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
     (dolist (c (string-to-list ":_-?!#*"))
       (modify-syntax-entry c "w" clojure-mode-syntax-table ))
+
+    ;; Use @ag's clj-find-var
+    (define-key evil-normal-state-map (kbd "g c") 'clj-find-var)
+    (define-key evil-normal-state-map (kbd "g d") 'clj-find-var)
+
     )
 
   ;;;;;;;;; clojure function-key bindings (hyper) ;;;;;;
@@ -622,6 +685,14 @@ before packages are loaded. If you are unsure, you should try in setting them in
     )
 )
 
+;; TODO attempting to trace the inner workings of aggressive-indent--proccess-changed-list-and-indent
+;; in order to help address aggressive-indent problem on save. See
+;; https://github.com/Malabarba/aggressive-indent-mode/issues/105#issuecomment-335991712
+(defun agg-debug ()
+  (interactive)
+  (toggle-debug-on-error)
+  (trace-function 'aggressive-indent--proccess-changed-list-and-indent))
+
 ;; TODO create key binding to toggle boolean
 ;; Jump target MAIN
 (defun dotspacemacs/user-config ()
@@ -632,6 +703,9 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (require 'helm-bookmark)
+
+  ;; TODO temp, see above
+  ;; (agg-debug)
 
   ;; Defining inside user-config so that evil is already loaded
   (evil-define-command maclike-paste (count &optional register)
@@ -708,6 +782,8 @@ you should place your code here."
   ;; Use aggressive indent
   ;; https://github.com/Malabarba/aggressive-indent-mode
   (global-aggressive-indent-mode -1)
+  ;; (global-aggressive-indent-mode 1)
+  ;; (aggressive-indent-mode 1)
   ;; (aggressive-indent-mode nil)
   ;; Supposed alternate to only use in lisp modes (although I've had trouble with it)
   ;; (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
@@ -780,15 +856,11 @@ you should place your code here."
   ;;     (kbd  "{") 'evil-backward-paragraph)
   ;;   )
 
-  ;; (setq parinfer-extensions
-  ;;       '(defaults       ; should be included.
-  ;;          pretty-parens  ; different paren styles for different modes.
-  ;;          evil           ; If you use Evil.
-  ;;          ;; lispy          ; If you use Lispy. With this extension, you should install Lispy and do not enable lispy-mode directly.
-  ;;          paredit        ; Introduce some paredit commands.
-  ;;          ;; smart-tab      ; C-b & C-f jump positions and smart shift with tab & S-tab.
-  ;;          smart-yank))   ; Yank behavior depend on mode.
-  ;; (add-hook 'clojure-mode-hook #'parinfer-mode)
+  ;; (setq parinfer-extensions '(defaults
+  ;;                              pretty-parens
+  ;;                              smart-yank
+  ;;                              smart-tab
+  ;;                              evil))
 
   ;; TODO an experiment
   (setq nrepl-log-messages t)
@@ -809,19 +881,63 @@ you should place your code here."
   ;; t: auto-save; prompt: ask every time; nil: don't save
   (setq cider-save-file-on-load nil)
 
+  (setq-default vc-follow-symlinks t)
+
+  (setq-default undo-tree-auto-save-history t)
+  (setq-default undo-tree-history-directory-alist '(("." . "~/tmp/.undo-tree/")))
+
+  ;; Ensure any of my own libs are loaded first:
+  (add-to-list 'load-path "~/.emacs.d/lisp/")
+  (load-file "~/.emacs.d/lisp/clj-refactor.el")
+
+  ;; No need, typically, to save history of *messages* buffer or minibuffer,
+  ;; and it has a perf cost (per @ag):
+  (savehist-mode -1)
+
+  ;; Where org-agenda files live
+  (setq org-agenda-files '("~/Dropbox/OrgNotes/org-agenda.org" "/home/egg/Dropbox/OrgNotes/"))
+
+  ;; Always use soft wrap by default
+  (setq-default visual-line-mode t)
+
+  ;; org-mode: t = toggle todo state -- have to set at very end
+  ;; (define-key org-bullets-bullet-map (kbd "t") 'org-todo)
+  ;; TODO grargh this isn't working, I think I have the wrong map, maybe? Grr
+  ;; This next one works, *sometimes*. But defines the key in insert mode also,
+  ;;    so you can't type a letter `t` in an org-mode buffer.
+  ;; (define-key org-mode-map (kbd "t") 'org-todo)
+  (evil-define-key normal 'org-mode-map
+      (kbd  "t") 'org-todo)
+
   )
 
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
+;; ;; Do not write anything past this comment. This is where Emacs will
+;; ;; auto-generate custom variable definitions.
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(evil-want-Y-yank-to-eol nil)
+;;  '(package-selected-packages
+;;    (quote
+;;     (web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data silkworm-theme zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme espresso-theme dracula-theme django-theme darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor powerline parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f dash diminish hydra s highlight seq spinner pkg-info epl bind-map bind-key packed helm avy helm-core async popup helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+;;  '(safe-local-variable-values
+;;    (quote
+;;     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
+;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
+;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
+
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(evil-want-Y-yank-to-eol nil)
- '(package-selected-packages
-   (quote
-    (silkworm-theme zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme espresso-theme dracula-theme django-theme darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor powerline parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f dash diminish hydra s highlight seq spinner pkg-info epl bind-map bind-key packed helm avy helm-core async popup helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
@@ -833,3 +949,4 @@ you should place your code here."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+)
