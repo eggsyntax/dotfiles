@@ -1,5 +1,5 @@
 # Executed by all non-interactive shells
-# (This is mac-specific; see http://lists.apple.com/archives/macos-x-server/2008/Jun/msg00251.html )
+# For mac: see http://lists.apple.com/archives/macos-x-server/2008/Jun/msg00251.html
 # My .bash_profile just sources this.
 
 # Don't forget that https://github.com/koalaman/shellcheck is a thing!
@@ -61,6 +61,13 @@ function vol {
 # Start the Emacs GUI App, aka Emacs.app (installed by homebrew spacemacs)
 alias spacemacs='emacs &'
 
+# Send a custom process-interrupt to each spacemacs instance -- it'll interrupt
+# whatever's freezing it, and cause it to drop to the debugger.
+function sminterrupt {
+    local processes=`ps aux | grep emacs | grep -v grep | grep -v gpg-agent | awk ' {print $2} '`
+    kill -USR2 $processes
+ }
+
 # Map ctrl-x/c/v to work as system clipboard cut/copy/paste
 #nnoremap <C-x> "*d
 #nnoremap <C-c> "*y
@@ -86,7 +93,7 @@ alias ggn='git --no-pager grep'
 # Show files changed in each commit:
 alias changes='git log --pretty=oneline --abbrev-commit --graph --stat'
 alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads"
-alias todos='gg -e TODO -e THINK -e FIXME'
+alias todos='gg -A 2 -e TODO -e THINK -e FIXME'
 alias todos-untracked='gg --untracked -e TODO -e THINK -e FIXME'
 alias prints-untracked='gg --untracked -e println'
 # alias todos-by-person='git ls-tree -r -z --name-only HEAD -- */* | xargs -0 -n1 git blame -f | grep -e TODO -e THINK' -e FIXME
@@ -296,9 +303,12 @@ alias whereami='echo `uname -n` "(" `uname` ")"'
 
 alias sub='sed -i --'
 
+# Show 1st-level subdirs by size:
+alias dirsizes='du -BM --max-depth 1 2>/dev/null | sort -n'
+
 ######### Mac-specific ########
 
-"How to alter system-wide $PATH for non-interactive, non-login bash shells invoked via sshd?"
+# "How to alter system-wide $PATH for non-interactive, non-login bash shells invoked via sshd?"
 # see http://lists.apple.com/archives/macos-x-server/2008/Jun/msg00251.html
 
 function mac-bashrc {
@@ -464,6 +474,17 @@ function linux-bashrc {
         . /usr/share/bash-completion/bash_completion
 
     alias top=htop
+
+    # tmuxinator. See https://github.com/tmuxinator/tmuxinator
+    # TODO can I move this to OS-agnostic?
+    source ~/bin/them/tmuxinator.bash
+
+    alias upgrade='sudo apt-get update && sudo apt-get dist-upgrade && sudo apt-get autoremove'
+
+    # Add path for Cask (emacs) - https://github.com/cask/cask
+    PATH="${PATH}:${HOME}/.cask/bin"
+    export PATH
+
 }
 
 

@@ -46,7 +46,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(yaml
      html
      markdown
      ;; ----------------------------------------------------------------
@@ -153,13 +153,14 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(zenburn
+   dotspacemacs-themes '(spacemacs-light
+                         zenburn
                          solarized-light
                          apropospriate-light
                          ;; leuven
                          alect-light-alt
                          ample-light
-                         spacemacs-light
+
                          spacemacs-dark
                          solarized-dark
                          flatui
@@ -411,7 +412,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
                spacemacs-jump-handlers-cider-repl-mode))
     (set x '(clj-find-var))))
 
-;; TARGET: bindings
+;; TARGET: egg-bindings
 (defun set-egg-key-bindings ()
   "All my personal keybindings and key chords"
 
@@ -514,6 +515,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "SPC r p") 'evil-paste-from-register)
   (define-key evil-normal-state-map (kbd "SPC g c") 'vc-resolve-conflicts)
   (define-key evil-normal-state-map (kbd "SPC f m") 'toggle-frame-maximized)
+  (define-key evil-normal-state-map (kbd "SPC s v") 'save-some-buffers)
 
   ;; ctrl-g is redundant with <esc> by default -- use it to trigger git
   (global-set-key (kbd (left-mod "g")) 'magit-status)
@@ -694,7 +696,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (trace-function 'aggressive-indent--proccess-changed-list-and-indent))
 
 ;; TODO create key binding to toggle boolean
-;; Jump target MAIN
+;; Jump target egg-main
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
@@ -888,7 +890,6 @@ you should place your code here."
 
   ;; Ensure any of my own libs are loaded first:
   (add-to-list 'load-path "~/.emacs.d/lisp/")
-  (load-file "~/.emacs.d/lisp/clj-refactor.el")
 
   ;; No need, typically, to save history of *messages* buffer or minibuffer,
   ;; and it has a perf cost (per @ag):
@@ -909,6 +910,36 @@ you should place your code here."
   (evil-define-key normal 'org-mode-map
       (kbd  "t") 'org-todo)
 
+  ;; create shortcuts for jumping to windows:
+  (setq winum-keymap
+        (let ((map (make-sparse-keymap)))
+          ;; (define-key map (kbd "C-`") 'winum-select-window-by-number)
+          ;; (define-key map (kbd "C-²") 'winum-select-window-by-number)
+          (define-key map (kbd "SPC 0") 'winum-select-window-0-or-10)
+          (define-key map (kbd "SPC 1") 'winum-select-window-1)
+          (define-key map (kbd "SPC 2") 'winum-select-window-2)
+          (define-key map (kbd "SPC 3") 'winum-select-window-3)
+          (define-key map (kbd "SPC 4") 'winum-select-window-4)
+          (define-key map (kbd "SPC 5") 'winum-select-window-5)
+          (define-key map (kbd "SPC 6") 'winum-select-window-6)
+          (define-key map (kbd "SPC 7") 'winum-select-window-7)
+          (define-key map (kbd "SPC 8") 'winum-select-window-8)
+          (define-key map (kbd "M-0") 'winum-select-window-0-or-10)
+          (define-key map (kbd "M-1") 'winum-select-window-1)
+          (define-key map (kbd "M-2") 'winum-select-window-2)
+          (define-key map (kbd "M-3") 'winum-select-window-3)
+          (define-key map (kbd "M-4") 'winum-select-window-4)
+          (define-key map (kbd "M-5") 'winum-select-window-5)
+          (define-key map (kbd "M-6") 'winum-select-window-6)
+          (define-key map (kbd "M-7") 'winum-select-window-7)
+          (define-key map (kbd "M-8") 'winum-select-window-8)
+          map))
+  (require 'winum)
+  (winum-mode)
+
+  (windmove-default-keybindings)
+  (setq windmove-wrap-around t)
+
   )
 
 ;; ;; Do not write anything past this comment. This is where Emacs will
@@ -928,11 +959,47 @@ you should place your code here."
 ;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
 ;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
 
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
+;; (defun dotspacemacs/emacs-custom-settings ()
+;;   "Emacs custom settings.
+;; This is an auto-generated function, do not modify its content directly, use
+;; Emacs customize menu instead.
+;; This function is called at the very end of Spacemacs initialization."
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(safe-local-variable-values
+;;    (quote
+;;     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
+;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
+;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
+;; )
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages
+;;    (quote
+;;     (powerline markdown-mode parent-mode projectile request haml-mode gitignore-mode flx magit magit-popup git-commit with-editor smartparens iedit anzu evil goto-chg undo-tree f diminish web-completion-data dash pos-tip company hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue pkg-info clojure-mode epl bind-map bind-key yasnippet packed helm avy helm-core async auto-complete popup window-numbering spacemacs-theme ido-vertical-mode quelpa package-build yaml-mode orgit zenburn-theme ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit symon string-inflection spaceline solarized-theme smeargle slim-mode scss-mode sayid sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el password-generator paradox org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav editorconfig dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+;;  '(safe-local-variable-values
+;;    (quote
+;;     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
+;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
+;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(default ((t (:foreground "#DCDCCC" :background "#3F3F3F")))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -949,4 +1016,3 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-)

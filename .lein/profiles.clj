@@ -9,10 +9,12 @@
                     ;; (& some of the rest of that page).
                     ;; [lein-exec "0.3.6"]
                     [venantius/yagni "0.1.4"]
-                    ;; [lein-ns-dep-graph "0.1.0-SNAPSHOT"]
+                    [lein-ns-dep-graph "0.2.0-SNAPSHOT"]
                     [lein-kibit "0.1.3"]
                     [jonase/eastwood "0.2.3"]
 
+                    ;; Release management:
+                    [lein-release "1.0.5"]
                     ;; Outdated Spacemacs CIDER plugins:
                     ;; [cider/cider-nrepl "0.12.0"]
                     ;; [refactor-nrepl "2.2.0"]
@@ -22,7 +24,7 @@
                     ]
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
-                        [datawalk "0.1.3-SNAPSHOT"]
+                        [datawalk "0.1.13-SNAPSHOT"]
                         ;; [cljfmt "0.1.10"]
 
                         ;; Experiment with Sayid
@@ -42,14 +44,9 @@
                         ;; [mvxcvi/puget "1.0.0"]
                         ;; [org.clojure/tools.nrepl "0.2.12"]
                         ]
-         ;; :repositories {"my.datomic.com"
-         ;;                {:url "https://my.datomic.com/repo"
-         ;;                 :username "datomic-team@t-insight.com"
-         ;;                 :password "c96e945e-56f8-4ead-a3f8-896f14350c12"}}
          :repl-options {:init (set! *print-length* 50)
                         :timeout 120000}
-         ;; injections used with lucid.core.inject to make certain code available
-         ;; in every ns
+         ;; injections used with lucid.core.inject to make certain code available in every ns
          :injections [
                       (require '[lucid.core.inject :as inject])
                       (require 'repload)
@@ -81,9 +78,12 @@
          ;;              ;; (require '[clojure.pprint :refer [pprint pp]])
          ;;              (println "Injections complete.")]
 
-         :test-refresh {:notify-command ["terminal-notifier" "-title" "lein test-refresh" "-message"]
+         ;; Mac:
+         ;; :test-refresh {:notify-command ["terminal-notifier" "-title" "lein test-refresh" "-message"]
+         ;; Linux:
+         :test-refresh {:notify-command ["sudo" "/home/egg/bin/test-refresh-notify"]
                         :quiet true
-                        :notify-on-success false}}
+                        :notify-on-success true}}
 
  ;;  :eastwood {:exclude-linters [:unlimited-use]}
  }

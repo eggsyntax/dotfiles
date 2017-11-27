@@ -1,5 +1,17 @@
 * TODO new setup:
 ** redshift setup
+** Set up deja dup again!
+** Figure out where Aptik should back up to
+** Figure out how to back up full drive
+*** Use `Unused` partition of HD to left of computer
+*** Clone vs copy? I want it to make it easy to reinstall from the clone.
+** Investigate running multiple Linux distros simultaneously
+*** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
+
+*** Containers are an option (LXC or Docker) but apparently getting GUI apps running in them is hard.
+**** https://beebom.com/how-run-multiple-distros-using-linux-containers/
+*** Doesn't solve that option, but be aware of firejail for sandboxing apps
+**** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
 
 * Preferences: dvorak
 * TODO Enable repos:
@@ -10,7 +22,7 @@
 *** Additional Drivers -- autosearch
 * sudo apt install:
 ** vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached memcached, xcape
-** tmux, htop, make, chrome-gnome-shell,
+** tmux, htop, make, chrome-gnome-shell, silversearcher-ag
 ** tkinter for python (for /usr/bin/player): sudo apt install python-tk
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
@@ -61,6 +73,11 @@
 *** sudo apt update
 *** sudo apt install aptik
 
+* Work (TI) installs:
+** sudo apt install rabbitmq-server
+** sudo apt install curl
+** sudo apt install sassc
+** sudo apt install openconnect
 * Customization tweaks:
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 *** Fonts:
@@ -203,6 +220,32 @@
 **** Ctrl-c copies if text is selected; otherwise sends interrupt as usual. Ctrl-v pastes.
 **** Decent search
 *** Default Gnome terminal
+* Backup:
+** Strategy:
+*** Aptik can be (manually) used to back up most of the non-home config
+*** TODO root crontab calls aptik, which backs up all settnigs not in ~/home/ to ~/aptik-settings-backup
+*** TODO etckeeper puts /etc under version control (but does not push it anywhere else, because it has sekirt stuff).
+**** Will automatically commit changes daily.
+**** https://opensource.com/article/17/3/etckeeper-version-control
+**** https://help.ubuntu.com/lts/serverguide/etckeeper.html
+*** deja dup backs ~/home/ (including aptik-settings-backup) to iMac.
+*** Root backups (not clones): rsync
+**** Run as root:
+***** rsync -axHAW --progress --numeric-ids --info=progress2 / egg@192.168.1.222:/Volumes/Unused/laptop-root-backup/
+**** Note! Important not to use -X option if copying to mac.
+** Details:
+*** TODO add aptik call to root crontab
+**** One person's take on the crontab command:
+***** `cd /home/egg/aptik-settings-backup && aptik --backup-all --user <myusername> --password <mypassword> --yes >> ./aptik_cron.log 2>&1`
+****  The options I need for an aptik CLI call:
+***** --user egg --password SOMETHING --backup-dir /home/egg/aptik-settings-backup --yes
+*****  --backup-ppa --backup-packages --backup-users --backup-configs --backup-themes --backup-crontab
+*** There's also dconf-backup (maybe aptik doesn't do dconf? :( )
+****  https://github.com/pixelastic/dconf-export
+*** One other option I can consider: mount over ssh: using fuse + sshfs
+**** fusermount
+**** /Volumes/Unused can become my home backup drive
+
 * TODO
 ** DONE Commit new dotfiles repo
    CLOSED: [2017-09-03 Sun 12:35]
@@ -210,6 +253,3 @@
    CLOSED: [2017-09-03 Sun 12:36]
 ** DONE Change files on imac to be aliases to dotfiles repo
 ** TODO Remove actual dotfiles from old homedir report-emacs-bug-address
-** TODO Backups:
-*** backups app lets you back up home folder w/ (nearly) all settings
-*** There's also dconf-backup: https://github.com/pixelastic/dconf-export
