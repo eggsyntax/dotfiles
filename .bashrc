@@ -92,7 +92,8 @@ alias gi='git grep -i'
 alias ggn='git --no-pager grep'
 # Show files changed in each commit:
 alias changes='git log --pretty=oneline --abbrev-commit --graph --stat'
-alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads"
+# alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads"
+alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads | sed 's/refs\/heads\///'"
 alias todos='gg -A 2 -e TODO -e THINK -e FIXME'
 alias todos-untracked='gg --untracked -e TODO -e THINK -e FIXME'
 alias prints-untracked='gg --untracked -e println'
@@ -139,6 +140,7 @@ alias gdm='git diff master --name-status'
 
 # http://stackoverflow.com/a/12142066
 # Show commits that only exist on the current branch
+# TODO: I'd like to have branchname be $1 if given, otherwise as below
 function branchlog {
     branchname=`git rev-parse --abbrev-ref HEAD`
     git log $branchname --not $(git for-each-ref --format='%(refname)' refs/heads/ | grep -v "refs/heads/$branchname")

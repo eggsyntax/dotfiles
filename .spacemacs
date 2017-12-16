@@ -81,7 +81,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(flatui-theme apropospriate-theme alect-themes ample-theme dracula-theme zenburn-theme flatland-theme)
+   dotspacemacs-additional-packages '(flatui-theme apropospriate-theme alect-themes ample-theme dracula-theme zenburn-theme flatland-theme solarized-theme)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -153,9 +153,9 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light
+   dotspacemacs-themes '(solarized-light
                          zenburn
-                         solarized-light
+                         spacemacs-light
                          apropospriate-light
                          ;; leuven
                          alect-light-alt
@@ -630,7 +630,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; Define an "eval" operator
     (evil-define-operator generic-evil-eval-operator (beg end)
       (cider-eval-region beg end))
-    (define-key evil-normal-state-map (kbd (left-mod "e")) 'generic-evil-eval-operator)
+    (define-key evil-normal-state-map (kbd "Q") 'generic-evil-eval-operator)
 
     ;; Use lispy definition of words
     ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
@@ -694,6 +694,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (interactive)
   (toggle-debug-on-error)
   (trace-function 'aggressive-indent--proccess-changed-list-and-indent))
+
+;; debug-on-interrupt (w C-g):
+;; toggle-debug-on-quit
 
 ;; TODO create key binding to toggle boolean
 ;; Jump target egg-main
@@ -1005,6 +1008,9 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (solarized-theme zenburn-theme yaml-mode ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)

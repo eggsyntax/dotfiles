@@ -13,7 +13,7 @@
 	editor = /usr/bin/vim
 	ignorecase = true
 [push]
-	default = simple
+	default = tracking
 [alias]
 	allfiles = ls-tree -r master --name-only
 	unstage = reset HEAD --
@@ -31,3 +31,5 @@
 [grep]
 	extendRegexp = true
 	lineNumber = true
+[help]
+	autocorrect = 20

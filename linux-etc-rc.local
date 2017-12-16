@@ -1,0 +1,3 @@
+xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+echo "rc.local has been RUN!"
+
