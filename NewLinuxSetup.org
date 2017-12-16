@@ -13,6 +13,9 @@
 *** Doesn't solve that option, but be aware of firejail for sandboxing apps
 **** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
 
+* Initial setup:
+** Creating bootable USB stick on mac: https://linuxnewbieguide.org/how-to-put-a-linux-iso-onto-a-usb-stick-and-make-it-bootable-on-a-mac/
+** Having some trouble with getting it to boot on the machine. See also linux-on-p51.org
 * Preferences: dvorak
 * TODO Enable repos:
 ** sudo -i software-properties-gtk

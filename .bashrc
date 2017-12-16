@@ -315,9 +315,9 @@ alias dirsizes='du -BM --max-depth 1 2>/dev/null | sort -n'
 
 function mac-bashrc {
 
-    if [[ $- == *i* ]]; then # if in interactive terminal (else tput breaks)
-        echo "Executing mac bash startup"
-    fi
+    #if [[ $- == *i* ]]; then # if in interactive terminal (else tput breaks)
+    #    echo "Executing mac bash startup"
+    #fi
 
     # Should be -1 (see above) on bash >= 4.3, aka non-mac
     export HISTSIZE=
