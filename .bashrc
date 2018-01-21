@@ -6,6 +6,8 @@
 
 alias l="ls -G "
 alias ltr="ls -ltr "
+alias ltrh="ls -ltrh "
+alias ltra="ls -ltra "
 alias dir="ls -lG "
 alias grep='grep --color=auto'
 

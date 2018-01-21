@@ -46,7 +46,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(yaml
+   '(
      html
      markdown
      ;; ----------------------------------------------------------------
@@ -910,8 +910,8 @@ you should place your code here."
   ;; This next one works, *sometimes*. But defines the key in insert mode also,
   ;;    so you can't type a letter `t` in an org-mode buffer.
   ;; (define-key org-mode-map (kbd "t") 'org-todo)
-  (evil-define-key normal 'org-mode-map
-      (kbd  "t") 'org-todo)
+  ;; (evil-define-key normal 'org-mode-map
+  ;;     (kbd "t") 'org-todo)
 
   ;; create shortcuts for jumping to windows:
   (setq winum-keymap
