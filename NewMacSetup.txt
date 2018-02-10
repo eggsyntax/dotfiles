@@ -198,6 +198,7 @@ Subsonic
 Web server
 	First: set DocumentRoot in apache configuration.
 		http://stackoverflow.com/a/17608746/284564
+        High Sierra: https://websitebeaver.com/set-up-localhost-on-macos-high-sierra-apache-mysql-and-php-7-with-sslhttps
     Also see the 'Optionally enable user Web sites' section:
       http://www.cnet.com/how-to/how-to-enable-web-sharing-in-os-x-mountain-lion/
     Yosemite instructions: https://discussions.apple.com/docs/DOC-3083
