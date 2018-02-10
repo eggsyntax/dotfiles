@@ -47,6 +47,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     javascript
      html
      markdown
      ;; ----------------------------------------------------------------
@@ -473,6 +474,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; Put paste on both mod keys, because C-v can't be used in linux
   (global-set-key (kbd (right-mod "v")) 'maclike-paste)
   (global-set-key (kbd (left-mod "v")) 'maclike-paste)
+  (define-key evil-normal-state-map (kbd "SPC b y") 'spacemacs/copy-whole-buffer-to-clipboard)
   (global-set-key (kbd (left-mod "<backspace>")) 'backward-kill-word)
   (global-set-key (kbd (left-mod "<left>")) 'evil-backward-WORD-begin)
   (global-set-key (kbd (left-mod "<right>")) 'evil-forward-WORD-begin)
