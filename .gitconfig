@@ -32,4 +32,4 @@
 	extendRegexp = true
 	lineNumber = true
 [help]
-	autocorrect = 20
+	autocorrect = 10
