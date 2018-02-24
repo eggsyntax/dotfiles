@@ -59,7 +59,7 @@ values."
      ;; themes-megapack
      ;; parinfer
      (auto-completion :variables
-                      auto-completion-complete-with-key-sequence-delay 0.4
+                      auto-completion-complete-with-key-sequence-delay 2.0
                       ;; Trying these 3 based on a suggestion from @jr0cket in #spacemacs
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-snippets-in-popup t
@@ -75,7 +75,7 @@ values."
      ;;        shell-default-position 'bottom)
      ;; spell-checking
      ;; syntax-checking
-     ;; version-control
+     version-control
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -603,6 +603,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (right-mod "k")) nil) ; kill-sentence -- bad if I think I'm in repl
     (define-key evil-normal-state-map (kbd "SPC m t s") 'cider-test-run-test)
     (define-key evil-normal-state-map (kbd "SPC b x") 'jump-to-cider-error)
+    (define-key evil-normal-state-map (kbd ", g s") 'cider-scratch)
     (define-key evil-normal-state-map (kbd ", t s") 'cider-test-run-test)
     ;; 'ns-tests'
     (define-key evil-normal-state-map (kbd "SPC m t n") 'cider-test-run-ns-tests)
@@ -615,6 +616,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC b C") 'jump-to-cljs-repl)
     (define-key evil-normal-state-map (kbd "SPC b S") 'jump-to-nrepl-server)
     (define-key evil-normal-state-map (kbd "SPC b E") 'jump-to-personal-file)
+    (define-key evil-normal-state-map (kbd "SPC s ,") ";s/, /\n/g")
+    (define-key evil-normal-state-map (kbd "SPC i r") 'indent-region)
     (define-key evil-normal-state-map (kbd (left-mod "a")) "ya(") ; yank-around-parens (only in normal)
     (define-key evil-normal-state-map (kbd (left-mod "a")) "da(") ; delete-around-parens (only in normal)
     (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
@@ -902,7 +905,7 @@ you should place your code here."
   (setq org-agenda-files '("~/Dropbox/OrgNotes/org-agenda.org" "/home/egg/Dropbox/OrgNotes/"))
 
   ;; Always use soft wrap by default
-  (setq-default visual-line-mode t)
+  ;; (setq-default visual-line-mode t)
 
   ;; org-mode: t = toggle todo state -- have to set at very end
   ;; (define-key org-bullets-bullet-map (kbd "t") 'org-todo)
