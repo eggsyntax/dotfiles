@@ -20,10 +20,10 @@
                     ;; [refactor-nrepl "2.2.0"]
                     ;; [refactor-nrepl "2.0.0-SNAPSHOT"]
                     ;; Me:
-                    [reconstructorepl "0.1.0-SNAPSHOT"]
                     ]
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
+                        [reconstructorepl "0.1.0-SNAPSHOT"]
                         [datawalk "0.1.13-SNAPSHOT"]
                         ;; [cljfmt "0.1.10"]
 
