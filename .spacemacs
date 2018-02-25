@@ -2,6 +2,16 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
+;; Note on global search and replace, because I never ever remember it:
+;;
+;; * Get search results
+;;   ** Do SPC / and type in your search string
+;;   ** or SPC x S and search string - where x is your scope indicator (p for project, d for directory, etc..)
+;; * Once you have the occurences you want, hit C-c C-e inside the helm buffer to put all your match
+;;   occurences and puts them into a special buffer called the edit buffer or something like that
+;; * in that buffer you can use any commands you'd normally use on a buffer
+;; * C-c C-c to commit your changes.
+
 (defun right-mod (keychar)
   "Return the appropriate modkey + keychar reference (ie for (right-mod \"*\",
 'M-*' on mac, 'C-*' on linux [because I swap alt & ctrl on linux])"
