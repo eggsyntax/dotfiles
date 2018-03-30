@@ -1,4 +1,4 @@
-* TODO new setup:
+* new setup:
 ** redshift setup
 ** Set up deja dup again!
 ** Figure out where Aptik should back up to
@@ -16,7 +16,7 @@
 * Initial setup:
 ** Creating bootable USB stick on mac: https://linuxnewbieguide.org/how-to-put-a-linux-iso-onto-a-usb-stick-and-make-it-bootable-on-a-mac/
 ** Having some trouble with getting it to boot on the machine. See also linux-on-p51.org
-* TODO Enable repos:
+* Enable repos:
 ** sudo -i software-properties-gtk
 *** In "other software": add (s/zesty/current-release-nickname/): deb http://archive.canonical.com/ubuntu zesty partner
 *** check desired repos in 1st & 2nd tab
@@ -88,6 +88,9 @@
 ** sudo apt install sassc
 ** sudo apt install openconnect
 * Customization tweaks:
+** ~/.ssh/config: add
+Host *
+ServerAliveInterval 240
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 *** Fonts:
 **** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
@@ -248,11 +251,3 @@
 *** One other option I can consider: mount over ssh: using fuse + sshfs
 **** fusermount
 **** /Volumes/Unused can become my home backup drive
-
-* TODO
-** DONE Commit new dotfiles repo
-   CLOSED: [2017-09-03 Sun 12:35]
-** DONE Change aliases in homedir to point to dotfiles repo
-   CLOSED: [2017-09-03 Sun 12:36]
-** DONE Change files on imac to be aliases to dotfiles repo
-** TODO Remove actual dotfiles from old homedir report-emacs-bug-address

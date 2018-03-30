@@ -280,7 +280,7 @@ if [ -f ~/.local-bashrc ]; then
     source ~/.local-bashrc
 fi
 
-export NVM_DIR="/Users/egg/.nvm"
+export NVM_DIR="/home/egg/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Overridden on at least one system
@@ -419,6 +419,7 @@ function linux-bashrc {
     fi
 
     alias v='vim'
+    alias syslog='less /var/log/syslog'
 
     # Open a file in a new emacs window (server must be running)
     # Called in subshell to silence job control, and send to /dev/null to
@@ -435,11 +436,6 @@ function linux-bashrc {
     # ie 'j foo' takes you to fuzzy-matched foo directory
     # WRONG? . /usr/share/autojump/autojump.sh
     . /usr/share/autojump/autojump.bash
-
-    # TODO do I need this in linux?
-    # Set JAVA_HOME
-    # export JAVA_HOME="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
-    # export JAVA_HOME=""
 
     # like pbcopy on mac -- pipe it input & it goes to the clipboard
     alias clip='xsel --clipboard --input'
@@ -492,6 +488,8 @@ function linux-bashrc {
     PATH="${PATH}:${HOME}/.cask/bin"
     export PATH
 
+    alias parens="xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright' &"
+
 }
 
 
@@ -502,3 +500,5 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
     mac-bashrc;
 else echo "PLATFORM UNKNOWN! Check output of uname";
 fi
+
+#### [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

@@ -24,8 +24,14 @@
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.1.0-SNAPSHOT"]
-                        [datawalk "0.1.13-SNAPSHOT"]
+                        [datawalk "0.1.17-SNAPSHOT"]
+                        ;; [datawalk "2.0.0-SNAPSHOT"]
                         ;; [cljfmt "0.1.10"]
+
+                        ;; Make sure all projects can run cljs-repl locally
+                        ;; [com.cemerick/piggieback "0.2.1"]
+                        ;; And figwheel
+                        ;; [figwheel-sidecar "0.5.14"]
 
                         ;; Experiment with Sayid
                         [com.billpiel/sayid "0.0.14"]
@@ -45,7 +51,8 @@
                         ;; [org.clojure/tools.nrepl "0.2.12"]
                         ]
          :repl-options {:init (set! *print-length* 50)
-                        :timeout 120000}
+                        :timeout 120000
+                        :prompt (fn [ns] (str "\u001B[36m" ns "\u001B[m>"))}
          ;; injections used with lucid.core.inject to make certain code available in every ns
          :injections [
                       (require '[lucid.core.inject :as inject])
