@@ -280,7 +280,7 @@ if [ -f ~/.local-bashrc ]; then
     source ~/.local-bashrc
 fi
 
-export NVM_DIR="/Users/egg/.nvm"
+export NVM_DIR="/home/egg/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Overridden on at least one system
@@ -309,6 +309,15 @@ alias sub='sed -i --'
 
 # Show 1st-level subdirs by size:
 alias dirsizes='du -BM --max-depth 1 2>/dev/null | sort -n'
+
+# Start emacs in the background on the current dir's project.clj. Goes up a dir
+# and then down so that it'll be clear in ps which emacs is which.
+function epr {
+    curdir=`pwd`
+    curemacs=`which emacs`
+    echo $curdir
+    $curemacs --maximized "$curdir/project.clj" &
+}
 
 ######### Mac-specific ########
 
@@ -422,6 +431,7 @@ function linux-bashrc {
     fi
 
     alias v='vim'
+    alias syslog='less /var/log/syslog'
 
     # Open a file in a new emacs window (server must be running)
     # Called in subshell to silence job control, and send to /dev/null to
@@ -436,16 +446,13 @@ function linux-bashrc {
 
     # Load autojump
     # ie 'j foo' takes you to fuzzy-matched foo directory
-    # WRONG? . /usr/share/autojump/autojump.sh
     . /usr/share/autojump/autojump.bash
-
-    # TODO do I need this in linux?
-    # Set JAVA_HOME
-    # export JAVA_HOME="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
-    # export JAVA_HOME=""
 
     # like pbcopy on mac -- pipe it input & it goes to the clipboard
     alias clip='xsel --clipboard --input'
+
+    # like `open` on a mac, ie look at a file:
+    alias o='xdg-open'
 
     # Set ctrl keys to produce parens:
     # Only ever want one xcape running at a time:
@@ -495,6 +502,8 @@ function linux-bashrc {
     PATH="${PATH}:${HOME}/.cask/bin"
     export PATH
 
+    alias parens="xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright' &"
+
 }
 
 
@@ -505,3 +514,5 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
     mac-bashrc;
 else echo "PLATFORM UNKNOWN! Check output of uname";
 fi
+
+#### [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

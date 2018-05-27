@@ -2,7 +2,7 @@
 	email = egg@novonon.com
 	name = Egg Syntax
 [credential]
-	helper = cache --timeout 36000000
+	helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
 [color]
 	diff = auto
 	status = auto
@@ -32,4 +32,4 @@
 	extendRegexp = true
 	lineNumber = true
 [help]
-	autocorrect = 20
+	autocorrect = 10

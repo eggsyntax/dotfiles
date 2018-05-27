@@ -1,13 +1,6 @@
-* TODO new setup:
-** redshift setup
-** Set up deja dup again!
-** Figure out where Aptik should back up to
-** Figure out how to back up full drive
-*** Use `Unused` partition of HD to left of computer
-*** Clone vs copy? I want it to make it easy to reinstall from the clone.
+* Future:
 ** Investigate running multiple Linux distros simultaneously
 *** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
-
 *** Containers are an option (LXC or Docker) but apparently getting GUI apps running in them is hard.
 **** https://beebom.com/how-run-multiple-distros-using-linux-containers/
 *** Doesn't solve that option, but be aware of firejail for sandboxing apps
@@ -16,19 +9,25 @@
 * Initial setup:
 ** Creating bootable USB stick on mac: https://linuxnewbieguide.org/how-to-put-a-linux-iso-onto-a-usb-stick-and-make-it-bootable-on-a-mac/
 ** Having some trouble with getting it to boot on the machine. See also linux-on-p51.org
-* Preferences: dvorak
-* TODO Enable repos:
+* Enable repos:
 ** sudo -i software-properties-gtk
 *** In "other software": add (s/zesty/current-release-nickname/): deb http://archive.canonical.com/ubuntu zesty partner
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 *** Additional Drivers -- autosearch
+* Preferences: dvorak
 * sudo apt install:
 ** vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached memcached, xcape
 ** tmux, htop, make, chrome-gnome-shell, silversearcher-ag
 ** tkinter for python (for /usr/bin/player): sudo apt install python-tk
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
+* Gnome-tweak-tool to change various settings
+** Under keyboard:
+*** Under caps-lock I can switch caps & esc
+*** Under ctrl-key-position I can switch ctrl and cmd
+*** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
+** Under fonts: can scale fonts
 * Vim setup:
 ** vim: pathogen -
 *** mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
@@ -82,6 +81,9 @@
 ** sudo apt install sassc
 ** sudo apt install openconnect
 * Customization tweaks:
+** ~/.ssh/config: add
+Host *
+ServerAliveInterval 240
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 *** Fonts:
 **** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
@@ -108,7 +110,15 @@
 **** Show indicators on top bar, not just that little bottom tray.
 ***** https://extensions.gnome.org/extension/615/appindicator-support/
 ***** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-**** gnome-sushi -- preview from file browser with space bar
+**** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
+**** no topleft hot corner
+**** openweather
+**** touchpad indicator
+**** ubuntu appindicators
+**** steal my focus
+**** OLD:
+***** gnome-sushi -- preview from file browser with space bar
+
 *** Other:
 **** X11-forwarding setup
 ***** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
@@ -205,12 +215,6 @@
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
 
-* Gnome-tweak-tool to change various settings
-** Under keyboard:
-*** Under caps-lock I can switch caps & esc
-*** Under ctrl-key-position I can switch ctrl and cmd
-*** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
-** Under fonts: can scale fonts
 * Terminal:
 ** Favorites so far:
 *** Pantheon terminal
@@ -248,11 +252,3 @@
 *** One other option I can consider: mount over ssh: using fuse + sshfs
 **** fusermount
 **** /Volumes/Unused can become my home backup drive
-
-* TODO
-** DONE Commit new dotfiles repo
-   CLOSED: [2017-09-03 Sun 12:35]
-** DONE Change aliases in homedir to point to dotfiles repo
-   CLOSED: [2017-09-03 Sun 12:36]
-** DONE Change files on imac to be aliases to dotfiles repo
-** TODO Remove actual dotfiles from old homedir report-emacs-bug-address
