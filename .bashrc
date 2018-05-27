@@ -310,6 +310,15 @@ alias sub='sed -i --'
 # Show 1st-level subdirs by size:
 alias dirsizes='du -BM --max-depth 1 2>/dev/null | sort -n'
 
+# Start emacs in the background on the current dir's project.clj. Goes up a dir
+# and then down so that it'll be clear in ps which emacs is which.
+function epr {
+    curdir=`pwd`
+    curemacs=`which emacs`
+    echo $curdir
+    $curemacs --maximized "$curdir/project.clj" &
+}
+
 ######### Mac-specific ########
 
 # "How to alter system-wide $PATH for non-interactive, non-login bash shells invoked via sshd?"
@@ -434,11 +443,13 @@ function linux-bashrc {
 
     # Load autojump
     # ie 'j foo' takes you to fuzzy-matched foo directory
-    # WRONG? . /usr/share/autojump/autojump.sh
     . /usr/share/autojump/autojump.bash
 
     # like pbcopy on mac -- pipe it input & it goes to the clipboard
     alias clip='xsel --clipboard --input'
+
+    # like `open` on a mac, ie look at a file:
+    alias o='xdg-open'
 
     # Set ctrl keys to produce parens:
     # Only ever want one xcape running at a time:
