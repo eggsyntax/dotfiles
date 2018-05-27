@@ -1,13 +1,6 @@
-* new setup:
-** redshift setup
-** Set up deja dup again!
-** Figure out where Aptik should back up to
-** Figure out how to back up full drive
-*** Use `Unused` partition of HD to left of computer
-*** Clone vs copy? I want it to make it easy to reinstall from the clone.
+* Future:
 ** Investigate running multiple Linux distros simultaneously
 *** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
-
 *** Containers are an option (LXC or Docker) but apparently getting GUI apps running in them is hard.
 **** https://beebom.com/how-run-multiple-distros-using-linux-containers/
 *** Doesn't solve that option, but be aware of firejail for sandboxing apps
@@ -117,7 +110,15 @@ ServerAliveInterval 240
 **** Show indicators on top bar, not just that little bottom tray.
 ***** https://extensions.gnome.org/extension/615/appindicator-support/
 ***** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-**** gnome-sushi -- preview from file browser with space bar
+**** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
+**** no topleft hot corner
+**** openweather
+**** touchpad indicator
+**** ubuntu appindicators
+**** steal my focus
+**** OLD:
+***** gnome-sushi -- preview from file browser with space bar
+
 *** Other:
 **** X11-forwarding setup
 ***** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
