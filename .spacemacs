@@ -56,7 +56,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(csv
      sql
      yaml
      javascript
@@ -90,14 +90,23 @@ values."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
      ;; spell-checking
-     ;; syntax-checking
+     syntax-checking
      version-control
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(flatui-theme apropospriate-theme alect-themes ample-theme dracula-theme zenburn-theme flatland-theme solarized-theme)
+   dotspacemacs-additional-packages '(flatui-theme
+                                      apropospriate-theme
+                                      alect-themes
+                                      ample-theme
+                                      dracula-theme
+                                      zenburn-theme
+                                      flatland-theme
+                                      solarized-theme
+                                      (cider :min-version "0.17.0")
+                                      )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -434,6 +443,21 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;;;;;;;; Begin key bindings ;;;;;;;
 
+  ;; First of all, use ctrl-number to switch to a window! Already works on
+  ;; Mac with the command key, so we just need to set literal ctrl instead of
+  ;; right-mod.
+  (global-set-key (kbd "C-0") 'winum-select-window-0)
+  (global-set-key (kbd "C-1") 'winum-select-window-1)
+  (global-set-key (kbd "C-2") 'winum-select-window-2)
+  (global-set-key (kbd "C-3") 'winum-select-window-3)
+  (global-set-key (kbd "C-4") 'winum-select-window-4)
+  (global-set-key (kbd "C-5") 'winum-select-window-5)
+  (global-set-key (kbd "C-6") 'winum-select-window-6)
+  (global-set-key (kbd "C-7") 'winum-select-window-7)
+  (global-set-key (kbd "C-8") 'winum-select-window-8)
+  (global-set-key (kbd "C-9") 'winum-select-window-9)
+
+
   ;; Use command key as Meta, option as Alt, fn as Hyper
   (setq mac-option-modifier 'alt)
   (setq mac-command-modifier 'meta)
@@ -470,16 +494,22 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "S-<up>") 'evil-scroll-line-up)
   (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
 
-  (evil-define-key '(normal insert) cider-repl-mode-map
-    (kbd (right-mod "k")) 'cider-repl-clear-buffer)
+  ;; For some reason this gets overridden.
+  (with-eval-after-load 'cider-repl-mode-map
+   (evil-define-key '(normal insert) cider-repl-mode-map
+     (kbd (right-mod "k")) 'cider-repl-clear-buffer)
 
-  (evil-define-key 'normal cider-repl-mode-map
-    (kbd "<up>") 'cider-repl-previous-input)
+   ;; TARGET: evalme eval-me
 
-  (evil-define-key 'normal cider-repl-mode-map
-    (kbd "<down>") 'cider-repl-next-input)
-  (evil-define-key 'normal cider-repl-mode-map
-    (kbd (left-mod "n")) 'cider-repl-next-input)
+   (evil-define-key 'normal cider-repl-mode-map
+     (kbd "<up>") 'cider-repl-previous-input)
+
+   (evil-define-key 'normal cider-repl-mode-map
+     (kbd "<down>") 'cider-repl-next-input)
+
+   (evil-define-key 'normal cider-repl-mode-map
+     (kbd (left-mod "n")) 'cider-repl-next-input)
+   )
 
   (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
   (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
@@ -619,6 +649,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (with-eval-after-load 'neotree-mode
     (define-key evil-normal-state-map (kbd "TAB") 'neotree-enter))
 
+  (defun format-data (&optional arg)
+    "Format typical clj/edn data. Newline after comma, newline between } and {,
+    and then indent."
+    (interactive "p")
+    (kmacro-exec-ring-item (quote ([59 115 47 125 32 123 47 125 92 110 123 47 103 return 103 118 59 115 47 44 32 47 44 92 110 47 103 return 103 118 32 105 114] 0 "%d"))
+                           arg))
+
   (with-eval-after-load 'clojure-mode
     (define-key evil-normal-state-map (kbd (right-mod "k")) nil) ; kill-sentence -- bad if I think I'm in repl
     (define-key evil-normal-state-map (kbd "SPC m t s") 'cider-test-run-test)
@@ -629,6 +666,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC m t n") 'cider-test-run-ns-tests)
     (define-key evil-normal-state-map (kbd ", t n") 'cider-test-run-ns-tests)
     (define-key evil-normal-state-map (kbd "SPC h c") 'clojure-cheatsheet)
+    (define-key evil-normal-state-map (kbd ", e x") 'cider-eval-last-sexp-to-repl)
+    (define-key evil-normal-state-map (kbd ", e c") 'cider-pprint-eval-last-sexp-to-comment)
     ;; TODO what I want is the next one, but I have to figure out how to get it
     ;; to load in the current buffer, not some arbitrary one.
     ;; (define-key evil-normal-state-map (kbd "SPC b c") 'cider-switch-to-repl-buffer)
@@ -636,10 +675,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC b C") 'jump-to-cljs-repl)
     (define-key evil-normal-state-map (kbd "SPC b S") 'jump-to-nrepl-server)
     (define-key evil-normal-state-map (kbd "SPC b E") 'jump-to-personal-file)
-    (define-key evil-normal-state-map (kbd "SPC s ,") ";s/, /\n/g")
+    ;; (define-key evil-normal-state-map (kbd "SPC s ,") ";s/, /\n/g")
+    ;; (define-key evil-normal-state-map (kbd "SPC s .") ";s/} {/}\n{/g")
+    (define-key evil-normal-state-map (kbd "SPC s ,") 'format-data)
     (define-key evil-normal-state-map (kbd "SPC i r") 'indent-region)
     (define-key evil-normal-state-map (kbd (left-mod "a")) "ya(") ; yank-around-parens (only in normal)
     (define-key evil-normal-state-map (kbd (left-mod "a")) "da(") ; delete-around-parens (only in normal)
+    (define-key evil-normal-state-map (kbd (right-mod ",")) 'clojure-toggle-keyword-string) ; toggle between str and kwd
     (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
     (define-key evil-normal-state-map (kbd (left-mod "-")) 'jump-past-hyphen)
     (define-key evil-normal-state-map (kbd (left-mod "_")) 'jump-past-hyphen-back)
@@ -780,6 +822,8 @@ you should place your code here."
   ;; CIDER:
   (setq cider-repl-history-size 5000) ; the default is 500
   (setq cider-repl-history-file "~/tmp/.cider-history")
+  (setq cider-repl-prompt-function 'cider-repl-prompt-lastname)
+  (setq cider-repl-display-in-current-window t)
 
   (desktop-save-mode 0)
   ;; (desktop-save-mode 1)
