@@ -427,6 +427,9 @@ function mac-bashrc {
     # export JAVA_HOME="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
     export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home"
 
+    # Sierra annoyingly got rid of ftp and telnet, grr. Reinstall with
+    # brew install tnftp telnet (executable will still be named `ftp`)
+
 }
 
 ######### Linux-specific ########
