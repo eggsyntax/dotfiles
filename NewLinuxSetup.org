@@ -74,6 +74,7 @@
 *** sudo apt-add-repository ppa:teejee2008/ppa
 *** sudo apt update
 *** sudo apt install aptik
+*** sudo apt install aptik-gtk (important! for GUI)
 
 * Work (TI) installs:
 ** sudo apt install rabbitmq-server
@@ -127,13 +128,18 @@ ServerAliveInterval 240
 ***** vim ~/.config/user-dirs.dirs
 ***** sudo vim /etc/xdg/user-dirs.defaults
 ***** via http://www.arj.no/2017/01/03/nautilus-bookmarks/
-
+** Add audio eq:
+*** sudo apt install pulseaudio-equalizer
+*** https://askubuntu.com/a/982556
+*** but then individual applications may not be using the eq. Install volume control
+**** https://askubuntu.com/questions/580631/how-to-set-which-output-sound-an-application-should-use
 * Keyboard layout:
 ** Final solution for the P51:
 *** 1. Do some switching in tweak-tool/typing:
 **** Typing / CapsLock / 'Swap ESC and CapsLock'
 **** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
 *** 2. config file for xkd, at 'sudo vi /usr/share/X11/xkb/keycodes/evdev'
+**** Note -- may want to make that file a symbolic link to one in dotfiles
 **** Switch the keycodes for the two keys, eg if former containes
       <RCTL> = 105;
       <RALT> = 108;
@@ -217,6 +223,7 @@ ServerAliveInterval 240
 
 * Terminal:
 ** Favorites so far:
+*** Default Gnome terminal
 *** Pantheon terminal
 **** Installation: https://askubuntu.com/a/631201/325838
 ***** sudo add-apt-repository ppa:elementary-os/stable
@@ -226,7 +233,6 @@ ServerAliveInterval 240
 **** gsettings set org.pantheon.terminal.settings tab-bar-behavior "Hide When Single Tab"
 **** Ctrl-c copies if text is selected; otherwise sends interrupt as usual. Ctrl-v pastes.
 **** Decent search
-*** Default Gnome terminal
 * Backup:
 ** Strategy:
 *** Aptik can be (manually) used to back up most of the non-home config

@@ -1,16 +1,20 @@
 {:user  {:plugins  [[lein-drip "0.1.2-SNAPSHOT"]
+                    [com.billpiel/sayid "0.0.16"]
                     [com.jakemccrary/lein-test-refresh "0.14.0"]
                     [venantius/yagni "0.1.4"]
+                    [org.clojure/tools.namespace "0.3.0-alpha4"]
                     [lein-ns-dep-graph "0.2.0-SNAPSHOT"]
                     ;; [lein-exec "0.3.6"]
 
                     ;; Release management:
                     [lein-release "1.0.5"]
+                    [io.aviso/pretty "0.1.34"]
                     ]
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.1.0-SNAPSHOT"]
                         [datawalk "0.1.17-SNAPSHOT"]
+                        ;; [datawalk "0.1.18-SNAPSHOT"]
                         ;; [datawalk "1.0.0-SNAPSHOT"]
 
                         ;; Make sure all projects can run cljs-repl locally
@@ -19,7 +23,7 @@
                         ;; [figwheel-sidecar "0.5.14"]
 
                         ;; Experiment with Sayid
-                        ;; [com.billpiel/sayid "0.0.14"]
+                        [com.billpiel/sayid "0.0.16"]
 
                         [clj-stacktrace "0.2.8"]
                         [pjstadig/humane-test-output "0.8.3"]
@@ -29,6 +33,7 @@
                         ;; [alembic "0.3.2"]
                         ;; Colorized pretty-printing:
                         ;; https://github.com/greglook/puget
+                        [io.aviso/pretty "0.1.34"]
                         ;; Temporarily removing puget to see if I still need it, 8/17/17
                         [mvxcvi/puget "1.0.0"]
                         ]

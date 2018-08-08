@@ -55,43 +55,43 @@ values."
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
+   ;; TARGET: LAYERS
    dotspacemacs-configuration-layers
-   '(csv
-     sql
-     yaml
-     javascript
-     html
-     markdown
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
-     (helm :variables
-           helm-use-frame-when-more-than-two-windows nil)
+   '(python
      clojure
      ;; in ~/.emacs.private-libs, linked to ~/.emacs.d/private:
      clojure-lint
-     ;; themes-megapack
-     ;; parinfer
+     csv
+     emacs-lisp
+     git
+     html
+     idris
+     javascript
+     markdown
+     sql
+     syntax-checking
+     version-control
+     yaml
+     (helm :variables
+           helm-use-frame-when-more-than-two-windows nil)
+     (colors :variables
+             colors-colorize-identifiers 'all)
      (auto-completion :variables
                       auto-completion-complete-with-key-sequence-delay 2.0
                       ;; Trying these 3 based on a suggestion from @jr0cket in #spacemacs
                       auto-completion-enable-help-tooltip t
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-sort-by-usage t)
+     ;; themes-megapack
+     ;; parinfer
      ;; better-defaults
-     emacs-lisp
-     git
      ;; markdown
      ;; org
-     ;; TODO newest .spacemacs-template has an explicit neotree layer -- do I need it?
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
      ;; spell-checking
-     syntax-checking
-     version-control
+     (treemacs :init
+               (with-eval-after-load 'winum
+                 (define-key winum-keymap (kbd "M-0")
+                   #'treemacs-select-window))) ; neotree replacement
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -105,7 +105,7 @@ values."
                                       zenburn-theme
                                       flatland-theme
                                       solarized-theme
-                                      (cider :min-version "0.17.0")
+                                      ;; (cider :min-version "0.17.0")
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -118,7 +118,8 @@ values."
    ;; `used-but-keep-unused' installs only the used packages but won't uninstall
    ;; them if they become unused. `all' installs *all* packages supported by
    ;; Spacemacs and never uninstall them. (default is `used-only')
-   dotspacemacs-install-packages 'used-only))
+   dotspacemacs-install-packages 'used-only
+   ))
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -126,6 +127,10 @@ This function is called at the very startup of Spacemacs initialization
 before layers configuration.
 You should not put any user code in there besides modifying the variable
 values."
+  ;; This has to go here, unfortunately.
+  (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  (add-to-list 'package-pinned-packages '(cider   . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(clojure . "melpa-stable") t)
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
@@ -206,11 +211,11 @@ values."
    ;; Hack is nicer, but Fira Mono is supposedly faster
    dotspacemacs-default-font (if (string-equal system-type "darwin")
        '("Fira Mono"
-         :size 10
+         :size 16
          :weight normal
          :width normal)
      '("Hack"
-       :size 23
+       :size 24
        :weight normal
        :width condensed))
 
@@ -446,7 +451,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; First of all, use ctrl-number to switch to a window! Already works on
   ;; Mac with the command key, so we just need to set literal ctrl instead of
   ;; right-mod.
-  (global-set-key (kbd "C-0") 'winum-select-window-0)
+  (global-set-key (kbd "C-0") 'treemacs-select-window)
   (global-set-key (kbd "C-1") 'winum-select-window-1)
   (global-set-key (kbd "C-2") 'winum-select-window-2)
   (global-set-key (kbd "C-3") 'winum-select-window-3)
@@ -457,6 +462,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "C-8") 'winum-select-window-8)
   (global-set-key (kbd "C-9") 'winum-select-window-9)
 
+  (define-key evil-normal-state-map (kbd "SPC :") 'eval-expression)
 
   ;; Use command key as Meta, option as Alt, fn as Hyper
   (setq mac-option-modifier 'alt)
@@ -494,12 +500,22 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "S-<up>") 'evil-scroll-line-up)
   (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
 
-  ;; For some reason this gets overridden.
-  (with-eval-after-load 'cider-repl-mode-map
-   (evil-define-key '(normal insert) cider-repl-mode-map
-     (kbd (right-mod "k")) 'cider-repl-clear-buffer)
+  ;; TODO for use with REPL auto-save if I ever get around to that
+  (defun show-time ()
+    (interactive)
+    (message (current-time-string)))
 
-   ;; TARGET: evalme eval-me
+  (add-hook 'cider-repl-mode-hook
+            '(lambda ()
+               (evil-define-key '(normal insert) cider-repl-mode-map
+                 (kbd (right-mod "k")) 'cider-repl-clear-buffer)
+               (define-key cider-repl-mode-map (kbd "<up>") 'cider-repl-previous-input)
+               (define-key cider-repl-mode-map (kbd "<down>") 'cider-repl-next-input)))
+
+  (with-eval-after-load 'cider-repl-mode-map
+    ;; For some reason this gets overridden.
+   ;; (evil-define-key '(normal insert) cider-repl-mode-map
+   ;;   (kbd (right-mod "k")) 'cider-repl-clear-buffer)
 
    (evil-define-key 'normal cider-repl-mode-map
      (kbd "<up>") 'cider-repl-previous-input)
@@ -508,8 +524,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
      (kbd "<down>") 'cider-repl-next-input)
 
    (evil-define-key 'normal cider-repl-mode-map
-     (kbd (left-mod "n")) 'cider-repl-next-input)
-   )
+     (kbd (left-mod "n")) 'cider-repl-next-input))
 
   (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
   (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
@@ -526,6 +541,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd (right-mod "q")) 'save-buffers-kill-emacs)
   (global-set-key (kbd (right-mod "a")) 'mark-whole-buffer)
   (global-set-key (kbd (right-mod "s")) 'save-buffer)
+  (global-set-key (kbd (right-mod "`")) 'spacemacs/comment-or-uncomment-lines)
   ;; (global-set-key (kbd (right-mod "n")) 'lunaryorn-new-buffer-frame)
   (global-set-key (kbd (right-mod "n")) 'new-frame)
   (define-key evil-normal-state-map (kbd "SPC f n") 'new-frame)
@@ -541,6 +557,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd (right-mod "-")) 'spacemacs/scale-down-font)
   (global-set-key (kbd (right-mod "z")) 'undo-tree-undo)
   (global-set-key (kbd (right-mod "Z")) 'undo-tree-redo)
+  (global-set-key (kbd "C-z") 'undo-tree-redo)
 
   (define-key evil-normal-state-map (kbd ":") 'spacemacs/evil-search-clear-highlight)
   ;; U ("union") joins line to the PRECEDING line
@@ -563,6 +580,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "SPC g c") 'vc-resolve-conflicts)
   (define-key evil-normal-state-map (kbd "SPC f m") 'toggle-frame-maximized)
   (define-key evil-normal-state-map (kbd "SPC s v") 'save-some-buffers)
+  ;; Reverse the standard binding of ' vs `
+  (define-key evil-normal-state-map (kbd "'") 'evil-goto-mark)
+  (define-key evil-normal-state-map (kbd "`") 'evil-goto-mark-line)
+
+  ;; I use SPC d for some of my own stuff
+  (which-key-add-key-based-replacements "SPC d" "egg stuff") ; name prefix
+  (define-key evil-normal-state-map (kbd "SPC d d") 'spacemacs/duplicate-line-or-region)
 
   ;; ctrl-g is redundant with <esc> by default -- use it to trigger git
   (global-set-key (kbd (left-mod "g")) 'magit-status)
@@ -633,6 +657,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
         (cider-format-region start end)
       (cider-format-defun)))
 
+  ;; kill sexp and enter insert mode
+  (defun change-sexp (& args)
+    (interactive "r")
+    (sp-kill-sexp)
+    (evil-insert 0))
+
   (with-eval-after-load 'lisp-mode ; anything with sexps
     ;; Use cap L and H to move forward/back by sexp
     (define-key evil-normal-state-map (kbd "L") 'sp-next-sexp)
@@ -641,7 +671,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "¢")   'sp-copy-sexp) ; A-c gets corrupted somehow
     (define-key evil-normal-state-map (kbd (left-mod "c")) 'sp-copy-sexp) ; yank sexp
     (define-key evil-normal-state-map (kbd (left-mod "d")) 'sp-kill-sexp) ; kill sexp
-    (define-key evil-normal-state-map (kbd (left-mod "m")) 'delete-sexp) ; murder sexp (don't put on kill ring)
+    (define-key evil-normal-state-map (kbd (left-mod "m")) 'change-sexp) ; change sexp
+    ;; (define-key evil-normal-state-map (kbd (left-mod "a")) 'delete-sexp) ; murder sexp (don't put on kill ring)
     (define-key evil-normal-state-map (kbd (left-mod "r")) 'evil-lisp-state-sp-raise-sexp) ; raise sexp
     (define-key evil-normal-state-map (kbd (left-mod "w")) 'evil-lisp-state-wrap) ; wrap in sexp
     )
@@ -660,7 +691,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (right-mod "k")) nil) ; kill-sentence -- bad if I think I'm in repl
     (define-key evil-normal-state-map (kbd "SPC m t s") 'cider-test-run-test)
     (define-key evil-normal-state-map (kbd "SPC b x") 'jump-to-cider-error)
-    (define-key evil-normal-state-map (kbd ", g s") 'cider-scratch)
+    (define-key evil-normal-state-map (kbd ", c s") 'cider-scratch)
     (define-key evil-normal-state-map (kbd ", t s") 'cider-test-run-test)
     ;; 'ns-tests'
     (define-key evil-normal-state-map (kbd "SPC m t n") 'cider-test-run-ns-tests)
@@ -668,6 +699,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC h c") 'clojure-cheatsheet)
     (define-key evil-normal-state-map (kbd ", e x") 'cider-eval-last-sexp-to-repl)
     (define-key evil-normal-state-map (kbd ", e c") 'cider-pprint-eval-last-sexp-to-comment)
+    (define-key evil-normal-state-map (kbd ", s w") 'cider-repl-set-ns)
     ;; TODO what I want is the next one, but I have to figure out how to get it
     ;; to load in the current buffer, not some arbitrary one.
     ;; (define-key evil-normal-state-map (kbd "SPC b c") 'cider-switch-to-repl-buffer)
@@ -679,8 +711,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; (define-key evil-normal-state-map (kbd "SPC s .") ";s/} {/}\n{/g")
     (define-key evil-normal-state-map (kbd "SPC s ,") 'format-data)
     (define-key evil-normal-state-map (kbd "SPC i r") 'indent-region)
-    (define-key evil-normal-state-map (kbd (left-mod "a")) "ya(") ; yank-around-parens (only in normal)
-    (define-key evil-normal-state-map (kbd (left-mod "a")) "da(") ; delete-around-parens (only in normal)
     (define-key evil-normal-state-map (kbd (right-mod ",")) 'clojure-toggle-keyword-string) ; toggle between str and kwd
     (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
     (define-key evil-normal-state-map (kbd (left-mod "-")) 'jump-past-hyphen)
@@ -688,6 +718,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-normal-state-map (kbd (left-mod "f")) 'cider-format-region-or-buffer)
+    (evil-leader/set-key "m s X" 'cider-restart)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
@@ -734,6 +765,18 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;;    )
 
   ;;;;; end clojure function-key bindings (hyper) ;;;;;;
+
+  (with-eval-after-load 'idris-mode
+
+    ;; (defun idris-catching-load-file ()
+    ;;   (interactive)
+    ;;   ;; TODO accept & pass on prefix arg
+    ;;   (condition-case nil
+    ;;       (idris-load-file)
+    ;;     (error nil)))
+
+    (define-key evil-normal-state-map (kbd "K") 'idris-docs-at-point)
+    )
 
   ;;;;;;;;   End key bindings ;;;;;;;
   )
@@ -821,6 +864,7 @@ you should place your code here."
 
   ;; CIDER:
   (setq cider-repl-history-size 5000) ; the default is 500
+  (setq cider-history-file "~/tmp/.cider-history")
   (setq cider-repl-history-file "~/tmp/.cider-history")
   (setq cider-repl-prompt-function 'cider-repl-prompt-lastname)
   (setq cider-repl-display-in-current-window t)
@@ -865,8 +909,6 @@ you should place your code here."
   (evil-leader/set-key "o a" 'org-agenda)
   (evil-leader/set-key "o c" 'org-capture)
   (evil-leader/set-key "o b" 'org-iswitchb)
-
-  (evil-leader/set-key "m s X" 'cider-restart)
 
   (setq cider-repl-display-help-banner nil)
   ;; Don't show cider info on the modeline
@@ -981,29 +1023,31 @@ you should place your code here."
   ;;     (kbd "t") 'org-todo)
 
   ;; create shortcuts for jumping to windows:
-  (setq winum-keymap
-        (let ((map (make-sparse-keymap)))
-          ;; (define-key map (kbd "C-`") 'winum-select-window-by-number)
-          ;; (define-key map (kbd "C-²") 'winum-select-window-by-number)
-          (define-key map (kbd "SPC 0") 'winum-select-window-0-or-10)
-          (define-key map (kbd "SPC 1") 'winum-select-window-1)
-          (define-key map (kbd "SPC 2") 'winum-select-window-2)
-          (define-key map (kbd "SPC 3") 'winum-select-window-3)
-          (define-key map (kbd "SPC 4") 'winum-select-window-4)
-          (define-key map (kbd "SPC 5") 'winum-select-window-5)
-          (define-key map (kbd "SPC 6") 'winum-select-window-6)
-          (define-key map (kbd "SPC 7") 'winum-select-window-7)
-          (define-key map (kbd "SPC 8") 'winum-select-window-8)
-          (define-key map (kbd "M-0") 'winum-select-window-0-or-10)
-          (define-key map (kbd "M-1") 'winum-select-window-1)
-          (define-key map (kbd "M-2") 'winum-select-window-2)
-          (define-key map (kbd "M-3") 'winum-select-window-3)
-          (define-key map (kbd "M-4") 'winum-select-window-4)
-          (define-key map (kbd "M-5") 'winum-select-window-5)
-          (define-key map (kbd "M-6") 'winum-select-window-6)
-          (define-key map (kbd "M-7") 'winum-select-window-7)
-          (define-key map (kbd "M-8") 'winum-select-window-8)
-          map))
+  ;; TODO commented 8/1/18, I think I don't need this because I have
+  ;; ones like (global-set-key (kbd "C-1") 'winum-select-window-1)
+  ;; (setq winum-keymap
+  ;;       (let ((map (make-sparse-keymap)))
+  ;;         ;; (define-key map (kbd "C-`") 'winum-select-window-by-number)
+  ;;         ;; (define-key map (kbd "C-²") 'winum-select-window-by-number)
+  ;;         (define-key map (kbd "SPC 0") 'winum-select-window-0-or-10)
+  ;;         (define-key map (kbd "SPC 1") 'winum-select-window-1)
+  ;;         (define-key map (kbd "SPC 2") 'winum-select-window-2)
+  ;;         (define-key map (kbd "SPC 3") 'winum-select-window-3)
+  ;;         (define-key map (kbd "SPC 4") 'winum-select-window-4)
+  ;;         (define-key map (kbd "SPC 5") 'winum-select-window-5)
+  ;;         (define-key map (kbd "SPC 6") 'winum-select-window-6)
+  ;;         (define-key map (kbd "SPC 7") 'winum-select-window-7)
+  ;;         (define-key map (kbd "SPC 8") 'winum-select-window-8)
+  ;;         (define-key map (kbd "M-0") 'winum-select-window-0-or-10)
+  ;;         (define-key map (kbd "M-1") 'winum-select-window-1)
+  ;;         (define-key map (kbd "M-2") 'winum-select-window-2)
+  ;;         (define-key map (kbd "M-3") 'winum-select-window-3)
+  ;;         (define-key map (kbd "M-4") 'winum-select-window-4)
+  ;;         (define-key map (kbd "M-5") 'winum-select-window-5)
+  ;;         (define-key map (kbd "M-6") 'winum-select-window-6)
+  ;;         (define-key map (kbd "M-7") 'winum-select-window-7)
+  ;;         (define-key map (kbd "M-8") 'winum-select-window-8)
+  ;;         map))
   (require 'winum)
   (winum-mode)
 
@@ -1027,135 +1071,110 @@ you should place your code here."
   (require 'magit-gitflow)
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 
+  ;; And finally, maximize frame
+  (spacemacs/toggle-maximize-frame-on)
+
+  ;;;; Idris:
+
+  ;; Make function pasting indent properly in idris:
+  (add-to-list 'spacemacs-indent-sensitive-modes 'idris-mode)
+
+  ;; TODO meh doesn't work :(
+  ;; (defun helm-project-search-sorted (&optional default-inputp)
+  ;;   (interactive)
+  ;;   (sort
+  ;;    (spacemacs/helm-project-smart-do-search)
+  ;;    '<))
+
   )
 ;; TARGET: ENDEGG
 
-;; ;; Do not write anything past this comment. This is where Emacs will
-;; ;; auto-generate custom variable definitions.
 ;; (custom-set-variables
 ;;  ;; custom-set-variables was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
 ;;  ;; Your init file should contain only one such instance.
 ;;  ;; If there is more than one, they won't work right.
+;;  '(compilation-message-face (quote default))
+;;  '(cua-global-mark-cursor-color "#2aa198")
+;;  '(cua-normal-cursor-color "#657b83")
+;;  '(cua-overwrite-cursor-color "#b58900")
+;;  '(cua-read-only-cursor-color "#859900")
+;;  '(custom-safe-themes
+;;    (quote
+;;     ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" "e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" "c3e6b52caa77cb09c049d3c973798bc64b5c43cc437d449eacf35b3e776bf85c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "6de7c03d614033c0403657409313d5f01202361e35490a3404e33e46663c2596" "5e3fc08bcadce4c6785fc49be686a4a82a356db569f55d411258984e952f194a" "2a739405edf418b8581dcd176aaf695d319f99e3488224a3c495cb0f9fd814e3" default)))
 ;;  '(evil-want-Y-yank-to-eol nil)
+;;  '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+;;  '(highlight-symbol-colors
+;;    (--map
+;;     (solarized-color-blend it "#fdf6e3" 0.25)
+;;     (quote
+;;      ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
+;;  '(highlight-symbol-foreground-color "#586e75")
+;;  '(highlight-tail-colors
+;;    (quote
+;;     (("#eee8d5" . 0)
+;;      ("#B4C342" . 20)
+;;      ("#69CABF" . 30)
+;;      ("#69B7F0" . 50)
+;;      ("#DEB542" . 60)
+;;      ("#F2804F" . 70)
+;;      ("#F771AC" . 85)
+;;      ("#eee8d5" . 100))))
+;;  '(hl-bg-colors
+;;    (quote
+;;     ("#DEB542" "#F2804F" "#FF6E64" "#F771AC" "#9EA0E5" "#69B7F0" "#69CABF" "#B4C342")))
+;;  '(hl-fg-colors
+;;    (quote
+;;     ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
+;;  '(magit-diff-use-overlays nil)
 ;;  '(package-selected-packages
 ;;    (quote
-;;     (web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data silkworm-theme zonokai-theme zenburn-theme zen-and-art-theme underwater-theme ujelly-theme twilight-theme twilight-bright-theme twilight-anti-bright-theme toxi-theme tao-theme tangotango-theme tango-plus-theme tango-2-theme sunny-day-theme sublime-themes subatomic256-theme subatomic-theme spacegray-theme soothe-theme solarized-theme soft-stone-theme soft-morning-theme soft-charcoal-theme smyx-theme seti-theme reverse-theme railscasts-theme purple-haze-theme professional-theme planet-theme phoenix-dark-pink-theme phoenix-dark-mono-theme organic-green-theme omtose-phellack-theme oldlace-theme occidental-theme obsidian-theme noctilux-theme naquadah-theme mustang-theme monokai-theme monochrome-theme molokai-theme moe-theme minimal-theme material-theme majapahit-theme madhat2r-theme lush-theme light-soap-theme jbeans-theme jazz-theme ir-black-theme inkpot-theme heroku-theme hemisu-theme hc-zenburn-theme gruvbox-theme gruber-darker-theme grandshell-theme gotham-theme gandalf-theme flatui-theme flatland-theme farmhouse-theme espresso-theme dracula-theme django-theme darktooth-theme autothemer darkokai-theme darkmine-theme darkburn-theme dakrone-theme cyberpunk-theme color-theme-sanityinc-tomorrow color-theme-sanityinc-solarized clues-theme cherry-blossom-theme busybee-theme bubbleberry-theme birds-of-paradise-plus-theme badwolf-theme apropospriate-theme anti-zenburn-theme ample-zen-theme ample-theme alect-themes afternoon-theme smeargle orgit mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md evil-magit magit magit-popup git-commit with-editor powerline parent-mode projectile flx smartparens iedit anzu evil goto-chg undo-tree f dash diminish hydra s highlight seq spinner pkg-info epl bind-map bind-key packed helm avy helm-core async popup helm-company helm-c-yasnippet fuzzy company-statistics company-quickhelp pos-tip company clojure-snippets auto-yasnippet ac-ispell auto-complete clj-refactor inflections edn multiple-cursors paredit yasnippet peg cider-eval-sexp-fu cider queue clojure-mode ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile adaptive-wrap ace-window ace-link ace-jump-helm-line)))
-;;  '(safe-local-variable-values
+;;     (flycheck-pos-tip csv-mode web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js-doc parent-mode request haml-mode gitignore-mode flx anzu undo-tree diminish web-completion-data company-tern dash-functional tern pos-tip coffee-mode inflections edn multiple-cursors peg eval-sexp-fu seq spinner queue pkg-info bind-map packed auto-complete popup flycheck-joker flycheck org-plus-contrib bind-key hydra cider clojure-mode paredit company iedit smartparens highlight f evil goto-chg projectile epl helm helm-core yasnippet avy magit magit-popup git-commit ghub let-alist with-editor async markdown-mode js2-mode powerline s sql-indent git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl solarized-theme zenburn-theme yaml-mode ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+;;  '(pos-tip-background-color "#eee8d5")
+;;  '(pos-tip-foreground-color "#586e75")
+;;  '(safe-local-variable-values (quote ((cider-default-cljs-repl . harmonium))))
+;;  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+;;  '(term-default-bg-color "#fdf6e3")
+;;  '(term-default-fg-color "#657b83")
+;;  '(vc-annotate-background-mode nil)
+;;  '(weechat-color-list
 ;;    (quote
-;;     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
-;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
-;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
+;;     (unspecified "#fdf6e3" "#eee8d5" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#657b83" "#839496")))
+;;  '(xterm-color-names
+;;    ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
+;;  '(xterm-color-names-bright
+;;    ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
 
-;; (defun dotspacemacs/emacs-custom-settings ()
-;;   "Emacs custom settings.
-;; This is an auto-generated function, do not modify its content directly, use
-;; Emacs customize menu instead.
-;; This function is called at the very end of Spacemacs initialization."
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(safe-local-variable-values
-;;    (quote
-;;     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
-;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
-;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
 ;; (custom-set-faces
 ;;  ;; custom-set-faces was added by Custom.
 ;;  ;; If you edit it by hand, you could mess it up, so be careful.
 ;;  ;; Your init file should contain only one such instance.
 ;;  ;; If there is more than one, they won't work right.
 ;;  )
-;; )
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(package-selected-packages
-;;    (quote
-;;     (powerline markdown-mode parent-mode projectile request haml-mode gitignore-mode flx magit magit-popup git-commit with-editor smartparens iedit anzu evil goto-chg undo-tree f diminish web-completion-data dash pos-tip company hydra inflections edn multiple-cursors paredit s peg eval-sexp-fu highlight cider seq spinner queue pkg-info clojure-mode epl bind-map bind-key yasnippet packed helm avy helm-core async auto-complete popup window-numbering spacemacs-theme ido-vertical-mode quelpa package-build yaml-mode orgit zenburn-theme ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit symon string-inflection spaceline solarized-theme smeargle slim-mode scss-mode sayid sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el password-generator paradox org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide impatient-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav editorconfig dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
-;;  '(safe-local-variable-values
-;;    (quote
-;;     ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
-;;             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
-;;             (figwheel-sidecar.repl-api/cljs-repl))")))))
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(default ((t (:foreground "#DCDCCC" :background "#3F3F3F")))))
+
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(compilation-message-face (quote default))
- '(cua-global-mark-cursor-color "#2aa198")
- '(cua-normal-cursor-color "#657b83")
- '(cua-overwrite-cursor-color "#b58900")
- '(cua-read-only-cursor-color "#859900")
- '(custom-safe-themes
-   (quote
-    ("15348febfa2266c4def59a08ef2846f6032c0797f001d7b9148f30ace0d08bcf" "e11569fd7e31321a33358ee4b232c2d3cf05caccd90f896e1df6cab228191109" "c3e6b52caa77cb09c049d3c973798bc64b5c43cc437d449eacf35b3e776bf85c" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "6de7c03d614033c0403657409313d5f01202361e35490a3404e33e46663c2596" "5e3fc08bcadce4c6785fc49be686a4a82a356db569f55d411258984e952f194a" "2a739405edf418b8581dcd176aaf695d319f99e3488224a3c495cb0f9fd814e3" default)))
- '(evil-want-Y-yank-to-eol nil)
- '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
- '(highlight-symbol-colors
-   (--map
-    (solarized-color-blend it "#fdf6e3" 0.25)
-    (quote
-     ("#b58900" "#2aa198" "#dc322f" "#6c71c4" "#859900" "#cb4b16" "#268bd2"))))
- '(highlight-symbol-foreground-color "#586e75")
- '(highlight-tail-colors
-   (quote
-    (("#eee8d5" . 0)
-     ("#B4C342" . 20)
-     ("#69CABF" . 30)
-     ("#69B7F0" . 50)
-     ("#DEB542" . 60)
-     ("#F2804F" . 70)
-     ("#F771AC" . 85)
-     ("#eee8d5" . 100))))
- '(hl-bg-colors
-   (quote
-    ("#DEB542" "#F2804F" "#FF6E64" "#F771AC" "#9EA0E5" "#69B7F0" "#69CABF" "#B4C342")))
- '(hl-fg-colors
-   (quote
-    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
- '(magit-diff-use-overlays nil)
- '(package-selected-packages
-   (quote
-    (flycheck-joker flycheck org-plus-contrib bind-key hydra cider clojure-mode paredit company iedit smartparens highlight f evil goto-chg projectile epl helm helm-core yasnippet avy magit magit-popup git-commit ghub let-alist with-editor async markdown-mode js2-mode powerline s sql-indent git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl solarized-theme zenburn-theme yaml-mode ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
- '(pos-tip-background-color "#eee8d5")
- '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
-    ((cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
+    ((cider-default-cljs-repl . figwheel)
+     (cider-cljs-repl-types
+      (harmonium "(do (require 'figwheel-sidecar.repl-api)
             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
-            (figwheel-sidecar.repl-api/cljs-repl))")
-     (cider-cljs-lein-repl . "(do (require 'figwheel-sidecar.repl-api)
-            (figwheel-sidecar.repl-api/start-figwheel!)
-            (figwheel-sidecar.repl-api/cljs-repl))")
-     (cider-cljs-lein-repl . "(do (require '[infusion.figwheel :refer [start-fw stop-fw cljs]]) (start-fw) (cljs))")
-     (cider-cljs-lein-repl . "(do (start-fw) (cljs))")
-     (cider-default-cljs-repl "Figwheel"))))
- '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
- '(term-default-bg-color "#fdf6e3")
- '(term-default-fg-color "#657b83")
- '(vc-annotate-background-mode nil)
- '(weechat-color-list
-   (quote
-    (unspecified "#fdf6e3" "#eee8d5" "#990A1B" "#dc322f" "#546E00" "#859900" "#7B6000" "#b58900" "#00629D" "#268bd2" "#93115C" "#d33682" "#00736F" "#2aa198" "#657b83" "#839496")))
- '(xterm-color-names
-   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
- '(xterm-color-names-bright
-   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
+            (figwheel-sidecar.repl-api/cljs-repl))"))
+     (javascript-backend . tern)
+     (javascript-backend . lsp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+)

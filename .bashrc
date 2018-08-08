@@ -20,6 +20,11 @@ function rc {
     . ~/.bashrc
 }
 
+function rcl {
+    vi ~/.local-bashrc
+    . ~/.local-bashrc
+}
+
 # see also LESSOPEN below
 export LESS=' -R '
 
@@ -95,7 +100,7 @@ alias ggn='git --no-pager grep'
 # Show files changed in each commit:
 alias changes='git log --pretty=oneline --abbrev-commit --graph --stat'
 # alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads"
-alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads | sed 's/refs\/heads\///'"
+alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads | sed 's/refs\/heads\///' | tail -20"
 alias todos='gg -A 2 -e TODO -e THINK -e FIXME'
 alias todos-untracked='gg --untracked -e TODO -e THINK -e FIXME'
 alias prints-untracked='gg --untracked -e println'
@@ -298,7 +303,8 @@ alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 # export DISPLAY=:0.0
 
 # fuzzy finder -- I haven't actually liked it that much.
-# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# 2018-06 reinstalling for use with extracto tmux plugin
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # what computer am I using?
 alias whereami='echo `uname -n` "(" `uname` ")"'
@@ -318,6 +324,9 @@ function epr {
     echo $curdir
     $curemacs --maximized "$curdir/project.clj" &
 }
+
+# Quick alias: pss = "processes matching ..."
+alias pss="ps aux | grep "
 
 ######### Mac-specific ########
 
@@ -500,6 +509,10 @@ function linux-bashrc {
     export PATH
 
     alias parens="xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright' &"
+
+    # 'qpaeq' is way too hard to remember
+    alias pulseaudio-equalizer="qpaeq"
+    alias eq="qpaeq"
 
 }
 

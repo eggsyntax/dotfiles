@@ -34,6 +34,14 @@ set keymap vi-insert
 # (since HISTCONTROL is ignorespace or ignoreboth, see .bashrc)
 "\C-g": "\eI history -s \C-j"
 
+# Backspace is *usually* ctrl-h.
+# https://unix.stackexchange.com/questions/264791/ctrl-backspace-and-ctrl-delete-in-bash
+"\C-h": backward-kill-word
+
 $if Bash
 Space: magic-space
 $endif
+
+# TO RELOAD .INPUTRC:
+# bind -f ~/.inputrc
+# or (sometimes) C-x C-r
