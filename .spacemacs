@@ -442,6 +442,23 @@ before packages are loaded. If you are unsure, you should try in setting them in
                spacemacs-jump-handlers-cider-repl-mode))
     (set x '(clj-find-var))))
 
+;; Toggle reader macro sexp comment
+;; Toggles the #_ characters at the start of an expression
+(defun clojure-toggle-reader-comment-sexp ()
+  (interactive)
+  (let* ((point-pos1 (point)))
+    (evil-insert-line 0)
+    (let* ((point-pos2 (point))
+           (cmtstr "#_")
+           (cmtstr-len (length cmtstr))
+           (line-start (buffer-substring-no-properties point-pos2 (+ point-pos2 cmtstr-len))))
+      (if (string= cmtstr line-start)
+          (delete-char cmtstr-len)
+        (insert cmtstr))
+      ;; (goto-char point-pos1)
+      (evil-normal-state)
+      )))
+
 ;; TARGET: egg-bindings
 (defun set-egg-key-bindings ()
   "All my personal keybindings and key chords"
@@ -712,6 +729,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd "SPC s ,") 'format-data)
     (define-key evil-normal-state-map (kbd "SPC i r") 'indent-region)
     (define-key evil-normal-state-map (kbd (right-mod ",")) 'clojure-toggle-keyword-string) ; toggle between str and kwd
+    (define-key evil-normal-state-map (kbd (right-mod "t")) 'transpose-chars)
     (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
     (define-key evil-normal-state-map (kbd (left-mod "-")) 'jump-past-hyphen)
     (define-key evil-normal-state-map (kbd (left-mod "_")) 'jump-past-hyphen-back)
@@ -736,6 +754,10 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; Use @ag's clj-find-var
     (define-key evil-normal-state-map (kbd "g c") 'clj-find-var)
     (define-key evil-normal-state-map (kbd "g d") 'clj-find-var)
+
+    ;; C-tab to do #_ comment
+    (define-key evil-normal-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
+    (define-key evil-insert-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
 
     )
 

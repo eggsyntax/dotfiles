@@ -153,6 +153,9 @@ function branchlog {
     git log $branchname --not $(git for-each-ref --format='%(refname)' refs/heads/ | grep -v "refs/heads/$branchname")
 }
 
+# List all abandoned commits (eg dropped stashes)
+alias git-lost='git fsck --no-reflog | awk "/dangling commit/ {print $3}" | more'
+
 ################ End git stuff ###################
 
 function snitchless {
@@ -322,11 +325,18 @@ function epr {
     curdir=`pwd`
     curemacs=`which emacs`
     echo $curdir
+    # TODO can only run one as daemon at a time? So problematic in a microservice environment
+    # $curemacs --daemon --maximized "$curdir/project.clj" &
     $curemacs --maximized "$curdir/project.clj" &
 }
 
 # Quick alias: pss = "processes matching ..."
-alias pss="ps aux | grep "
+alias pss="ps aux | grep -i"
+
+### Docker aliases:
+
+alias dk=`which docker`
+alias dkc=`which docker-compose`
 
 ######### Mac-specific ########
 
