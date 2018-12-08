@@ -729,7 +729,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; (define-key evil-normal-state-map (kbd "SPC s .") ";s/} {/}\n{/g")
     (define-key evil-normal-state-map (kbd "SPC s ,") 'format-data)
     (define-key evil-normal-state-map (kbd "SPC i r") 'indent-region)
-    (define-key evil-normal-state-map (kbd (right-mod ",")) 'clojure-toggle-keyword-string) ; toggle between str and kwd
+    (define-key evil-normal-state-map (kbd (right-mod ",")) 'clojure-toggle-keyword-string) ; toggle (ie cycle) between str and kwd
     (define-key evil-normal-state-map (kbd (right-mod "t")) 'transpose-chars)
     (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
     (define-key evil-normal-state-map (kbd (left-mod "-")) 'jump-past-hyphen)
