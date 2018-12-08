@@ -4,7 +4,7 @@ Preferences: Dvorak, trackpad speed, unnatural scroll
 Download & install: chrome, git, dropbox, Little Snitch, iterm2, macvim
 Turn off mail and web results in spotlight preferences
 
-Dotfiles are under source control at:
+Dotfiles are under source control here, and should be symbolically linked from ~:
     https://github.com/eggsyntax/dotfiles.git
 
 DNS servers:

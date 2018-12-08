@@ -38,8 +38,8 @@
 ** LastPass
 ** Dropbox
 *** Then clone dotfiles
-**** Dropbox/dotfiles-linux.git
-**** ln -s dotfiles-linux/[.spacemacs, .vimrc, .bashrc]
+**** https://github.com/eggsyntax/dotfiles
+**** ln -s dotfiles/[.spacemacs, .vimrc, .bashrc, .clojure, etc]
 ** Spacemacs
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 ** DarkTable

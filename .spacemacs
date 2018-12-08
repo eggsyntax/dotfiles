@@ -521,6 +521,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "S-<down>") 'evil-scroll-line-down)
 
 
+  ;; SM on mac has stopped recognizing ";" as evil-ex
+  (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+  ;; and ""
+  (setq-default dotspacemacs-major-mode-leader-key ",")
+  ;; (define-key evil-normal-state-map (kbd ",") 'major-mode-cmd)
+
   ;; TODO for use with REPL auto-save if I ever get around to that
   (defun show-time ()
     (interactive)
