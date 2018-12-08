@@ -28,8 +28,10 @@ function rcl {
 # see also LESSOPEN below
 export LESS=' -R '
 
-# Clojure
+##### Clojure
 alias lr="lein repl :start :port 6666"
+alias rebl='clojure -Sdeps "{:deps {com.bhauman/rebel-readline {:mvn/version \"0.1.4\"}}}" -m rebel-readline.main'
+alias   rl='clojure -Sdeps "{:deps {com.bhauman/rebel-readline {:mvn/version \"0.1.4\"}}}" -m rebel-readline.main'
 # Speed up leiningen start time:
 export LEIN_FAST_TRAMPOLINE=y
 
