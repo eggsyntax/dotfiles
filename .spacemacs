@@ -13,7 +13,7 @@
 ;; * C-c C-c to commit your changes.
 
 (defun right-mod (keychar)
-  "Return the appropriate modkey + keychar reference (ie for (right-mod \"*\",
+  "Return the appropriate modkey + keychar reference (ie for (right-mod '*',
 'M-*' on mac, 'C-*' on linux [because I swap alt & ctrl on linux])"
   (interactive)
   (if (string-equal system-type "darwin")
@@ -21,7 +21,7 @@
     (concat "C-" keychar)))
 
 (defun left-mod (keychar)
-  "Return the appropriate modkey + keychar reference (ie for (right-mod \"*\",
+  "Return the appropriate modkey + keychar reference (ie for (left-mod '*',
 'M-*' on mac, 'C-*' on linux [because I swap alt & ctrl on linux])"
   (interactive)
   (if (string-equal system-type "darwin")
@@ -88,10 +88,11 @@ values."
      ;; markdown
      ;; org
      ;; spell-checking
-     (treemacs :init
+     (treemacs :init ; neotree replacement
                (with-eval-after-load 'winum
-                 (define-key winum-keymap (kbd "M-0")
-                   #'treemacs-select-window))) ; neotree replacement
+                 (define-key winum-keymap (kbd "M-0") #'treemacs-select-window)
+                 ;; Don't notify about treemacs refresh; it gets in the way of repl-started msg
+                 (setq treemacs-silent-refresh t)))
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -514,8 +515,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "H-<up>") 'evil-scroll-page-up)
 
   ;; Shift up/down arrows should scroll buffer up/down a line
-  (define-key evil-normal-state-map (kbd "S-<up>") 'evil-scroll-line-up)
-  (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
+  ;; (define-key evil-normal-state-map (kbd "S-<up>") 'evil-scroll-line-up)
+  ;; (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
+  (global-set-key (kbd "S-<up>") 'evil-scroll-line-up)
+  (global-set-key (kbd "S-<down>") 'evil-scroll-line-down)
+
 
   ;; SM on mac has stopped recognizing ";" as evil-ex
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
@@ -700,9 +704,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (left-mod "w")) 'evil-lisp-state-wrap) ; wrap in sexp
     )
 
-  (with-eval-after-load 'neotree-mode
-    (define-key evil-normal-state-map (kbd "TAB") 'neotree-enter))
-
   (defun format-data (&optional arg)
     "Format typical clj/edn data. Newline after comma, newline between } and {,
     and then indent."
@@ -743,6 +744,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-normal-state-map (kbd (left-mod "f")) 'cider-format-region-or-buffer)
     (evil-leader/set-key "m s X" 'cider-restart)
+    (evil-leader/set-key "m s h" 'cider-repl-history)
 
     ;; Experiment w/ Sayid
     ;; (sayid-setup-package)
@@ -764,6 +766,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; C-tab to do #_ comment
     (define-key evil-normal-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
     (define-key evil-insert-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
+
+    (evil-define-key '(normal insert) 'clojure-mode-map
+      (kbd  "s-t") 'projectile-toggle-between-implementation-and-test)
+    ;; TODO does the above work or do I need to do:
+    ;; (define-key evil-normal-state-map (kbd "s-t") 'projectile-toggle-between-implementation-and-test)
+    ;; (define-key evil-insert-state-map (kbd "s-t") 'projectile-toggle-between-implementation-and-test)
 
     )
 
@@ -804,6 +812,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;;     (error nil)))
 
     (define-key evil-normal-state-map (kbd "K") 'idris-docs-at-point)
+    )
+
+  (with-eval-after-load 'org
+    (evil-define-key '(normal insert) 'org-mode-map
+      (kbd "M-<up>") 'outline-up-heading)
+    (evil-define-key '(normal insert) 'org-mode-map
+      (kbd "M-<down>") 'outline-forward-same-level)
     )
 
   ;;;;;;;;   End key bindings ;;;;;;;
@@ -933,10 +948,10 @@ you should place your code here."
   ;; (add-hook 'lisp-mode-hook #'aggressive-indent-mode)
 
   ;; Basic org mode commands:
-  (evil-leader/set-key "o s" 'org-store-link)
-  (evil-leader/set-key "o a" 'org-agenda)
-  (evil-leader/set-key "o c" 'org-capture)
-  (evil-leader/set-key "o b" 'org-iswitchb)
+  ;; (evil-leader/set-key "o s" 'org-store-link)
+  ;; (evil-leader/set-key "o a" 'org-agenda)
+  ;; (evil-leader/set-key "o c" 'org-capture)
+  ;; (evil-leader/set-key "o b" 'org-iswitchb)
 
   (setq cider-repl-display-help-banner nil)
   ;; Don't show cider info on the modeline
@@ -952,9 +967,6 @@ you should place your code here."
   (setq mode-name nil)
   (setq mode-line-modes nil)
 
-
-  ;; Don't show hidden files by default in neotree
-  (setq neotree-hidden-file-toggle nil)
 
   ;; Don't show minor mode logos on the mode-line
   (setq spaceline-minor-modes-p nil)
@@ -1099,6 +1111,13 @@ you should place your code here."
   (require 'magit-gitflow)
   (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
 
+  ;; by default, magit restores the previous window layout on quit (& note that
+  ;; 'quit' actually means bury the buffer, leaving the magit buffers open).
+  ;; this is done by the default value of magit-bury-buffer-function, which is
+  ;; magit-restore-window-configuration. Set magit-bury-buffer-function to nil
+  ;; instead so that won't happen. See https://magit.vc/manual/magit.html#Quitting-Windows
+  (setq magit-bury-buffer-function 'quit-window)
+
   ;; And finally, maximize frame
   (spacemacs/toggle-maximize-frame-on)
 
@@ -1113,6 +1132,7 @@ you should place your code here."
   ;;   (sort
   ;;    (spacemacs/helm-project-smart-do-search)
   ;;    '<))
+
 
   )
 ;; TARGET: ENDEGG

@@ -13,7 +13,8 @@
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.1.0-SNAPSHOT"]
-                        [datawalk "0.1.17-SNAPSHOT"]
+                        [datawalk "0.1.12"]
+                        ;; [datawalk "0.1.17-SNAPSHOT"]
                         ;; [datawalk "0.1.18-SNAPSHOT"]
                         ;; [datawalk "1.0.0-SNAPSHOT"]
 
@@ -49,13 +50,18 @@
                                  [egg-cljc-utils.core] ; egg utils
                                  )
                       (println "Injections complete.")
+                      ;; see http://insideclojure.org/2018/06/21/tagged-literal/
+                      (set! *default-data-reader-fn* tagged-literal)
+                      (println "Defined default reader for tagged literals.")
                       ]
+         :jvm-opts ["-Ddatomic.memcachedServers=127.0.0.1:11211"]
 
          ;; Mac:
          ;; :test-refresh {:notify-command ["terminal-notifier" "-title" "lein test-refresh" "-message"]
          ;; Linux:
          :test-refresh {:notify-command ["sudo" "/home/egg/bin/test-refresh-notify"]
                         :quiet true
-                        :notify-on-success true}}
+                        :notify-on-success true}
+         }
 
  }

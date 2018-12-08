@@ -14,6 +14,9 @@ alias grep='grep --color=auto'
 alias tf='less +F' # better than tail -f
 alias serve='python -m SimpleHTTPServer' # Must be followed by a port of your choice.
 
+alias agc="ag --pager less --clojure"
+alias ag="ag --pager less"
+
 # Quick alias to edit then source .bashrc
 function rc {
     vi ~/.bashrc
@@ -103,8 +106,12 @@ alias ggn='git --no-pager grep'
 alias changes='git log --pretty=oneline --abbrev-commit --graph --stat'
 # alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads"
 alias recentbranches="git for-each-ref --sort=committerdate --format='%(committerdate:short) %(refname)' refs/heads | sed 's/refs\/heads\///' | tail -20"
-alias todos='gg -A 2 -e TODO -e THINK -e FIXME'
-alias todos-untracked='gg --untracked -e TODO -e THINK -e FIXME'
+alias todos='gg -A 2 -e TODO -e THINK -e FIXME -e XXX'
+# Problem with this one is that --untracked *includes* untracked, rather than doing *just* untracked
+# alias todos-untracked='gg --untracked -e TODO -e THINK -e FIXME -e XXX'
+# Don't love this next, it's too makeshift.
+alias todos-untracked="git diff | grep -v '^\-' | grep --after-context=2 -e TODO -e XXX -e '^diff '"
+# TODO Here's a potentially promising route for todos-untracked: https://stackoverflow.com/questions/13955390/git-grep-but-restricted-to-new-or-modified-files-in-the-index
 alias prints-untracked='gg --untracked -e println'
 # alias todos-by-person='git ls-tree -r -z --name-only HEAD -- */* | xargs -0 -n1 git blame -f | grep -e TODO -e THINK' -e FIXME
 # alias todos-mine='todos-by-person | grep "Egg "'
@@ -116,7 +123,7 @@ alias prints-untracked='gg --untracked -e println'
 
 alias todos-mine='git grep -l -e TODO -e THINK . | xargs -n1 git blame -f -n -w | grep "$(git config user.name)" | grep -e TODO -e THINK | sed "s/.\{9\}//" | sed "s/(.*)[[:space:]]*//"'
 alias prints-mine='git grep -l println . | xargs -n1 git blame -f -n -w | grep "$(git config user.name)" | grep -e println | sed "s/.\{9\}//" | sed "s/(.*)[[:space:]]*//"'
-alias td='todos-mine'
+alias td='todos-untracked && echo && echo "*****" && echo && todos-mine'
 
 function newbranch {
     git checkout -b $1
@@ -261,6 +268,11 @@ fi
 # And a local /bin and /script are nice.
 PATH="${HOME}/bin:${HOME}/scripts:${PATH}"
 
+# Add path for python/pip user installs
+# See https://github.com/awslabs/aws-sam-cli/blob/develop/docs/installation.rst#using-pip
+USER_BASE_PATH=$(python -m site --user-base)
+PATH="${PATH}:$USER_BASE_PATH/bin"
+
 export PATH
 
 ##################   OPTIONS    ####################
@@ -309,7 +321,7 @@ alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 
 # fuzzy finder -- I haven't actually liked it that much.
 # 2018-06 reinstalling for use with extracto tmux plugin
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # what computer am I using?
 alias whereami='echo `uname -n` "(" `uname` ")"'
