@@ -140,7 +140,7 @@ ServerAliveInterval 240
 **** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
 *** 2. config file for xkd, at 'sudo vi /usr/share/X11/xkb/keycodes/evdev'
 **** Note -- may want to make that file a symbolic link to one in dotfiles
-**** Switch the keycodes for the two keys, eg if former containes
+**** Switch the keycodes for the two keys, eg if former contains
       <RCTL> = 105;
       <RALT> = 108;
      Then we switch it to:
@@ -148,61 +148,61 @@ ServerAliveInterval 240
       <RALT> = 105;
       & now we have overridden keycodes at low level.
 *** 3. And then to set left & rt control to l & r parens:
-****  Copy dotfiles/linux-etc-rc.local to /etc/rc.local (so that it runs once on startup)
+****  Link dotfiles/linux-.bash_login to ~/.bash_login (so that it runs once on startup)
 **** Previous version, in .bashrc (which is bad because it runs on every new terminal window etc)):
 ***** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
 ****** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
 ****** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
 *** 4. Everything below this is showing my work; only the above is necessary (for the P51).
-** P51: right-alt is 108, right-ctrl is 105.
-** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
-*** But maybe better to handle it all in the same place.
-** Handled by: xmodmap (basic key customization), xcape (tweak modifier keys), and xkb (?).
-** Documentation
-*** Example webpages:
-**** http://tiborsimko.org/capslock-escape-control.html
-**** http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful/
-**** https://flenniken.net/blog/xcape/
-**** xcape + xkb: https://unix.stackexchange.com/questions/326904/make-an-ordinary-key-act-as-modifier-with-xcape-and-xkb
-**** http://emacsredux.com/blog/2013/11/12/a-crazy-productivity-boost-remap-return-to-control/
-**** https://superuser.com/questions/679284/how-do-i-get-a-valid-xmodmap-while-using-xcape
-*** Useful web pages:
-**** Key swapping with xkb config file (workaround for xmodmap bug):
-***** https://bugs.launchpad.net/ubuntu/+source/xorg-server/+bug/524774/comments/12
-***** Crap, this ALMOST works for me. But now my paren modificatinos with xcape are messed up --
-****** ctrl_l becomes (((((
-***** SOLVED! I had multiple instances of xcape running.
-**** Keyboard configuration in Xorg: https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg
-**** "An Unreliable Guide to XKB Configuration": https://www.charvolant.org/doug/xkb/
-**** XKB guide: https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
-**** https://unix.stackexchange.com/questions/158765/using-xcape-xmodmap-to-change-some-keys
-*** Reference:
-**** List of keysyms (ie names for keys):
-***** https://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h
-**** List of built-in rules (?):
-***** https://github.com/Webconverger/webc/blob/master/usr/share/X11/xkb/rules/base.lst
-*** Modifier keys -> parens:
-**** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
-**** Great explanation of customizing keyboard layout with xmodmap! 1st I've ever seen that clarifies the *process*.
-***** https://forum.xfce.org/viewtopic.php?pid=40253#p40253
-**** Xcape on github: https://github.com/alols/xcape
-** xcape: https://flenniken.net/blog/xcape/
-*** install:
-**** sudo apt install git gcc make pkg-config libx11-dev libxtst-dev libxi-dev
-**** build:
-***** cd ~/tmp
-***** git clone https://github.com/alols/xcape.git
-***** cd xcape
-***** make
-***** sudo make install
-*** Approximate xcape command (in startup, or in .bashrc with check to make sure only run once):
-**** xcape -e 'Super_L=Shift_L|parenleft;Super_R=Shift_R|parenright;Caps_Lock=Escape'
-**** Or maybe...
-**** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright;Caps_Lock=Escape'
-**** xcape -e 'Alt_R=Control_R;Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
-**** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
-***** xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
-**** I've seen the paren ones work, but not the caps<->escape.
+**** P51: right-alt is 108, right-ctrl is 105.
+**** Some of the basic swaps can be handled via the settings GUI (or tweak-tool)
+***** But maybe better to handle it all in the same place.
+**** Handled by: xmodmap (basic key customization), xcape (tweak modifier keys), and xkb (?).
+**** Documentation
+***** Example webpages:
+****** http://tiborsimko.org/capslock-escape-control.html
+****** http://www.economyofeffort.com/2014/08/11/beyond-ctrl-remap-make-that-caps-lock-key-useful/
+****** https://flenniken.net/blog/xcape/
+****** xcape + xkb: https://unix.stackexchange.com/questions/326904/make-an-ordinary-key-act-as-modifier-with-xcape-and-xkb
+****** http://emacsredux.com/blog/2013/11/12/a-crazy-productivity-boost-remap-return-to-control/
+****** https://superuser.com/questions/679284/how-do-i-get-a-valid-xmodmap-while-using-xcape
+***** Useful web pages:
+****** Key swapping with xkb config file (workaround for xmodmap bug):
+******* https://bugs.launchpad.net/ubuntu/+source/xorg-server/+bug/524774/comments/12
+******* Crap, this ALMOST works for me. But now my paren modificatinos with xcape are messed up --
+******** ctrl_l becomes (((((
+******* SOLVED! I had multiple instances of xcape running.
+****** Keyboard configuration in Xorg: https://wiki.archlinux.org/index.php/Keyboard_configuration_in_Xorg
+****** "An Unreliable Guide to XKB Configuration": https://www.charvolant.org/doug/xkb/
+****** XKB guide: https://medium.com/@damko/a-simple-humble-but-comprehensive-guide-to-xkb-for-linux-6f1ad5e13450
+****** https://unix.stackexchange.com/questions/158765/using-xcape-xmodmap-to-change-some-keys
+***** Reference:
+****** List of keysyms (ie names for keys):
+******* https://cgit.freedesktop.org/xorg/proto/x11proto/plain/keysymdef.h
+****** List of built-in rules (?):
+******* https://github.com/Webconverger/webc/blob/master/usr/share/X11/xkb/rules/base.lst
+***** Modifier keys -> parens:
+****** https://unix.stackexchange.com/questions/320269/change-behaviour-of-modifier-keys
+****** Great explanation of customizing keyboard layout with xmodmap! 1st I've ever seen that clarifies the *process*.
+******* https://forum.xfce.org/viewtopic.php?pid=40253#p40253
+****** Xcape on github: https://github.com/alols/xcape
+**** xcape: https://flenniken.net/blog/xcape/
+***** install:
+****** sudo apt install git gcc make pkg-config libx11-dev libxtst-dev libxi-dev
+****** build:
+******* cd ~/tmp
+******* git clone https://github.com/alols/xcape.git
+******* cd xcape
+******* make
+******* sudo make install
+***** Approximate xcape command (in startup, or in .bashrc with check to make sure only run once):
+****** xcape -e 'Super_L=Shift_L|parenleft;Super_R=Shift_R|parenright;Caps_Lock=Escape'
+****** Or maybe...
+****** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright;Caps_Lock=Escape'
+****** xcape -e 'Alt_R=Control_R;Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
+****** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
+******* xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
+****** I've seen the paren ones work, but not the caps<->escape.
 * Keyboard shortcuts:
 ** settings/devices/keyboard:
 ** Set win/space to open overview

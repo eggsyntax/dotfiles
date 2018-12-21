@@ -520,7 +520,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "S-<up>") 'evil-scroll-line-up)
   (global-set-key (kbd "S-<down>") 'evil-scroll-line-down)
 
-
   ;; SM on mac has stopped recognizing ";" as evil-ex
   (define-key evil-normal-state-map (kbd ";") 'evil-ex)
   ;; and ""

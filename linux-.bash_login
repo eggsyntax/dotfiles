@@ -1,0 +1,4 @@
+echo "Running .bash_login"
+echo "Running xcape"
+xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright' &
+
