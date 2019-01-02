@@ -1,4 +1,5 @@
-" Add/remove plugins. http://www.vim.org/scripts/script.php?script_id=2332
+" Add/remove plugins. https://github.com/tpope/vim-pathogen
+"   Install: mkdir -p ~/.vim/autoload ~/.vim/bundle &&  curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
 

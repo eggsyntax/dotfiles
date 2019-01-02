@@ -6,25 +6,28 @@
 *** Doesn't solve that option, but be aware of firejail for sandboxing apps
 **** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
 
-* Initial setup:
+* Installation:
 ** Creating bootable USB stick on mac: https://linuxnewbieguide.org/how-to-put-a-linux-iso-onto-a-usb-stick-and-make-it-bootable-on-a-mac/
 ** Having some trouble with getting it to boot on the machine. See also linux-on-p51.org
+** Outcome: easiest to just burn to DVD and boot from that
 * Enable repos:
 ** sudo -i software-properties-gtk
 *** In "other software": add (s/zesty/current-release-nickname/): deb http://archive.canonical.com/ubuntu zesty partner
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 *** Additional Drivers -- autosearch
-* Preferences: dvorak
+* Preferences:
+** dvorak
+** Displays/Night Light
 * sudo apt install:
-** vim, gnome-shell-extension-dashtodock, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached memcached, xcape
-** tmux, htop, make, chrome-gnome-shell, silversearcher-ag
+** vim, gnome-shell-extension-dashtodock, xcape, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached memcached
+** tmux, htop, make, chrome-gnome-shell, silversearcher-ag, leiningen, autojump, tmuxinator, gnome-sushi (file previewer)
 ** tkinter for python (for /usr/bin/player): sudo apt install python-tk
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
 * Gnome-tweak-tool to change various settings
-** Under keyboard:
-*** Under caps-lock I can switch caps & esc
+** Under keyboard / 'additional layout options'
+*** caps-lock / 'swap ESC and caps lock'
 *** Under ctrl-key-position I can switch ctrl and cmd
 *** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
 ** Under fonts: can scale fonts
@@ -32,7 +35,7 @@
 ** vim: pathogen -
 *** mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 ** mkdir -p ~/tmp/vim_backup
-** cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
+** Necessary? cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
 * Download & install:
 ** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
 ** LastPass
@@ -42,32 +45,26 @@
 **** ln -s dotfiles/[.spacemacs, .vimrc, .bashrc, .clojure, etc]
 ** Spacemacs
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-** DarkTable
-*** sudo add-apt-repository ppa:pmjdebruijn/darktable-release && sudo apt-get update
 ** autojump
 *** have to manually set up on ubuntu (done in .bashrc)
-*** have to manually set up on ubuntu
-
-** Bleachbit and/or Stacer (optimizer)
-
-*** Stacer (sourceforge, ick) - https://github.com/oguzhaninan/Stacer/releases
-** Redshift
-** TODO NitroShare (file sharing to mac)
-** Indicator Multiload — monitor system resources
-*** sudo apt install indicator-multiload
 ** Clipboard Manager:
 *** CopyQ:
 **** sudo add-apt-repository ppa:hluk/copyq
-**** sudo apt update
-**** sudo apt install copyq
+**** sudo apt update && sudo apt install copyq
 *** Or look for a faster one
+** cdhist (aka `cd --`)
+*** have to have setuptools beforehand:
+sudo apt install python-setuptools
+*** & then
+     git clone http://github.com/bulletmark/cdhist
+     cd cdhist
+     sudo make install
 ** TODO Conky - Very nice, themable system info/clock/weather/whatever overlay:
 *** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
 *** https://devuno.deviantart.com/art/Dirty-Conky-179991956
 *** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
-** NO: BackInTime - rsync-based backup util that will back up over ssh
 ** Virtualbox -- potential problems -- see linux-on-p51.org
 ** Aptik to auto-reinstall apps & ppas after upgrade:
 *** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
@@ -76,11 +73,6 @@
 *** sudo apt install aptik
 *** sudo apt install aptik-gtk (important! for GUI)
 
-* Work (TI) installs:
-** sudo apt install rabbitmq-server
-** sudo apt install curl
-** sudo apt install sassc
-** sudo apt install openconnect
 * Customization tweaks:
 ** ~/.ssh/config: add
 Host *
@@ -108,7 +100,7 @@ ServerAliveInterval 240
 *** Theme:
 **** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
 *** (Gnome) extensions::
-**** Show indicators on top bar, not just that little bottom tray.
+**** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
 ***** https://extensions.gnome.org/extension/615/appindicator-support/
 ***** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
 **** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
@@ -116,8 +108,10 @@ ServerAliveInterval 240
 **** openweather
 **** touchpad indicator
 **** ubuntu appindicators
-**** steal my focus
+**** Indicator Multiload — monitor system resources
+***** sudo apt install indicator-multiload
 **** OLD:
+***** steal my focus
 ***** gnome-sushi -- preview from file browser with space bar
 
 *** Other:
@@ -128,7 +122,7 @@ ServerAliveInterval 240
 ***** vim ~/.config/user-dirs.dirs
 ***** sudo vim /etc/xdg/user-dirs.defaults
 ***** via http://www.arj.no/2017/01/03/nautilus-bookmarks/
-** Add audio eq: (may have caused problems?)
+** Add audio eq (may possibly cause problems?):
 *** sudo apt install pulseaudio-equalizer
 *** https://askubuntu.com/a/982556
 *** but then individual applications may not be using the eq. Install volume control
@@ -210,6 +204,7 @@ ServerAliveInterval 240
 ** Set win/space to open overview
 ** Close: super-q
 * Clojure:
+** 2019: `sudo apt install clojure` is enough; no need to manually install Java
 ** Java:
 *** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
        sudo apt-get install python-software-properties
@@ -222,10 +217,9 @@ ServerAliveInterval 240
 **** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
-
 * Terminal:
 ** Favorites so far:
-*** Default Gnome terminal
+*** Default Gnome terminal + tmux & tmuxinator
 *** Pantheon terminal
 **** Installation: https://askubuntu.com/a/631201/325838
 ***** sudo add-apt-repository ppa:elementary-os/stable
@@ -237,13 +231,13 @@ ServerAliveInterval 240
 **** Decent search
 * Backup:
 ** Strategy:
-*** Aptik can be (manually) used to back up most of the non-home config
-*** TODO root crontab calls aptik, which backs up all settnigs not in ~/home/ to ~/aptik-settings-backup
-*** TODO etckeeper puts /etc under version control (but does not push it anywhere else, because it has sekirt stuff).
+*** Aptik can be used to back up most of the non-home config
+**** TODO root crontab calls aptik, which backs up all settings not in ~/home/ to ~/aptik-settings-backup
+*** TODO etckeeper puts /etc under version control (but does not push it anywhere else, because it has sekrit stuff).
 **** Will automatically commit changes daily.
 **** https://opensource.com/article/17/3/etckeeper-version-control
 **** https://help.ubuntu.com/lts/serverguide/etckeeper.html
-*** deja dup backs ~/home/ (including aptik-settings-backup) to iMac.
+*** deja dup (just called `backup` in ubuntu) backs ~/home/ (including aptik-settings-backup) to iMac.
 *** Root backups (not clones): rsync
 **** Run as root:
 ***** rsync -axHAW --progress --numeric-ids --info=progress2 / egg@192.168.1.222:/Volumes/Unused/laptop-root-backup/
@@ -257,6 +251,4 @@ ServerAliveInterval 240
 *****  --backup-ppa --backup-packages --backup-users --backup-configs --backup-themes --backup-crontab
 *** There's also dconf-backup (maybe aptik doesn't do dconf? :( )
 ****  https://github.com/pixelastic/dconf-export
-*** One other option I can consider: mount over ssh: using fuse + sshfs
-**** fusermount
-**** /Volumes/Unused can become my home backup drive
+*** /Volumes/Unused on imac2013 can become my home backup drive
