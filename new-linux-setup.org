@@ -1,11 +1,3 @@
-* Future:
-** Investigate running multiple Linux distros simultaneously
-*** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
-*** Containers are an option (LXC or Docker) but apparently getting GUI apps running in them is hard.
-**** https://beebom.com/how-run-multiple-distros-using-linux-containers/
-*** Doesn't solve that option, but be aware of firejail for sandboxing apps
-**** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
-
 * Installation:
 ** Creating bootable USB stick on mac: https://linuxnewbieguide.org/how-to-put-a-linux-iso-onto-a-usb-stick-and-make-it-bootable-on-a-mac/
 ** Having some trouble with getting it to boot on the machine. See also linux-on-p51.org
@@ -52,6 +44,22 @@
 **** sudo add-apt-repository ppa:hluk/copyq
 **** sudo apt update && sudo apt install copyq
 *** Or look for a faster one
+** (Gnome) extensions::
+*** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
+**** https://extensions.gnome.org/extension/615/appindicator-support/
+**** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
+*** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
+*** no topleft hot corner
+*** do not disturb
+*** NoAnnoyance (eliminate "..window is created" by auto-raising created windows
+*** openweather
+*** touchpad indicator
+*** Indicator Multiload — monitor system resources
+**** sudo apt install indicator-multiload
+*** gnome-sushi -- preview from file browser with space bar
+*** OLD:
+**** ubuntu appindicators
+**** steal my focus
 ** cdhist (aka `cd --`)
 *** have to have setuptools beforehand:
 sudo apt install python-setuptools
@@ -59,69 +67,65 @@ sudo apt install python-setuptools
      git clone http://github.com/bulletmark/cdhist
      cd cdhist
      sudo make install
-** TODO Conky - Very nice, themable system info/clock/weather/whatever overlay:
-*** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
-*** https://devuno.deviantart.com/art/Dirty-Conky-179991956
-*** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
-*** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
-** Virtualbox -- potential problems -- see linux-on-p51.org
+** Virtualbox
+**** sudo apt install virtualbox
+**** May have to do the steps here: https://askubuntu.com/a/229908/325838
 ** Aptik to auto-reinstall apps & ppas after upgrade:
 *** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
 *** sudo apt-add-repository ppa:teejee2008/ppa
 *** sudo apt update
 *** sudo apt install aptik
 *** sudo apt install aptik-gtk (important! for GUI)
-
+** Docker
+*** install virtualbox as above
+*** docker installation is kind of a pain in the ass.
+*** use instructions on docker's page: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu
+*** then install docker-compose using: https://github.com/docker/compose/releases
+*** docker-machine create default
+*** eval $(docker-machine env)
+** Firefox? If so,
+*** https://addons.mozilla.org/en-US/firefox/addon/ctrl-number-to-switch-tabs/
+*** https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/
 * Customization tweaks:
+** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
+** Fonts:
+*** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
+*** Hack: https://sourcefoundry.org/hack/
+** Window managers:
+*** Openbox -- super minimal, elegant
+**** With tint2
+**** See https://www.youtube.com/watch?v=hWmikVpbrtY
+*** Pantheon (from Elementary OS)
+**** Installing: https://www.linuxhelp.com/how-to-install-pantheon-desktop-in-ubuntu/
+** Network:
+*** Static IP address:
+**** settings/wifi/hamburger-for-current-network/ipv4: set ipv4 method to manual; assuming 192-based network, add
+**** address 192.168.1.WHATEV / netmask 255.0.0.0 / gateway (typically) 192.168.1.1
+**** details at https://linuxconfig.org/how-to-configure-static-ip-address-on-ubuntu-18-04-bionic-beaver-linux
+** Icons:
+*** Numix
+**** sudo add-apt-repository ppa:numix/ppa
+**** sudo apt update
+**** sudo apt-get update
+**** sudo apt-get install numix-icon-theme-circle
+**** sudo apt-get install numix-icon-theme-square
+*** Papirus
+**** sudo add-apt-repository ppa:papirus/papirus
+**** sudo apt update && sudo apt install papirus-icon-theme
+** Theme:
+*** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
+** Other:
+*** X11-forwarding setup
+**** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
+** Nautilus (file manager):
+*** Remove some of the default Nautilus bookmarks:
+**** vim ~/.config/user-dirs.dirs
+**** sudo vim /etc/xdg/user-dirs.defaults
+**** via http://www.arj.no/2017/01/03/nautilus-bookmarks/
 ** ~/.ssh/config: add
 Host *
 ServerAliveInterval 240
-** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
-*** Fonts:
-**** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
-**** Hack: https://sourcefoundry.org/hack/
-*** Window managers:
-**** Openbox -- super minimal, elegant
-***** With tint2
-***** See https://www.youtube.com/watch?v=hWmikVpbrtY
-**** Pantheon (from Elementary OS)
-***** Installing: https://www.linuxhelp.com/how-to-install-pantheon-desktop-in-ubuntu/
-*** Icons:
-**** Numix
-***** sudo add-apt-repository ppa:numix/ppa
-***** sudo apt update
-***** sudo apt-get update
-***** sudo apt-get install numix-icon-theme-circle
-***** sudo apt-get install numix-icon-theme-square
-**** Papirus
-***** sudo add-apt-repository ppa:papirus/papirus
-***** sudo apt update && sudo apt install papirus-icon-theme
-*** Theme:
-**** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
-*** (Gnome) extensions::
-**** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
-***** https://extensions.gnome.org/extension/615/appindicator-support/
-***** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-**** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
-**** no topleft hot corner
-**** openweather
-**** touchpad indicator
-**** ubuntu appindicators
-**** Indicator Multiload — monitor system resources
-***** sudo apt install indicator-multiload
-**** OLD:
-***** steal my focus
-***** gnome-sushi -- preview from file browser with space bar
-
-*** Other:
-**** X11-forwarding setup
-***** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
-*** Nautilus (file manager):
-**** Remove some of the default Nautilus bookmarks:
-***** vim ~/.config/user-dirs.dirs
-***** sudo vim /etc/xdg/user-dirs.defaults
-***** via http://www.arj.no/2017/01/03/nautilus-bookmarks/
 ** Add audio eq (may possibly cause problems?):
 *** sudo apt install pulseaudio-equalizer
 *** https://askubuntu.com/a/982556
@@ -250,3 +254,15 @@ ServerAliveInterval 240
 *** There's also dconf-backup (maybe aptik doesn't do dconf? :( )
 ****  https://github.com/pixelastic/dconf-export
 *** /Volumes/Unused on imac2013 can become my home backup drive
+* Future:
+** Investigate running multiple Linux distros simultaneously
+*** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
+*** Containers are an option (LXC or Docker) but apparently getting GUI apps running in them is hard.
+**** https://beebom.com/how-run-multiple-distros-using-linux-containers/
+*** Doesn't solve that option, but be aware of firejail for sandboxing apps
+**** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
+** TODO Conky - Very nice, themable system info/clock/weather/whatever overlay:
+*** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
+*** https://devuno.deviantart.com/art/Dirty-Conky-179991956
+*** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
+*** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
