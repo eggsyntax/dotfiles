@@ -10,6 +10,7 @@ alias ltrh="ls -ltrh "
 alias ltra="ls -ltra "
 alias dir="ls -lG "
 alias grep='grep --color=auto'
+alias emd='emacs --daemon'
 
 alias tf='less +F' # better than tail -f
 alias serve='python -m SimpleHTTPServer' # Must be followed by a port of your choice.
@@ -324,7 +325,9 @@ alias blender='cd /Applications/blender.app/Contents/MacOS && ./blender'
 # [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # what computer am I using?
+# deprecated in favor of wami for the sake of my wrists
 alias whereami='echo `uname -n` "(" `uname` ")"'
+alias wami='echo `uname -n` "(" `uname` ")"'
 
 # NOTE! sub works on mac, but only after running `brew install gnu-sed --with-default-names`
 
