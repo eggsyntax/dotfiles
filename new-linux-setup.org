@@ -131,6 +131,8 @@ ServerAliveInterval 240
 *** https://askubuntu.com/a/982556
 *** but then individual applications may not be using the eq. Install volume control
 **** https://askubuntu.com/questions/580631/how-to-set-which-output-sound-an-application-should-use
+** Silence MOTD, which is typically Canonical spam:
+*** touch ~/.hushlogin
 * Keyboard layout:
 ** Final solution for the P51:
 *** 1. Do some switching in tweak-tool/typing:
