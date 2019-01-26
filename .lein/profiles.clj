@@ -1,5 +1,9 @@
+;; TODO possibly add:
+;; - speculative (specs for core fns from borkdude):
+;; - re-find (leverages speculative to search for fns by the effect you want
+;;   them to have): https://github.com/borkdude/re-find
 {:user  {:plugins  [[lein-drip "0.1.2-SNAPSHOT"]
-                    [com.billpiel/sayid "0.0.16"]
+                    ;; [com.billpiel/sayid "0.0.16"] ; Now provided by CIDER, I think?
                     [com.jakemccrary/lein-test-refresh "0.14.0"]
                     [venantius/yagni "0.1.4"]
                     [org.clojure/tools.namespace "0.3.0-alpha4"]
@@ -12,7 +16,7 @@
                     ]
          :dependencies [
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
-                        [reconstructorepl "0.1.0-SNAPSHOT"]
+                        [reconstructorepl "0.2.0-SNAPSHOT"]
                         [datawalk "0.1.12"]
                         ;; [datawalk "0.1.17-SNAPSHOT"]
                         ;; [datawalk "0.1.18-SNAPSHOT"]
@@ -24,7 +28,7 @@
                         ;; [figwheel-sidecar "0.5.14"]
 
                         ;; Experiment with Sayid
-                        [com.billpiel/sayid "0.0.16"]
+                        ;; [com.billpiel/sayid "0.0.16"] ; now provided by CIDER, I think?
 
                         [clj-stacktrace "0.2.8"]
                         [pjstadig/humane-test-output "0.8.3"]

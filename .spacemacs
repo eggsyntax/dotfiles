@@ -106,7 +106,7 @@ values."
                                       zenburn-theme
                                       flatland-theme
                                       solarized-theme
-                                      ;; (cider :min-version "0.17.0")
+                                      ;; (cider :min-version "0.20")
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -210,15 +210,25 @@ values."
    ;;                             :weight normal
    ;;                             :width condensed)
    ;; Hack is nicer, but Fira Mono is supposedly faster
+   ;; dotspacemacs-default-font (if (string-equal system-type "darwin")
+   ;;                               '("Fira Mono"
+   ;;                                 :size 16
+   ;;                                 :weight normal
+   ;;                                 :width normal)
+   ;;                             '("hack"
+   ;;                               :size 84
+   ;;                               :weight normal
+   ;;                               :width condensed))
+
    dotspacemacs-default-font (if (string-equal system-type "darwin")
-       '("Fira Mono"
-         :size 16
-         :weight normal
-         :width normal)
-     '("Hack"
-       :size 24
-       :weight normal
-       :width condensed))
+                                 '("Fira Mono"
+                                   :size 16
+                                   :weight normal
+                                   :width normal)
+                                 '("Hack"
+                                   :size 24
+                                   :weight normal
+                                   :width condensed))
 
    ;; The leader key
    dotspacemacs-leader-key "SPC"
@@ -408,7 +418,7 @@ values."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil
+   dotspacemacs-pretty-docs 't
    ))
 
 (defun dotspacemacs/user-init ()
@@ -515,8 +525,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "H-<up>") 'evil-scroll-page-up)
 
   ;; Shift up/down arrows should scroll buffer up/down a line
-  ;; (define-key evil-normal-state-map (kbd "S-<up>") 'evil-scroll-line-up)
-  ;; (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
+  (define-key evil-normal-state-map (kbd "S-<up>") 'evil-scroll-line-up)
+  (define-key evil-normal-state-map (kbd "S-<down>") 'evil-scroll-line-down)
   (global-set-key (kbd "S-<up>") 'evil-scroll-line-up)
   (global-set-key (kbd "S-<down>") 'evil-scroll-line-down)
 
@@ -590,7 +600,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "U") "kJ")
   ;; ;; bind E to end of _previous_ word
   ;; (define-key evil-normal-state-map (kbd "E") 'evil-backward-word-end)
-  (define-key evil-normal-state-map (kbd "-") 'evilmi-jump-items)
+  (define-key evil-normal-state-map (kbd "-") 'evil-jump-item)
   (define-key evil-visual-state-map (kbd "-") 'evil-jump-item)
   (define-key evil-normal-state-map (kbd "gb") 'evil-jumper/backward)
   (define-key evil-normal-state-map (kbd "ƒ") 'helm-find-files)
@@ -742,7 +752,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-normal-state-map (kbd (left-mod "f")) 'cider-format-region-or-buffer)
-    (evil-leader/set-key "m s X" 'cider-restart)
+    (evil-leader/set-key "m s X" 'sesman-restart)
     (evil-leader/set-key "m s h" 'cider-repl-history)
 
     ;; Experiment w/ Sayid
@@ -818,6 +828,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
       (kbd "M-<up>") 'outline-up-heading)
     (evil-define-key '(normal insert) 'org-mode-map
       (kbd "M-<down>") 'outline-forward-same-level)
+    (evil-define-key '(normal insert) 'org-mode-map
+      (kbd (right-mod "<tab>")) 'org-global-cycle)
     )
 
   ;;;;;;;;   End key bindings ;;;;;;;

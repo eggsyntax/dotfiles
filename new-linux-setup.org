@@ -54,8 +54,9 @@
 *** NoAnnoyance (eliminate "..window is created" by auto-raising created windows
 *** openweather
 *** touchpad indicator
-*** Indicator Multiload — monitor system resources
-**** sudo apt install indicator-multiload
+*** System monitor:
+**** https://extensions.gnome.org/extension/1064/system-monitor/
+*** DO NOT install Indicator Multiload, breaks 18.04
 *** gnome-sushi -- preview from file browser with space bar
 *** OLD:
 **** ubuntu appindicators
@@ -80,7 +81,7 @@ sudo apt install python-setuptools
 ** Docker
 *** install virtualbox as above
 *** docker installation is kind of a pain in the ass.
-*** use instructions on docker's page: https://docs.docker.com/v17.09/engine/installation/linux/docker-ce/ubuntu
+*** https://docs.docker.com/install/linux/docker-ce/ubuntu/
 *** then install docker-compose using: https://github.com/docker/compose/releases
 *** docker-machine create default
 *** eval $(docker-machine env)
@@ -221,6 +222,12 @@ ServerAliveInterval 240
 **** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 ** Leiningen:
 *** https://github.com/technomancy/leiningen
+** I like to use lein-drip and drip:
+*** drip: https://github.com/flatland/drip
+curl -L http://drip.flatland.org > ~/bin/drip
+chmod 755 ~/bin/drip
+*** lein-drip: https://github.com/josteink/lein-drip
+**** just require in ~/.lein/profiles.clj
 * Terminal:
 ** Favorites so far:
 *** Default Gnome terminal + tmux & tmuxinator
@@ -256,6 +263,28 @@ ServerAliveInterval 240
 *** There's also dconf-backup (maybe aptik doesn't do dconf? :( )
 ****  https://github.com/pixelastic/dconf-export
 *** /Volumes/Unused on imac2013 can become my home backup drive
+* Work stuff (DW):
+** keybase: https://keybase.io/docs/the_app/install_linux
+curl -O https://prerelease.keybase.io/keybase_amd64.deb
+sudo dpkg -i keybase_amd64.deb
+sudo apt-get install -f
+run_keybase
+** Reactive Ops VPN
+*** After setting up, set it to only handle its own traffic:
+**** sudo vim /etc/NetworkManager/system-connections/<RELEVANT-VPN-FILE>
+**** Add `never-default=true` in the IPv4 and IPv6 sections
+**** more info: https://askubuntu.com/questions/913112/how-to-toggle-networkmanagers-use-this-connection-only-for-resources-on-its-ne
+** Set up memcached:
+*** Memcached setup:
+**** make sure memcached is installed, running as a service, and starting at system boot (see https://github.com/memcached/memcached/wiki/Install):
+***** sudo apt-get install memcached
+***** systemctl enable memcached
+***** systemctl start memcached (if you need it now)
+**** in your config file (linux: `/etc/memcached.conf`, memory is set by default to 64MB (via `-m 64`) -- set that to as much (max) memory as you're comfortable devoting to memcached (I'm giving it 3072MB).
+*** Connecting datomic to memcached:
+**** In your ~/.lein/profiles.clj, add `{:user {:jvm-opts ["-Ddatomic.memcachedServers=127.0.0.1:11211"]}}` (`{:user {}}` probably already exists, so just add the jvm-opts key/val)
+**** Restart memcached (linux: `service memcached restart`; mac: maybe launchctl unload and then load?)
+**** Start your local REPLs. On repeated runs, some datomic stuff should be faster (until you reboot your computer; then the cache has to build back up).
 * Future:
 ** Investigate running multiple Linux distros simultaneously
 *** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
