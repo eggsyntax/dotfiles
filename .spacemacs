@@ -58,11 +58,13 @@ values."
    ;; TARGET: LAYERS
    dotspacemacs-configuration-layers
    '(python
-     clojure
+     (clojure :variables
+              clojure-enable-clj-refactor t)
      ;; in ~/.emacs.private-libs, linked to ~/.emacs.d/private:
      clojure-lint
      csv
      emacs-lisp
+     ;; common-lisp
      git
      html
      idris
@@ -98,7 +100,8 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(flatui-theme
+   dotspacemacs-additional-packages '(slime-docker
+                                      flatui-theme
                                       apropospriate-theme
                                       alect-themes
                                       ample-theme
@@ -619,6 +622,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; Reverse the standard binding of ' vs `
   (define-key evil-normal-state-map (kbd "'") 'evil-goto-mark)
   (define-key evil-normal-state-map (kbd "`") 'evil-goto-mark-line)
+  ;; Switch to zenburn theme
+  (defun switch-to-zenburn ()
+    (interactive)
+    (helm-themes--load-theme "zenburn"))
+  (define-key evil-normal-state-map (kbd "SPC T z") 'switch-to-zenburn)
 
   ;; I use SPC d for some of my own stuff
   (which-key-add-key-based-replacements "SPC d" "egg stuff") ; name prefix
@@ -1144,6 +1152,12 @@ you should place your code here."
   ;;    (spacemacs/helm-project-smart-do-search)
   ;;    '<))
 
+  ;; some slime-docker setup
+  ;; see https://github.com/daewok/slime-docker
+  ;; Do some standard SLIME configuration.
+  (slime-setup '(slime-fancy slime-tramp))
+  ;; Set the default lisp you want to use (here it's SBCL).
+  (setq inferior-lisp-program "sbcl")
 
   )
 ;; TARGET: ENDEGG
