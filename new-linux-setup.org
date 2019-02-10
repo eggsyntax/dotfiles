@@ -228,6 +228,8 @@ curl -L http://drip.flatland.org > ~/bin/drip
 chmod 755 ~/bin/drip
 *** lein-drip: https://github.com/josteink/lein-drip
 **** just require in ~/.lein/profiles.clj
+** must follow installation directions for clojure-lint
+*** https://github.com/n2o/clojure-lint-spacemacs-layer#installation
 * Terminal:
 ** Favorites so far:
 *** Default Gnome terminal + tmux & tmuxinator
