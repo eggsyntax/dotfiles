@@ -51,6 +51,10 @@ function ifn {
 	  find . -name '*.pyc' -prune -o -name '*.rst' -prune -o -iname "$1*" -print
 }
 
+function fn-more {
+    find . -name '*.pyc' -prune -o -name '*.rst' -prune -o -name "$1*" -print -exec cat {} \; | more
+}
+
 # TODO change the hardcoded IP address once I have things working
 # Acceptable values 0.0 - 10.0 (maybe more, dunno)
 function vol {
