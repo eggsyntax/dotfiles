@@ -33,3 +33,5 @@
 	lineNumber = true
 [help]
 	autocorrect = 10
+[tag]
+	sort = version:refname

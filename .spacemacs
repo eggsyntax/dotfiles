@@ -57,7 +57,8 @@ values."
    ;; List of configuration layers to load.
    ;; TARGET: LAYERS
    dotspacemacs-configuration-layers
-   '(python
+   '(clojure
+     python
      (clojure :variables
               clojure-enable-clj-refactor t)
      ;; in ~/.emacs.private-libs, linked to ~/.emacs.d/private:
@@ -90,11 +91,11 @@ values."
      ;; markdown
      ;; org
      ;; spell-checking
-     (treemacs :init ; neotree replacement
-               (with-eval-after-load 'winum
-                 (define-key winum-keymap (kbd "M-0") #'treemacs-select-window)
-                 ;; Don't notify about treemacs refresh; it gets in the way of repl-started msg
-                 (setq treemacs-silent-refresh t)))
+     ;; (treemacs :init ; neotree replacement
+     ;;           (with-eval-after-load 'winum
+     ;;             (define-key winum-keymap (kbd "M-0") #'treemacs-select-window)
+     ;;             ;; Don't notify about treemacs refresh; it gets in the way of repl-started msg
+     ;;             (setq treemacs-silent-refresh t)))
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -109,7 +110,7 @@ values."
                                       zenburn-theme
                                       flatland-theme
                                       solarized-theme
-                                      ;; (cider :min-version "0.20")
+                                      (cider :min-version "0.20")
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -482,7 +483,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; First of all, use ctrl-number to switch to a window! Already works on
   ;; Mac with the command key, so we just need to set literal ctrl instead of
   ;; right-mod.
-  (global-set-key (kbd "C-0") 'treemacs-select-window)
+  ;; (global-set-key (kbd "C-0") 'treemacs-select-window)
   (global-set-key (kbd "C-1") 'winum-select-window-1)
   (global-set-key (kbd "C-2") 'winum-select-window-2)
   (global-set-key (kbd "C-3") 'winum-select-window-3)
@@ -837,7 +838,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (evil-define-key '(normal insert) 'org-mode-map
       (kbd "M-<down>") 'outline-forward-same-level)
     (evil-define-key '(normal insert) 'org-mode-map
-      (kbd (right-mod "<tab>")) 'org-global-cycle)
+      (kbd "<backtab>") 'org-global-cycle)
     )
 
   ;;;;;;;;   End key bindings ;;;;;;;
@@ -1235,10 +1236,12 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (slime-docker docker-tramp zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup)))
  '(safe-local-variable-values
    (quote
-    ((cider-default-cljs-repl . figwheel)
-     (cider-cljs-repl-types
+    ((cider-cljs-repl-types
       (harmonium "(do (require 'figwheel-sidecar.repl-api)
             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
             (figwheel-sidecar.repl-api/cljs-repl))"))
@@ -1251,3 +1254,17 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  )
 )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

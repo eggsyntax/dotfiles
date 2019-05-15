@@ -4,7 +4,7 @@
 ;;   them to have): https://github.com/borkdude/re-find
 {:user  {:plugins  [[lein-drip "0.1.2-SNAPSHOT"]
                     ;; [com.billpiel/sayid "0.0.16"] ; Now provided by CIDER, I think?
-                    [com.jakemccrary/lein-test-refresh "0.14.0"]
+                    [com.jakemccrary/lein-test-refresh "0.23.0"]
                     [venantius/yagni "0.1.4"]
                     [org.clojure/tools.namespace "0.3.0-alpha4"]
                     [lein-ns-dep-graph "0.2.0-SNAPSHOT"]
@@ -12,9 +12,14 @@
 
                     ;; Release management:
                     [lein-release "1.0.5"]
-                    [io.aviso/pretty "0.1.34"]
+                    ;; [io.aviso/pretty "0.1.34"] ; 2019-02-01 removing krak because new lein complains about it
+                    [nrepl "0.5.3"]
+                    [cider/cider-nrepl "0.20.0"]
+                    [lein-ancient "0.6.15"]
                     ]
          :dependencies [
+                        [speculative "0.0.3"]
+                        [re-find "0.0.1-SNAPSHOT"]
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.2.0-SNAPSHOT"]
                         [datawalk "0.1.12"]
@@ -38,10 +43,13 @@
                         ;; [alembic "0.3.2"]
                         ;; Colorized pretty-printing:
                         ;; https://github.com/greglook/puget
-                        [io.aviso/pretty "0.1.34"]
+                        ;; [io.aviso/pretty "0.1.34"] ; 2019-02-01 removing krak because new lein complains about it
                         ;; Temporarily removing puget to see if I still need it, 8/17/17
                         [mvxcvi/puget "1.0.0"]
+                        ;; [cider/cider-nrepl "0.20.0"] ; seems to be required again for now (when doing cider-connect)
+
                         ]
+         ;; :nrepl {:middleware ['cider.nrepl/cider-middleware]}
          :repl-options {:init (set! *print-length* 50)
                         :timeout 120000
                         :prompt (fn [ns] (str "\u001B[36m" ns "\u001B[m>"))}
@@ -63,9 +71,10 @@
          ;; Mac:
          ;; :test-refresh {:notify-command ["terminal-notifier" "-title" "lein test-refresh" "-message"]
          ;; Linux:
-         :test-refresh {:notify-command ["sudo" "/home/egg/bin/test-refresh-notify"]
+         :test-refresh {:notify-command ["notify-send"]
                         :quiet true
-                        :notify-on-success true}
+                        :notify-on-success false
+                        }
          }
 
  }

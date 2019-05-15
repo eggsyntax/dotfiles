@@ -38,6 +38,7 @@ alias rebl='clojure -Sdeps "{:deps {com.bhauman/rebel-readline {:mvn/version \"0
 alias   rl='clojure -Sdeps "{:deps {com.bhauman/rebel-readline {:mvn/version \"0.1.4\"}}}" -m rebel-readline.main'
 # Speed up leiningen start time:
 export LEIN_FAST_TRAMPOLINE=y
+alias re-find='clj -Aspeculative -v'
 
 # generate ctags (run from root dir of project)
 alias cljtags='find . -type f -iname "*.clj" | xargs ctags -a'

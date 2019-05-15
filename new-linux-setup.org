@@ -12,9 +12,10 @@
 ** dvorak
 ** Displays/Night Light
 * sudo apt install:
-** vim, gnome-shell-extension-dashtodock, xcape, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached memcached
+** vim, xcape, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached, memcached
 ** tmux, htop, make, chrome-gnome-shell, silversearcher-ag, leiningen, autojump, tmuxinator, gnome-sushi (file previewer)
-** tkinter for python (for /usr/bin/player): sudo apt install python-tk
+** rename
+** lm-sensors (so system-monitor can see fan speed)
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
 * Gnome-tweak-tool to change various settings
