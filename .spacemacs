@@ -12,6 +12,9 @@
 ;; * in that buffer you can use any commands you'd normally use on a buffer
 ;; * C-c C-c to commit your changes.
 
+;; General tips for stuff I forget:
+;; * toggle-truncate-lines to wrap/not-wrap lines in the view
+
 (defun right-mod (keychar)
   "Return the appropriate modkey + keychar reference (ie for (right-mod '*',
 'M-*' on mac, 'C-*' on linux [because I swap alt & ctrl on linux])"
@@ -77,8 +80,9 @@ values."
      yaml
      (helm :variables
            helm-use-frame-when-more-than-two-windows nil)
-     (colors :variables
-             colors-colorize-identifiers 'all)
+     ;; (colors :variables
+     ;;         ;; colors-colorize-identifiers 'variables ; or 'all
+     ;;         )
      (auto-completion :variables
                       auto-completion-complete-with-key-sequence-delay 2.0
                       ;; Trying these 3 based on a suggestion from @jr0cket in #spacemacs
@@ -604,6 +608,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-normal-state-map (kbd "U") "kJ")
   ;; ;; bind E to end of _previous_ word
   ;; (define-key evil-normal-state-map (kbd "E") 'evil-backward-word-end)
+  ;; TODO in some cases evil-jump-items isn't available, but evilmi-jump-items
+  ;;   (note plural) is. Not sure how I want to handle that.
   (define-key evil-normal-state-map (kbd "-") 'evil-jump-item)
   (define-key evil-visual-state-map (kbd "-") 'evil-jump-item)
   (define-key evil-normal-state-map (kbd "gb") 'evil-jumper/backward)
@@ -761,7 +767,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
     (define-key evil-normal-state-map (kbd (left-mod "f")) 'cider-format-region-or-buffer)
-    (evil-leader/set-key "m s X" 'sesman-restart)
+    (evil-leader/set-key "m s X" 'sesman-restart) ;; huh?
     (evil-leader/set-key "m s h" 'cider-repl-history)
 
     ;; Experiment w/ Sayid
@@ -784,6 +790,20 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; C-tab to do #_ comment
     (define-key evil-normal-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
     (define-key evil-insert-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
+
+    ;; Append `; XXX' to line
+    (defun comment-xxx (&optional arg)
+      "Append ; XXX"
+      (interactive "p")
+      (kmacro-exec-ring-item (quote ([65 32 59 32 88 88 88 escape] 0 "%d")) arg))
+    (define-key evil-normal-state-map (kbd "SPC c x") 'comment-xxx)
+
+    ;; Append `; TODO` to line
+    (defun comment-todo (&optional arg)
+      "Append ; TODO"
+      (interactive "p")
+      (kmacro-exec-ring-item (quote ([109 122 65 32 59 32 84 79 68 79 escape 39 122] 0 "%d")) arg))
+    (define-key evil-normal-state-map (kbd "SPC c o") 'comment-todo)
 
     (evil-define-key '(normal insert) 'clojure-mode-map
       (kbd  "s-t") 'projectile-toggle-between-implementation-and-test)
@@ -941,8 +961,14 @@ you should place your code here."
   (setq powerline-nano-theme t)
 
   ;; Use greek letter for lambda (or fn in clj)
-  (global-prettify-symbols-mode 1)
-  (setq clojure-enable-fancify-symbols t)
+  ;; Turned off, very reluctantly, because it was screwing up indentation (cf next section)
+  ;; (global-prettify-symbols-mode t)
+  ;; (setq clojure-enable-fancify-symbols t)
+
+  ;; Never mind, no luck :(
+  ;; ~But compensate for indentation changes from fancified symbols (suggestions from jr0cket)~
+  ;; (setq clojure-indent-style 'align-arguments)
+  ;; (setq clojure-align-forms-automatically t)
 
   ;; Paste over highlighted regions
   (delete-selection-mode 1)
@@ -960,7 +986,8 @@ you should place your code here."
 
   ;; Use aggressive indent
   ;; https://github.com/Malabarba/aggressive-indent-mode
-  (global-aggressive-indent-mode -1)
+  ;; (add-hook 'clojure-mode-hook #'aggressive-indent-mode)
+  ;; (global-aggressive-indent-mode -1)
   ;; (global-aggressive-indent-mode 1)
   ;; (aggressive-indent-mode 1)
   ;; (aggressive-indent-mode nil)
