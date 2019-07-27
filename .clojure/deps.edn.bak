@@ -17,9 +17,12 @@
 
   ;; External dependencies
  
-  ;; :deps {
-  ;;   org.clojure/clojure {:mvn/version "1.10.1"}
-  ;; }
+  :deps {
+    org.clojure/clojure {:mvn/version "1.10.1"}
+    org.clojure/math.combinatorics {:mvn/version "0.1.4"}
+    speculative {:mvn/version "0.0.3"}
+    re-find {:mvn/version "0.0.1-SNAPSHOT"}
+  }
 
   ;; Aliases
 	;;   resolve-deps aliases (-R) affect dependency resolution, options:
@@ -30,15 +33,21 @@
 	;;     :extra-paths - vector of additional paths to add to the classpath
 	;;     :classpath-overrides - map of lib to path that overrides the result of resolving deps
 
-  ;; :aliases {
-  ;;   :deps {:extra-deps {org.clojure/tools.deps.alpha {:mvn/version "0.6.496"}}}
-  ;;   :test {:extra-paths ["test"]}
-  ;; }
+  :aliases {
+    :deps {:extra-deps {org.clojure/tools.deps.alpha {:mvn/version "0.5.351"}}}
+    :test {:extra-paths ["test"]} 
+    :speculative
+          {:extra-deps {speculative {:git/url "https://github.com/borkdude/speculative"
+                                     :sha "d16ae7cd887bd5ea9dcb663647b0ca04ec35a348"}}
+           :main-opts ["-e" "(require,'[patch.clj-2443])" 
+                       "-e" "(require,'[speculative.instrument,:refer,[instrument]])" 
+                       "-m" "re-find.cli"]}
+  }
 
   ;; Provider attributes
 
   ;; :mvn/repos {
   ;;   "central" {:url "https://repo1.maven.org/maven2/"}
-  ;;   "clojars" {:url "https://repo.clojars.org/"}
+  ;;   "clojars" {:url "https://clojars.org/repo"}
   ;; }
 }

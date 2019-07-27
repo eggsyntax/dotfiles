@@ -13,8 +13,8 @@
                     ;; Release management:
                     [lein-release "1.0.5"]
                     ;; [io.aviso/pretty "0.1.34"] ; 2019-02-01 removing krak because new lein complains about it
-                    [nrepl "0.5.3"]
-                    [cider/cider-nrepl "0.20.0"]
+                    ;; [nrepl "0.5.3"]
+                    ;; [cider/cider-nrepl "0.20.0"]
                     [lein-ancient "0.6.15"]
                     ]
          :dependencies [
@@ -23,6 +23,7 @@
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.2.0-SNAPSHOT"]
                         [datawalk "0.1.12"]
+                        [vvvvalvalval/scope-capture "0.3.2"]
                         ;; [datawalk "0.1.17-SNAPSHOT"]
                         ;; [datawalk "0.1.18-SNAPSHOT"]
                         ;; [datawalk "1.0.0-SNAPSHOT"]
@@ -76,5 +77,6 @@
                         :notify-on-success false
                         }
          }
+ :repl {:plugins [[cider/cider-nrepl "0.21.1"]]}
 
  }

@@ -106,6 +106,7 @@ alias st="git status"
 alias gd="git diff -w"
 alias gg='git grep'
 alias gi='git grep -i'
+alias gp='git pull --rebase'
 # For times when I don't want a pager
 alias ggn='git --no-pager grep'
 # Show files changed in each commit:
