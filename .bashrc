@@ -544,6 +544,10 @@ function linux-bashrc {
     PATH="${PATH}:${HOME}/.cask/bin"
     export PATH
 
+    # Add path for golang
+    PATH="${PATH}:${HOME}/bin:${HOME}/scripts"
+    export PATH
+
     alias parens="xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright' &"
 
     # 'qpaeq' is way too hard to remember
