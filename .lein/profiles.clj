@@ -19,7 +19,7 @@
                     ]
          :dependencies [
                         [speculative "0.0.3"]
-                        [re-find "0.0.1-SNAPSHOT"]
+                        [re-find "0.0.1-20190407.191903-17" :exclusions [org.clojure/tools.cli]]
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.2.0-SNAPSHOT"]
                         [datawalk "0.1.12"]
@@ -46,8 +46,8 @@
                         ;; https://github.com/greglook/puget
                         ;; [io.aviso/pretty "0.1.34"] ; 2019-02-01 removing krak because new lein complains about it
                         ;; Temporarily removing puget to see if I still need it, 8/17/17
-                        [mvxcvi/puget "1.0.0"]
-                        ;; [cider/cider-nrepl "0.20.0"] ; seems to be required again for now (when doing cider-connect)
+                        ;; [mvxcvi/puget "1.0.0"]
+                        ;; [cider/cider-nrepl "0.20.0" :exclusions [org.clojure/tools.cli]]
 
                         ]
          ;; :nrepl {:middleware ['cider.nrepl/cider-middleware]}

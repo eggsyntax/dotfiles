@@ -12,16 +12,14 @@
 ** dvorak
 ** Displays/Night Light
 * sudo apt install:
-** vim, xcape, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached, memcached
-** tmux, htop, make, chrome-gnome-shell, silversearcher-ag, leiningen, autojump, tmuxinator, gnome-sushi (file previewer)
-** rename
+** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo
 ** lm-sensors (so system-monitor can see fan speed)
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
 * Gnome-tweak-tool to change various settings
 ** Under keyboard / 'additional layout options'
 *** caps-lock / 'swap ESC and caps lock'
-*** Under ctrl-key-position I can switch ctrl and cmd
+*** Under ctrl-key-position I can switch left-alt and left-ctrl
 *** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
 ** Under fonts: can scale fonts
 * Vim setup:
@@ -49,17 +47,22 @@
 *** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-*** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
+*** dash-to-dock. NOTE:
+**** Must ininstall gnome version:
+***** https://github.com/micheleg/dash-to-dock/issues/643#issuecomment-345525969
+***** sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt install gnome-shell-extension-dashtodock
+**** (now incorporated in ubuntu, but the original extension is more configurable)
 *** no topleft hot corner
 *** do not disturb
 *** NoAnnoyance (eliminate "..window is created" by auto-raising created windows
 *** openweather
 *** touchpad indicator
-*** System monitor:
-**** https://extensions.gnome.org/extension/1064/system-monitor/
 *** DO NOT install Indicator Multiload, breaks 18.04
 *** gnome-sushi -- preview from file browser with space bar
+*** system-monitor (right one): https://extensions.gnome.org/extension/120/system-monitor/
 *** OLD:
+**** System monitor: [wrong one]
+***** https://extensions.gnome.org/extension/1064/system-monitor/
 **** ubuntu appindicators
 **** steal my focus
 ** cdhist (aka `cd --`)
@@ -70,7 +73,7 @@ sudo apt install python-setuptools
      cd cdhist
      sudo make install
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
-** Virtualbox
+** Virtualbox [NOT NEEDED FOR DOCKER]
 **** sudo apt install virtualbox
 **** May have to do the steps here: https://askubuntu.com/a/229908/325838
 ** Aptik to auto-reinstall apps & ppas after upgrade:
@@ -80,12 +83,15 @@ sudo apt install python-setuptools
 *** sudo apt install aptik
 *** sudo apt install aptik-gtk (important! for GUI)
 ** Docker
-*** install virtualbox as above
+*** DO NOT NEED docker-machine or virtualbox!
 *** docker installation is kind of a pain in the ass.
 *** https://docs.docker.com/install/linux/docker-ce/ubuntu/
-*** then install docker-compose using: https://github.com/docker/compose/releases
-*** docker-machine create default
-*** eval $(docker-machine env)
+*** Be sure to add self to docker group, start docker service. May need to reboot.
+*** then install docker-compose:
+**** https://docs.docker.com/compose/install/
+*** Oudated:
+**** docker-machine create default
+**** eval $(docker-machine env)
 ** Firefox? If so,
 *** https://addons.mozilla.org/en-US/firefox/addon/ctrl-number-to-switch-tabs/
 *** https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/
@@ -108,16 +114,16 @@ sudo apt install python-setuptools
 ** Icons:
 *** Numix
 **** sudo add-apt-repository ppa:numix/ppa
-**** sudo apt update
-**** sudo apt-get update
-**** sudo apt-get install numix-icon-theme-circle
-**** sudo apt-get install numix-icon-theme-square
+**** sudo apt update && sudo apt-get install numix-icon-theme-circle numix-icon-theme-square
 *** Papirus
 **** sudo add-apt-repository ppa:papirus/papirus
 **** sudo apt update && sudo apt install papirus-icon-theme
 ** Theme:
 *** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
 ** Other:
+*** Rename file for volume-change bleep so that it'll be silent:
+**** sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
+**** can `pulseaudio -k` to kill pulseaudio (should auto-restart, I _think_?) to immediately cause it to take effect, but probably better to just live with it until reboot
 *** X11-forwarding setup
 **** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
 ** Nautilus (file manager):
@@ -150,7 +156,8 @@ ServerAliveInterval 240
       <RALT> = 105;
       & now we have overridden keycodes at low level.
 *** 3. And then to set left & rt control to l & r parens:
-****  Link dotfiles/linux-.bash_login to ~/.bash_login (so that it runs once on startup)
+****  [Doesn't seem to work, still having to run xcape manually] Link dotfiles/linux-.bash_login to ~/.bash_login (so that it runs once on startup):
+***** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
 **** Previous version, in .bashrc (which is bad because it runs on every new terminal window etc)):
 ***** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
 ****** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
@@ -210,8 +217,10 @@ ServerAliveInterval 240
 ** Set win/space to open overview
 ** Close: super-q
 * Clojure:
-** 2019: `sudo apt install clojure` is enough; no need to manually install Java
+** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
+** Installing OpenJDK 11: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
 ** Java:
+*** NOTE: probably time to not use the oracle jdk shown below; use Open JDK instead.
 *** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
        sudo apt-get install python-software-properties
        sudo add-apt-repository ppa:webupd8team/java
@@ -221,7 +230,7 @@ ServerAliveInterval 240
        oracle-java8-installer
 *** Discussion of the above at
 **** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
-** Leiningen:
+** Leiningen (don't install through apt, too old):
 *** https://github.com/technomancy/leiningen
 ** I like to use lein-drip and drip:
 *** drip: https://github.com/flatland/drip

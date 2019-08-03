@@ -14,6 +14,7 @@
 
 ;; General tips for stuff I forget:
 ;; * toggle-truncate-lines to wrap/not-wrap lines in the view
+;; * emacs regex character classes: `\s-` for whitespace
 
 (defun right-mod (keychar)
   "Return the appropriate modkey + keychar reference (ie for (right-mod '*',
@@ -234,7 +235,7 @@ values."
                                    :weight normal
                                    :width normal)
                                  '("Hack"
-                                   :size 24
+                                   :size 26
                                    :weight normal
                                    :width condensed))
 
@@ -568,7 +569,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
      (kbd "<down>") 'cider-repl-next-input)
 
    (evil-define-key 'normal cider-repl-mode-map
-     (kbd (left-mod "n")) 'cider-repl-next-input))
+     (kbd (left-mod "n")) 'cider-repl-next-input)
+
+   (evil-define-key '(normal insert) 'cider-repl-mode-map
+     (kbd  "C-n") 'cider-repl-set-ns)
+
+   )
 
   (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
   (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
@@ -748,6 +754,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (define-key evil-normal-state-map (kbd ", e x") 'cider-eval-last-sexp-to-repl)
     (define-key evil-normal-state-map (kbd ", e c") 'cider-pprint-eval-last-sexp-to-comment)
     (define-key evil-normal-state-map (kbd ", s w") 'cider-repl-set-ns)
+    (define-key evil-normal-state-map (kbd ", s i") 'cider-jack-in-clj)
     ;; TODO what I want is the next one, but I have to figure out how to get it
     ;; to load in the current buffer, not some arbitrary one.
     ;; (define-key evil-normal-state-map (kbd "SPC b c") 'cider-switch-to-repl-buffer)
@@ -810,6 +817,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; TODO does the above work or do I need to do:
     ;; (define-key evil-normal-state-map (kbd "s-t") 'projectile-toggle-between-implementation-and-test)
     ;; (define-key evil-insert-state-map (kbd "s-t") 'projectile-toggle-between-implementation-and-test)
+
+    (evil-define-key '(normal insert) 'clojure-mode-map
+      (kbd  "C-n") 'cider-repl-set-ns)
 
     )
 
@@ -1273,7 +1283,8 @@ This function is called at the very end of Spacemacs initialization."
             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
             (figwheel-sidecar.repl-api/cljs-repl))"))
      (javascript-backend . tern)
-     (javascript-backend . lsp)))))
+     (javascript-backend . lsp))))
+ '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
