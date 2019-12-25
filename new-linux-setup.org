@@ -12,7 +12,7 @@
 ** dvorak
 ** Displays/Night Light
 * sudo apt install:
-** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo
+** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo jq
 ** lm-sensors (so system-monitor can see fan speed)
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
@@ -142,7 +142,10 @@ ServerAliveInterval 240
 ** Silence MOTD, which is typically Canonical spam:
 *** touch ~/.hushlogin
 * Keyboard layout:
-** Final solution for the P51:
+** Showing keypresses: `xev`
+*** Or in terminal, `showkey`
+*** Although note differences: https://superuser.com/a/248568
+** Final solution for the P51 (X11):
 *** 1. Do some switching in tweak-tool/typing:
 **** Typing / CapsLock / 'Swap ESC and CapsLock'
 **** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
@@ -212,6 +215,48 @@ ServerAliveInterval 240
 ****** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
 ******* xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
 ****** I've seen the paren ones work, but not the caps<->escape.
+** Wayland keyboard layout:
+*** Swapping right alt and right ctrl:
+**** Changed the following in /usr/share/X11/xkb/symbols/ctrl
+***** From (this is the "swap_rwin_rctl" section
+    replace key <RWIN> { [ Control_R ] };
+    replace key <RCTL> { [ Super_R ] };
+    modifier_map Mod4    { <RCTL> };
+    modifier_map Control { <RWIN> };
+***** To (broader context)
+ // TODO NOTE! I've coopted this one to swap right-Alt and right-Ctl
+ //   instead (because adding a new section in here doesn't add it
+ //   to tweaks)
+ // Swap the functions of the right Win key and the right Ctrl key.
+ partial modifier_keys
+ xkb_symbols "swap_rwin_rctl" {
+     replace key <RALT> { [ Control_R, Control_R ] };
+     replace key <RCTL> { [ Alt_R, Meta_R ] };
+     modifier_map Mod1    { <RCTL> };
+     modifier_map Control { <RALT> };
+ };
+**** And then choose "Swap Right Win with Right Ctrl" in tweaks/keyboard/additional-layout-options/Ctrl-position
+**** Why replace instead of adding?
+***** Because then the new one would have to be added to some subset of the files in rules/, and it's not clear which
+****** That's /usr/share/X11/xkb/rules
+*** Ctrl-alone as paren:
+**** Download evcape - https://github.com/wbolster/evcape
+**** Copy evcape.py to /home/egg/bin/
+**** Create the file ~/.config/systemd/user/evcape.service, contents as follows:
+[Unit]
+Description=evcape
+
+[Service]
+ExecStart=/home/egg/bin/evcape.py
+    press:rightalt,release:rightalt=press:kprightparen,release:kprightparen
+    press:leftalt,release:leftalt=press:kpleftparen,release:kpleftparen
+Restart=always
+
+[Install]
+WantedBy=default.target
+*** CopyQ keyboard shortcut doesn't work in all apps, so instead
+**** Disable it in CopyQ
+**** Add a system shortcut (typically WIN-SHIFT-c) (from settings/keyboard) that runs: copyq -e "menu()"
 * Keyboard shortcuts:
 ** settings/devices/keyboard:
 ** Set win/space to open overview
@@ -254,16 +299,20 @@ chmod 755 ~/bin/drip
 **** Decent search
 * Backup:
 ** Strategy:
-*** Aptik can be used to back up most of the non-home config
+*** deja dup (just called `Backups` in ubuntu) backs up ~/home/ (including aptik-settings-backup) to iMac.
+*** Aptik can be used to back up most of the other config -- dconf settings, groups, icons, repos, themes...
+**** Install aptik (probably) 19.07
+**** mkdir ~/Documents/aptik (ONLY if doesn't exist, which it should if I've restored home dir)
+**** sudo aptik --backup-all --comp lz4 --basepath '/home/egg/Documents/aptik' --skip-flatpaks --skip-cache --skip-packages --skip-snaps --skip-users --skip-mounts --skip-home --yes
 **** TODO root crontab calls aptik, which backs up all settings not in ~/home/ to ~/aptik-settings-backup
 *** TODO etckeeper puts /etc under version control (but does not push it anywhere else, because it has sekrit stuff).
 **** Will automatically commit changes daily.
 **** https://opensource.com/article/17/3/etckeeper-version-control
 **** https://help.ubuntu.com/lts/serverguide/etckeeper.html
-*** deja dup (just called `backup` in ubuntu) backs ~/home/ (including aptik-settings-backup) to iMac.
 *** Root backups (not clones): rsync
-**** Run as root:
-***** rsync -axHAW --progress --numeric-ids --info=progress2 / egg@192.168.1.222:/Volumes/Unused/laptop-root-backup/
+**** run from root, this works given enough tries:
+***** rsync -axqHAW --progress --ignore-existing --numeric-ids --delete-excluded --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ | tee /tmp/rsync-errors
+
 **** Note! Important not to use -X option if copying to mac.
 ** Details:
 *** TODO add aptik call to root crontab
@@ -281,11 +330,6 @@ curl -O https://prerelease.keybase.io/keybase_amd64.deb
 sudo dpkg -i keybase_amd64.deb
 sudo apt-get install -f
 run_keybase
-** Reactive Ops VPN
-*** After setting up, set it to only handle its own traffic:
-**** sudo vim /etc/NetworkManager/system-connections/<RELEVANT-VPN-FILE>
-**** Add `never-default=true` in the IPv4 and IPv6 sections
-**** more info: https://askubuntu.com/questions/913112/how-to-toggle-networkmanagers-use-this-connection-only-for-resources-on-its-ne
 ** Set up memcached:
 *** Memcached setup:
 **** make sure memcached is installed, running as a service, and starting at system boot (see https://github.com/memcached/memcached/wiki/Install):
@@ -305,7 +349,13 @@ run_keybase
 *** Doesn't solve that option, but be aware of firejail for sandboxing apps
 **** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
 ** TODO Conky - Very nice, themable system info/clock/weather/whatever overlay:
-*** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
-*** https://devuno.deviantart.com/art/Dirty-Conky-179991956
-*** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
+*** https://github.com/brndnmtthws/conky
+*** How to:
+**** https://www.lifewire.com/beginners-guide-to-conky-4043352
+**** https://itsfoss.com/conky-gui-ubuntu-1304/
+*** Examples:
+**** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
+**** https://devuno.deviantart.com/art/Dirty-Conky-179991956
+**** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
+
