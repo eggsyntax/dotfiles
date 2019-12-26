@@ -12,16 +12,14 @@
 ** dvorak
 ** Displays/Night Light
 * sudo apt install:
-** vim, xcape, google-chrome-stable, filezilla, vlc, xsel, python-pygments, openssh-server, php-memcached, memcached
-** tmux, htop, make, chrome-gnome-shell, silversearcher-ag, leiningen, autojump, tmuxinator, gnome-sushi (file previewer)
-** rename
+** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo jq
 ** lm-sensors (so system-monitor can see fan speed)
 ** Windows emulation (maybe):
 *** wine, winetricks, playonlinu
 * Gnome-tweak-tool to change various settings
 ** Under keyboard / 'additional layout options'
 *** caps-lock / 'swap ESC and caps lock'
-*** Under ctrl-key-position I can switch ctrl and cmd
+*** Under ctrl-key-position I can switch left-alt and left-ctrl
 *** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
 ** Under fonts: can scale fonts
 * Vim setup:
@@ -49,17 +47,22 @@
 *** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-*** dash-to-dock (now incorporated in ubuntu, but the original extension is more configurable)
+*** dash-to-dock. NOTE:
+**** Must ininstall gnome version:
+***** https://github.com/micheleg/dash-to-dock/issues/643#issuecomment-345525969
+***** sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt install gnome-shell-extension-dashtodock
+**** (now incorporated in ubuntu, but the original extension is more configurable)
 *** no topleft hot corner
 *** do not disturb
 *** NoAnnoyance (eliminate "..window is created" by auto-raising created windows
 *** openweather
 *** touchpad indicator
-*** System monitor:
-**** https://extensions.gnome.org/extension/1064/system-monitor/
 *** DO NOT install Indicator Multiload, breaks 18.04
 *** gnome-sushi -- preview from file browser with space bar
+*** system-monitor (right one): https://extensions.gnome.org/extension/120/system-monitor/
 *** OLD:
+**** System monitor: [wrong one]
+***** https://extensions.gnome.org/extension/1064/system-monitor/
 **** ubuntu appindicators
 **** steal my focus
 ** cdhist (aka `cd --`)
@@ -70,7 +73,7 @@ sudo apt install python-setuptools
      cd cdhist
      sudo make install
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
-** Virtualbox
+** Virtualbox [NOT NEEDED FOR DOCKER]
 **** sudo apt install virtualbox
 **** May have to do the steps here: https://askubuntu.com/a/229908/325838
 ** Aptik to auto-reinstall apps & ppas after upgrade:
@@ -80,12 +83,15 @@ sudo apt install python-setuptools
 *** sudo apt install aptik
 *** sudo apt install aptik-gtk (important! for GUI)
 ** Docker
-*** install virtualbox as above
+*** DO NOT NEED docker-machine or virtualbox!
 *** docker installation is kind of a pain in the ass.
 *** https://docs.docker.com/install/linux/docker-ce/ubuntu/
-*** then install docker-compose using: https://github.com/docker/compose/releases
-*** docker-machine create default
-*** eval $(docker-machine env)
+*** Be sure to add self to docker group, start docker service. May need to reboot.
+*** then install docker-compose:
+**** https://docs.docker.com/compose/install/
+*** Oudated:
+**** docker-machine create default
+**** eval $(docker-machine env)
 ** Firefox? If so,
 *** https://addons.mozilla.org/en-US/firefox/addon/ctrl-number-to-switch-tabs/
 *** https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/
@@ -108,16 +114,16 @@ sudo apt install python-setuptools
 ** Icons:
 *** Numix
 **** sudo add-apt-repository ppa:numix/ppa
-**** sudo apt update
-**** sudo apt-get update
-**** sudo apt-get install numix-icon-theme-circle
-**** sudo apt-get install numix-icon-theme-square
+**** sudo apt update && sudo apt-get install numix-icon-theme-circle numix-icon-theme-square
 *** Papirus
 **** sudo add-apt-repository ppa:papirus/papirus
 **** sudo apt update && sudo apt install papirus-icon-theme
 ** Theme:
 *** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
 ** Other:
+*** Rename file for volume-change bleep so that it'll be silent:
+**** sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
+**** can `pulseaudio -k` to kill pulseaudio (should auto-restart, I _think_?) to immediately cause it to take effect, but probably better to just live with it until reboot
 *** X11-forwarding setup
 **** https://unix.stackexchange.com/questions/12755/how-to-forward-x-over-ssh-to-run-graphics-applications-remotely
 ** Nautilus (file manager):
@@ -136,7 +142,10 @@ ServerAliveInterval 240
 ** Silence MOTD, which is typically Canonical spam:
 *** touch ~/.hushlogin
 * Keyboard layout:
-** Final solution for the P51:
+** Showing keypresses: `xev`
+*** Or in terminal, `showkey`
+*** Although note differences: https://superuser.com/a/248568
+** Final solution for the P51 (X11):
 *** 1. Do some switching in tweak-tool/typing:
 **** Typing / CapsLock / 'Swap ESC and CapsLock'
 **** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
@@ -150,7 +159,8 @@ ServerAliveInterval 240
       <RALT> = 105;
       & now we have overridden keycodes at low level.
 *** 3. And then to set left & rt control to l & r parens:
-****  Link dotfiles/linux-.bash_login to ~/.bash_login (so that it runs once on startup)
+****  [Doesn't seem to work, still having to run xcape manually] Link dotfiles/linux-.bash_login to ~/.bash_login (so that it runs once on startup):
+***** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
 **** Previous version, in .bashrc (which is bad because it runs on every new terminal window etc)):
 ***** 3. And then to set left & rt control to l & r parens, in .bashrc we add:
 ****** Important to use `killall xcape` or something first, to ensure that only one xcape process is ever running.
@@ -205,13 +215,57 @@ ServerAliveInterval 240
 ****** Until I can figure out how to switch the right-hand ctrl and alt, I've got paren mapped to alt_r:
 ******* xcape -e 'Control_L=Shift_L|parenleft;Alt_R=Shift_R|parenright'
 ****** I've seen the paren ones work, but not the caps<->escape.
+** Wayland keyboard layout:
+*** Swapping right alt and right ctrl:
+**** Changed the following in /usr/share/X11/xkb/symbols/ctrl
+***** From (this is the "swap_rwin_rctl" section
+    replace key <RWIN> { [ Control_R ] };
+    replace key <RCTL> { [ Super_R ] };
+    modifier_map Mod4    { <RCTL> };
+    modifier_map Control { <RWIN> };
+***** To (broader context)
+ // TODO NOTE! I've coopted this one to swap right-Alt and right-Ctl
+ //   instead (because adding a new section in here doesn't add it
+ //   to tweaks)
+ // Swap the functions of the right Win key and the right Ctrl key.
+ partial modifier_keys
+ xkb_symbols "swap_rwin_rctl" {
+     replace key <RALT> { [ Control_R, Control_R ] };
+     replace key <RCTL> { [ Alt_R, Meta_R ] };
+     modifier_map Mod1    { <RCTL> };
+     modifier_map Control { <RALT> };
+ };
+**** And then choose "Swap Right Win with Right Ctrl" in tweaks/keyboard/additional-layout-options/Ctrl-position
+**** Why replace instead of adding?
+***** Because then the new one would have to be added to some subset of the files in rules/, and it's not clear which
+****** That's /usr/share/X11/xkb/rules
+*** Ctrl-alone as paren:
+**** Download evcape - https://github.com/wbolster/evcape
+**** Copy evcape.py to /home/egg/bin/
+**** Create the file ~/.config/systemd/user/evcape.service, contents as follows:
+[Unit]
+Description=evcape
+
+[Service]
+ExecStart=/home/egg/bin/evcape.py
+    press:rightalt,release:rightalt=press:kprightparen,release:kprightparen
+    press:leftalt,release:leftalt=press:kpleftparen,release:kpleftparen
+Restart=always
+
+[Install]
+WantedBy=default.target
+*** CopyQ keyboard shortcut doesn't work in all apps, so instead
+**** Disable it in CopyQ
+**** Add a system shortcut (typically WIN-SHIFT-c) (from settings/keyboard) that runs: copyq -e "menu()"
 * Keyboard shortcuts:
 ** settings/devices/keyboard:
 ** Set win/space to open overview
 ** Close: super-q
 * Clojure:
-** 2019: `sudo apt install clojure` is enough; no need to manually install Java
+** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
+** Installing OpenJDK 11: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
 ** Java:
+*** NOTE: probably time to not use the oracle jdk shown below; use Open JDK instead.
 *** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
        sudo apt-get install python-software-properties
        sudo add-apt-repository ppa:webupd8team/java
@@ -221,7 +275,7 @@ ServerAliveInterval 240
        oracle-java8-installer
 *** Discussion of the above at
 **** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
-** Leiningen:
+** Leiningen (don't install through apt, too old):
 *** https://github.com/technomancy/leiningen
 ** I like to use lein-drip and drip:
 *** drip: https://github.com/flatland/drip
@@ -245,16 +299,20 @@ chmod 755 ~/bin/drip
 **** Decent search
 * Backup:
 ** Strategy:
-*** Aptik can be used to back up most of the non-home config
+*** deja dup (just called `Backups` in ubuntu) backs up ~/home/ (including aptik-settings-backup) to iMac.
+*** Aptik can be used to back up most of the other config -- dconf settings, groups, icons, repos, themes...
+**** Install aptik (probably) 19.07
+**** mkdir ~/Documents/aptik (ONLY if doesn't exist, which it should if I've restored home dir)
+**** sudo aptik --backup-all --comp lz4 --basepath '/home/egg/Documents/aptik' --skip-flatpaks --skip-cache --skip-packages --skip-snaps --skip-users --skip-mounts --skip-home --yes
 **** TODO root crontab calls aptik, which backs up all settings not in ~/home/ to ~/aptik-settings-backup
 *** TODO etckeeper puts /etc under version control (but does not push it anywhere else, because it has sekrit stuff).
 **** Will automatically commit changes daily.
 **** https://opensource.com/article/17/3/etckeeper-version-control
 **** https://help.ubuntu.com/lts/serverguide/etckeeper.html
-*** deja dup (just called `backup` in ubuntu) backs ~/home/ (including aptik-settings-backup) to iMac.
 *** Root backups (not clones): rsync
-**** Run as root:
-***** rsync -axHAW --progress --numeric-ids --info=progress2 / egg@192.168.1.222:/Volumes/Unused/laptop-root-backup/
+**** run from root, this works given enough tries:
+***** rsync -axqHAW --progress --ignore-existing --numeric-ids --delete-excluded --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ | tee /tmp/rsync-errors
+
 **** Note! Important not to use -X option if copying to mac.
 ** Details:
 *** TODO add aptik call to root crontab
@@ -272,11 +330,6 @@ curl -O https://prerelease.keybase.io/keybase_amd64.deb
 sudo dpkg -i keybase_amd64.deb
 sudo apt-get install -f
 run_keybase
-** Reactive Ops VPN
-*** After setting up, set it to only handle its own traffic:
-**** sudo vim /etc/NetworkManager/system-connections/<RELEVANT-VPN-FILE>
-**** Add `never-default=true` in the IPv4 and IPv6 sections
-**** more info: https://askubuntu.com/questions/913112/how-to-toggle-networkmanagers-use-this-connection-only-for-resources-on-its-ne
 ** Set up memcached:
 *** Memcached setup:
 **** make sure memcached is installed, running as a service, and starting at system boot (see https://github.com/memcached/memcached/wiki/Install):
@@ -296,7 +349,13 @@ run_keybase
 *** Doesn't solve that option, but be aware of firejail for sandboxing apps
 **** https://beebom.com/how-sandbox-non-trusted-apps-linux-systems/
 ** TODO Conky - Very nice, themable system info/clock/weather/whatever overlay:
-*** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
-*** https://devuno.deviantart.com/art/Dirty-Conky-179991956
-*** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
+*** https://github.com/brndnmtthws/conky
+*** How to:
+**** https://www.lifewire.com/beginners-guide-to-conky-4043352
+**** https://itsfoss.com/conky-gui-ubuntu-1304/
+*** Examples:
+**** https://yesthisisme.deviantart.com/art/Conky-Conky-Conky-174343321
+**** https://devuno.deviantart.com/art/Dirty-Conky-179991956
+**** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
+

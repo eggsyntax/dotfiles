@@ -14,6 +14,7 @@
 
 ;; General tips for stuff I forget:
 ;; * toggle-truncate-lines to wrap/not-wrap lines in the view
+;; * emacs regex character classes: `\s-` for whitespace
 
 (defun right-mod (keychar)
   "Return the appropriate modkey + keychar reference (ie for (right-mod '*',
@@ -60,10 +61,21 @@ values."
    ;; List of configuration layers to load.
    ;; TARGET: LAYERS
    dotspacemacs-configuration-layers
-   '(clojure
+   '(graphviz
+     ruby
      python
      (clojure :variables
-              clojure-enable-clj-refactor t)
+              clojure-enable-clj-refactor t
+              clojure-enable-sayid t
+              ;; I want this to work but it just seems to be a no-op. global-prettify-symbols-mode
+              ;; (see below) works fine but throws off indentation in the plaintext file.
+              ;; clojure-enable-fancify-symbols t
+              ;; TODO note that joker was working quite decently for linting (without having a
+              ;; clojure-enable-linters line at all); I just wanted to give clj-kondo a try (2020-12-14).
+              clojure-enable-linters 'clj-kondo
+              ;; Supposedly if I want I can use both of these together:
+              ;; clojure-enable-linters '(clj-kondo joker)
+              )
      ;; in ~/.emacs.private-libs, linked to ~/.emacs.d/private:
      clojure-lint
      csv
@@ -138,8 +150,9 @@ You should not put any user code in there besides modifying the variable
 values."
   ;; This has to go here, unfortunately.
   (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-  (add-to-list 'package-pinned-packages '(cider   . "melpa-stable") t)
-  (add-to-list 'package-pinned-packages '(clojure . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(cider         . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(cider-nrepl   . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(clojure       . "melpa-stable") t)
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
@@ -234,7 +247,7 @@ values."
                                    :weight normal
                                    :width normal)
                                  '("Hack"
-                                   :size 24
+                                   :size 26
                                    :weight normal
                                    :width condensed))
 
@@ -527,6 +540,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (define-key evil-insert-state-map (kbd (right-mod "j")) 'evil-next-line)
   (define-key evil-insert-state-map (kbd (right-mod "k")) 'evil-previous-line)
 
+  (define-key evil-insert-state-map (kbd (right-mod "v")) 'maclike-paste)
+
   ;; Have to redefine the few fn-modified-keys I use, since we've
   ;; coopted fn as hyper
   (global-set-key (kbd "H-<down>") 'evil-scroll-page-down)
@@ -568,7 +583,12 @@ before packages are loaded. If you are unsure, you should try in setting them in
      (kbd "<down>") 'cider-repl-next-input)
 
    (evil-define-key 'normal cider-repl-mode-map
-     (kbd (left-mod "n")) 'cider-repl-next-input))
+     (kbd (left-mod "n")) 'cider-repl-next-input)
+
+   (evil-define-key '(normal insert) 'cider-repl-mode-map
+     (kbd  "C-n") 'cider-repl-set-ns)
+
+   )
 
   (define-key evil-insert-state-map (kbd "<tab>") 'evil-complete-next)
   (define-key evil-insert-state-map (kbd "S-<tab>") 'evil-complete-previous)
@@ -620,12 +640,14 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (define-key evil-normal-state-map (kbd "SPC x k") 'string-inflection-kebab-case)
   (define-key evil-normal-state-map (kbd "SPC x C") 'string-inflection-camelcase)
+  (define-key evil-normal-state-map (kbd "SPC x a x") 'align-regexp)
   (define-key evil-normal-state-map (kbd "SPC j g") 'dumb-jump-go)
   (define-key evil-normal-state-map (kbd "SPC r c") 'copy-to-register)
   (define-key evil-normal-state-map (kbd "SPC r p") 'evil-paste-from-register)
   (define-key evil-normal-state-map (kbd "SPC g c") 'vc-resolve-conflicts)
   (define-key evil-normal-state-map (kbd "SPC f m") 'toggle-frame-maximized)
   (define-key evil-normal-state-map (kbd "SPC s v") 'save-some-buffers)
+  (define-key evil-normal-state-map (kbd "SPC b f") 'diff-buffer-with-file)
   ;; Reverse the standard binding of ' vs `
   (define-key evil-normal-state-map (kbd "'") 'evil-goto-mark)
   (define-key evil-normal-state-map (kbd "`") 'evil-goto-mark-line)
@@ -736,80 +758,82 @@ before packages are loaded. If you are unsure, you should try in setting them in
                            arg))
 
   (with-eval-after-load 'clojure-mode
-    (define-key evil-normal-state-map (kbd (right-mod "k")) nil) ; kill-sentence -- bad if I think I'm in repl
-    (define-key evil-normal-state-map (kbd "SPC m t s") 'cider-test-run-test)
-    (define-key evil-normal-state-map (kbd "SPC b x") 'jump-to-cider-error)
-    (define-key evil-normal-state-map (kbd ", c s") 'cider-scratch)
-    (define-key evil-normal-state-map (kbd ", t s") 'cider-test-run-test)
-    ;; 'ns-tests'
-    (define-key evil-normal-state-map (kbd "SPC m t n") 'cider-test-run-ns-tests)
-    (define-key evil-normal-state-map (kbd ", t n") 'cider-test-run-ns-tests)
-    (define-key evil-normal-state-map (kbd "SPC h c") 'clojure-cheatsheet)
-    (define-key evil-normal-state-map (kbd ", e x") 'cider-eval-last-sexp-to-repl)
-    (define-key evil-normal-state-map (kbd ", e c") 'cider-pprint-eval-last-sexp-to-comment)
-    (define-key evil-normal-state-map (kbd ", s w") 'cider-repl-set-ns)
-    ;; TODO what I want is the next one, but I have to figure out how to get it
-    ;; to load in the current buffer, not some arbitrary one.
-    ;; (define-key evil-normal-state-map (kbd "SPC b c") 'cider-switch-to-repl-buffer)
-    (define-key evil-normal-state-map (kbd "SPC b c") 'jump-to-clj-repl)
-    (define-key evil-normal-state-map (kbd "SPC b C") 'jump-to-cljs-repl)
-    (define-key evil-normal-state-map (kbd "SPC b S") 'jump-to-nrepl-server)
-    (define-key evil-normal-state-map (kbd "SPC b E") 'jump-to-personal-file)
-    ;; (define-key evil-normal-state-map (kbd "SPC s ,") ";s/, /\n/g")
-    ;; (define-key evil-normal-state-map (kbd "SPC s .") ";s/} {/}\n{/g")
-    (define-key evil-normal-state-map (kbd "SPC s ,") 'format-data)
-    (define-key evil-normal-state-map (kbd "SPC i r") 'indent-region)
-    (define-key evil-normal-state-map (kbd (right-mod ",")) 'clojure-toggle-keyword-string) ; toggle (ie cycle) between str and kwd
-    (define-key evil-normal-state-map (kbd (right-mod "t")) 'transpose-chars)
-    (define-key evil-normal-state-map (kbd (left-mod "t")) "ct-") ; change-to-hyphen
-    (define-key evil-normal-state-map (kbd (left-mod "-")) 'jump-past-hyphen)
-    (define-key evil-normal-state-map (kbd (left-mod "_")) 'jump-past-hyphen-back)
-    (define-key evil-normal-state-map (kbd (left-mod "n")) 'copy-current-ns)
-    (define-key evil-insert-state-map (kbd (left-mod "n")) 'copy-current-ns)
-    (define-key evil-normal-state-map (kbd (left-mod "f")) 'cider-format-region-or-buffer)
     (evil-leader/set-key "m s X" 'sesman-restart) ;; huh?
     (evil-leader/set-key "m s h" 'cider-repl-history)
 
-    ;; Experiment w/ Sayid
-    ;; (sayid-setup-package)
+    (define-key evil-normal-state-map (kbd ", s i") 'cider-jack-in-clj)
+    (define-key evil-normal-state-map (kbd ", ,") 'cider-jack-in-clj)
 
-    ;; Define an "eval" operator
+
+    ;; Experiment w/ Sayid
+    (sayid-setup-package)
+
+    ;; Define an "eval" vim-type operator -- use to evaluate an
+    ;; arbitrary text selection or (if text not selected) movement key
     (evil-define-operator generic-evil-eval-operator (beg end)
       (cider-eval-region beg end))
     (define-key evil-normal-state-map (kbd "Q") 'generic-evil-eval-operator)
 
     ;; Use lispy definition of words
     ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
-    (dolist (c (string-to-list ":_-?!#*"))
-      (modify-syntax-entry c "w" clojure-mode-syntax-table ))
+    ;; (dolist (c (string-to-list ":_-?!#*"))
+    ;;   (modify-syntax-entry c "w" clojure-mode-syntax-table ))
+    ;; Above is now replaced by:
+    (add-hook 'cider-repl-mode-hook #'subword-mode)
 
     ;; Use @ag's clj-find-var
     (define-key evil-normal-state-map (kbd "g c") 'clj-find-var)
     (define-key evil-normal-state-map (kbd "g d") 'clj-find-var)
 
-    ;; C-tab to do #_ comment
-    (define-key evil-normal-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
-    (define-key evil-insert-state-map (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp)
-
-    ;; Append `; XXX' to line
+    ;; Append `;; XXX' to line
     (defun comment-xxx (&optional arg)
       "Append ; XXX"
       (interactive "p")
-      (kmacro-exec-ring-item (quote ([65 32 59 32 88 88 88 escape] 0 "%d")) arg))
+      (kmacro-exec-ring-item (quote ([65 32 59 59 32 88 88 88 escape] 0 "%d")) arg))
     (define-key evil-normal-state-map (kbd "SPC c x") 'comment-xxx)
 
-    ;; Append `; TODO` to line
+    ;; Append `;; TODO` to line
     (defun comment-todo (&optional arg)
       "Append ; TODO"
       (interactive "p")
-      (kmacro-exec-ring-item (quote ([109 122 65 32 59 32 84 79 68 79 escape 39 122] 0 "%d")) arg))
+      (kmacro-exec-ring-item (quote ([109 122 65 32 59 59 32 84 79 68 79 escape 39 122] 0 "%d")) arg))
     (define-key evil-normal-state-map (kbd "SPC c o") 'comment-todo)
 
     (evil-define-key '(normal insert) 'clojure-mode-map
-      (kbd  "s-t") 'projectile-toggle-between-implementation-and-test)
-    ;; TODO does the above work or do I need to do:
-    ;; (define-key evil-normal-state-map (kbd "s-t") 'projectile-toggle-between-implementation-and-test)
-    ;; (define-key evil-insert-state-map (kbd "s-t") 'projectile-toggle-between-implementation-and-test)
+      (kbd  "C-n") 'cider-repl-set-ns
+      ;; C-tab to do #_ comment
+      (kbd (right-mod "<tab>")) 'clojure-toggle-reader-comment-sexp
+      (kbd  "s-t") 'projectile-toggle-between-implementation-and-test
+      (kbd (left-mod "n")) 'copy-current-ns
+      )
+
+    (evil-define-key '(normal) 'clojure-mode-map
+      (kbd (right-mod "k")) nil ; kill-sentence -- bad if I think I'm in repl
+      (kbd "SPC m t s") 'cider-test-run-test
+      (kbd "SPC b x") 'jump-to-cider-error
+      (kbd ", c s") 'cider-scratch
+      (kbd ", t s") 'cider-test-run-test
+      (kbd "SPC m t n") 'cider-test-run-ns-tests
+      (kbd ", t n") 'cider-test-run-ns-tests
+      (kbd "SPC h c") 'clojure-cheatsheet
+      (kbd ", e x") 'cider-eval-last-sexp-to-repl
+      (kbd ", e c") 'cider-pprint-eval-last-sexp-to-comment
+      (kbd ", s w") 'cider-repl-set-ns
+      (kbd "SPC b c") 'jump-to-clj-repl
+      (kbd "SPC b C") 'jump-to-cljs-repl
+      (kbd "SPC b S") 'jump-to-nrepl-server
+      (kbd "SPC b E") 'jump-to-personal-file
+      (kbd "SPC s ,") 'format-data
+      (kbd "SPC i r") 'indent-region
+      (kbd (right-mod ",")) 'clojure-toggle-keyword-string ; toggle (ie cycle) between str and kwd
+      (kbd (right-mod "t")) 'transpose-chars
+      (kbd (left-mod "t")) "ct-" ; change-to-hyphen
+      (kbd (left-mod "-")) 'jump-past-hyphen
+      (kbd (left-mod "_")) 'jump-past-hyphen-back
+      (kbd (left-mod "n")) 'copy-current-ns
+      (kbd (left-mod "n")) 'copy-current-ns
+      (kbd (left-mod "f")) 'cider-format-region-or-buffer
+      )
 
     )
 
@@ -1273,7 +1297,8 @@ This function is called at the very end of Spacemacs initialization."
             (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
             (figwheel-sidecar.repl-api/cljs-repl))"))
      (javascript-backend . tern)
-     (javascript-backend . lsp)))))
+     (javascript-backend . lsp))))
+ '(standard-indent 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

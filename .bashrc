@@ -490,7 +490,8 @@ function linux-bashrc {
     # ie 'j foo' takes you to fuzzy-matched foo directory
     . /usr/share/autojump/autojump.bash
 
-    # like pbcopy on mac -- pipe it input & it goes to the clipboard
+    # like pbcopy on mac -- pipe inputto it & it goes to the clipboard (after stripping newline)
+    # alias clip='tr -d "\n" | xsel --clipboard --input'
     alias clip='xsel --clipboard --input'
 
     # like `open` on a mac, ie look at a file:
@@ -554,6 +555,14 @@ function linux-bashrc {
     alias pulseaudio-equalizer="qpaeq"
     alias eq="qpaeq"
 
+    # measure wifi strength
+    # Here's another command that works well & gives simple percentage. But damned if I've been able to figure out the 
+    # quoting to wrap it in `alias`.
+    # watch -n 1 "awk 'NR==3 {print \"WiFi Signal Strength = \" \$3 \"00 %\"}' /proc/net/wireless"
+    alias wifi-strength-2='watch -n 1 iwconfig'
+
+    # run aptik with my preferred settings (prereq: make sure aptik is installed & ~/Documents/aptik exists)
+    alias aptik-egg='sudo aptik --backup-all --comp lz4 --basepath "/home/egg/Documents/aptik" --skip-flatpaks --skip-cache --skip-packages --skip-snaps --skip-users --skip-mounts --skip-home --yes'
 }
 
 
