@@ -947,8 +947,8 @@ you should place your code here."
 
   ;; CIDER:
   (setq cider-repl-history-size 5000) ; the default is 500
-  (setq cider-history-file "~/tmp/.cider-history")
-  (setq cider-repl-history-file "~/tmp/.cider-history")
+  ;; (setq cider-history-file ".cider-history")
+  (setq cider-repl-history-file ".cider-history")
   (setq cider-repl-prompt-function 'cider-repl-prompt-lastname)
   (setq cider-repl-display-in-current-window t)
 
