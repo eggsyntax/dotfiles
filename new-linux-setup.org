@@ -1,3 +1,66 @@
+GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
+
+echo 'Installing packages with apt'
+sudo apt-add-repository ppa:teejee2008/ppa
+sudo add-apt-repository ppa:hluk/copyq
+sudo add-apt-repository ppa:numix/ppa
+sudo apt update
+sudo apt install vim xcape vlc xsel python-pygments openssh-server php-memcached \
+  memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump \
+  tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
+  gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
+  google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure
+
+# dotfiles
+echo 'Cloning and linking dotfiles'
+cd ~
+git clone https://github.com/eggsyntax/dotfiles.git
+ln -s dotfiles/.spacemacs
+ln -s dotfiles/.vimrc
+ln -s dotfiles/.bashrc
+ln -s dotfiles/.bash_login
+ln -s dotfiles/.bash_profile
+ln -s dotfiles/.clojure
+ln -s dotfiles/.gitconfig
+ln -s dotfiles/.inputrc
+ln -s dotfiles/.lessfilter
+ln -s dotfiles/.tmux.conf
+
+# vim:
+echo 'Installing vim extensions'
+mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+mkdir -p ~/tmp/vim_backup
+
+# spacemacs
+echo 'Installing spacemacs'
+git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+
+# gnome extensions (most need to be manually installed)
+echo 'Installing gnome extensions'
+sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt install gnome-shell-extension-dashtodock
+sudo apt install gnome-shell-extension-no-annoyance
+
+echo 'Installing cdhist'
+cd ~/tmp
+git clone http://github.com/bulletmark/cdhist
+cd cdhist
+sudo make install
+
+# rename volume-change bleep to hide it, because it's annoying
+sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
+
+# Don't lose ssh connections so fast
+echo ''                        >> ~/.ssh/config
+echo 'Host *'                  >> ~/.ssh/config
+echo 'ServerAliveInterval 240' >> ~/.ssh/config
+
+# No message-of-the-day
+touch ~/.hushlogin
+
+: <<'NON_EXECUTABLE_ORG_MODE'
+^ see https://stackoverflow.com/a/46049228 for details on making the rest non-executable
+
+* Note: `dconf watch /` to observe the results of settings changes so they can be recorded here
 * Installation:
 ** Creating bootable USB stick on mac: https://linuxnewbieguide.org/how-to-put-a-linux-iso-onto-a-usb-stick-and-make-it-bootable-on-a-mac/
 ** Having some trouble with getting it to boot on the machine. See also linux-on-p51.org
@@ -11,7 +74,7 @@
 * Preferences:
 ** dvorak
 ** Displays/Night Light
-* sudo apt install:
+* sudo apt install (see script at top)
 ** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo jq
 ** lm-sensors (so system-monitor can see fan speed)
 ** Windows emulation (maybe):
@@ -28,11 +91,16 @@
 ** mkdir -p ~/tmp/vim_backup
 ** Necessary? cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
 * Download & install:
-** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
-** LastPass
-** Dropbox
+** Firefox
+*** https://addons.mozilla.org/en-US/firefox/addon/ctrl-number-to-switch-tabs/
+*** https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/
+*** LastPass
+** Pcloud
+*** https://www.pcloud.com/how-to-install-pcloud-drive-linux.html
 *** Then clone dotfiles
+**** git clone https://github.com/eggsyntax/dotfiles.git
 **** https://github.com/eggsyntax/dotfiles
+*** Then link them
 **** ln -s dotfiles/[.spacemacs, .vimrc, .bashrc, .clojure, etc]
 ** Spacemacs
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
@@ -47,20 +115,21 @@
 *** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
 **** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
-*** dash-to-dock. NOTE:
-**** Must ininstall gnome version:
+*** dash-to-dock. NOTE: [installed above]
+**** Must uninstall gnome version?
 ***** https://github.com/micheleg/dash-to-dock/issues/643#issuecomment-345525969
 ***** sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt install gnome-shell-extension-dashtodock
 **** (now incorporated in ubuntu, but the original extension is more configurable)
-*** no topleft hot corner
+*** no topleft hot corner - https://extensions.gnome.org/extension/118/no-topleft-hot-corner/
 *** do not disturb
-*** NoAnnoyance (eliminate "..window is created" by auto-raising created windows
+*** Notification counter
+*** NoAnnoyance (eliminate "..window is created" by auto-raising created windows [installed above]
 *** openweather
-*** touchpad indicator
 *** DO NOT install Indicator Multiload, breaks 18.04
 *** gnome-sushi -- preview from file browser with space bar
-*** system-monitor (right one): https://extensions.gnome.org/extension/120/system-monitor/
 *** OLD:
+**** system-monitor (right one): https://extensions.gnome.org/extension/120/system-monitor/
+**** touchpad indicator
 **** System monitor: [wrong one]
 ***** https://extensions.gnome.org/extension/1064/system-monitor/
 **** ubuntu appindicators
@@ -76,7 +145,7 @@ sudo apt install python-setuptools
 ** Virtualbox [NOT NEEDED FOR DOCKER]
 **** sudo apt install virtualbox
 **** May have to do the steps here: https://askubuntu.com/a/229908/325838
-** Aptik to auto-reinstall apps & ppas after upgrade:
+** Aptik to auto-reinstall apps & ppas after upgrade: [installed above]
 *** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
 *** sudo apt-add-repository ppa:teejee2008/ppa
 *** sudo apt update
@@ -92,9 +161,7 @@ sudo apt install python-setuptools
 *** Oudated:
 **** docker-machine create default
 **** eval $(docker-machine env)
-** Firefox? If so,
-*** https://addons.mozilla.org/en-US/firefox/addon/ctrl-number-to-switch-tabs/
-*** https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/
+** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
 * Customization tweaks:
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
@@ -111,7 +178,7 @@ sudo apt install python-setuptools
 **** settings/wifi/hamburger-for-current-network/ipv4: set ipv4 method to manual; assuming 192-based network, add
 **** address 192.168.1.WHATEV / netmask 255.0.0.0 / gateway (typically) 192.168.1.1
 **** details at https://linuxconfig.org/how-to-configure-static-ip-address-on-ubuntu-18-04-bionic-beaver-linux
-** Icons:
+** Icons [installed above]
 *** Numix
 **** sudo add-apt-repository ppa:numix/ppa
 **** sudo apt update && sudo apt-get install numix-icon-theme-circle numix-icon-theme-square
@@ -121,7 +188,7 @@ sudo apt install python-setuptools
 ** Theme:
 *** Plano: http://www.omgubuntu.co.uk/2017/04/plano-gtk-theme
 ** Other:
-*** Rename file for volume-change bleep so that it'll be silent:
+*** Rename file for volume-change bleep so that it'll be silent: [scripted]
 **** sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
 **** can `pulseaudio -k` to kill pulseaudio (should auto-restart, I _think_?) to immediately cause it to take effect, but probably better to just live with it until reboot
 *** X11-forwarding setup
@@ -131,7 +198,7 @@ sudo apt install python-setuptools
 **** vim ~/.config/user-dirs.dirs
 **** sudo vim /etc/xdg/user-dirs.defaults
 **** via http://www.arj.no/2017/01/03/nautilus-bookmarks/
-** ~/.ssh/config: add
+** ~/.ssh/config: add [scripted]
 Host *
 ServerAliveInterval 240
 ** Add audio eq (may possibly cause problems?):
@@ -139,9 +206,9 @@ ServerAliveInterval 240
 *** https://askubuntu.com/a/982556
 *** but then individual applications may not be using the eq. Install volume control
 **** https://askubuntu.com/questions/580631/how-to-set-which-output-sound-an-application-should-use
-** Silence MOTD, which is typically Canonical spam:
+** Silence MOTD, which is typically Canonical spam: [scripted]
 *** touch ~/.hushlogin
-* Keyboard layout:
+* Keyboard layout: [automate this after confirming it works right]
 ** Showing keypresses: `xev`
 *** Or in terminal, `showkey`
 *** Although note differences: https://superuser.com/a/248568
@@ -257,12 +324,14 @@ WantedBy=default.target
 *** CopyQ keyboard shortcut doesn't work in all apps, so instead
 **** Disable it in CopyQ
 **** Add a system shortcut (typically WIN-SHIFT-c) (from settings/keyboard) that runs: copyq -e "menu()"
-* Keyboard shortcuts:
+* Keyboard shortcuts: [scripted]
 ** settings/devices/keyboard:
-** Set win/space to open overview
-** Close: super-q
+*** Set win/space to open overview
+*** Close: super-q
 * Clojure:
 ** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
+   ---- TODO YOUAREHERE ----
+** 2019: use jenv to manage JDK
 ** Installing OpenJDK 11: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
 ** Java:
 *** NOTE: probably time to not use the oracle jdk shown below; use Open JDK instead.
@@ -311,7 +380,11 @@ chmod 755 ~/bin/drip
 **** https://help.ubuntu.com/lts/serverguide/etckeeper.html
 *** Root backups (not clones): rsync
 **** run from root, this works given enough tries:
-***** rsync -axqHAW --progress --ignore-existing --numeric-ids --delete-excluded --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ | tee /tmp/rsync-errors
+***** rsync -axqHAW --progress --ignore-existing --numeric-ids --delete-excluded --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found","/var/lib/docker","/usr/share/perl"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ 2>&1 | tee -a /tmp/rsync-errors
+
+rsync -axqHAW --progress --ignore-existing --numeric-ids --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found","/var/lib/docker","/usr/share/perl"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ 2>&1 | tee -a /tmp/rsync-errors
+rsync -axqHAW --progress --ignore-existing --numeric-ids --info=progress2 /home/egg egg@192.168.1.222:/Volumes/LaptopBackup/x1-homedir-2019-12-25/ 2>&1 | tee -a /tmp/rsync-home-errors
+
 
 **** Note! Important not to use -X option if copying to mac.
 ** Details:
@@ -359,3 +432,48 @@ run_keybase
 **** https://aaika.deviantart.com/art/Gobilum-Conky-1-0-303327080
 *** LIST: https://www.deviantart.com/whats-hot/?q=conky+themes&offset=0
 
+
+
+sleeping (make note somewhere) (edit in dconf editor):
+- time before logout
+- logout-delay
+- sleep timeout computer when on AC
+- screensaver/idle-activation-enabled
+
+
+suggested at
+  sudo rsync -aAXv / --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} /mnt
+
+  --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"}
+
+
+du -h --max-depth 0 --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"} /
+58G
+
+
+
+* gsettings:
+/org/gnome/desktop/input-sources/sources
+  [('xkb', 'us+dvorak')]
+/org/gnome/settings-daemon/plugins/color/night-light-enabled
+  true
+# prevent overview on single-key (because super_R doesn't exist)
+/org/gnome/mutter/overlay-key
+  'Super_R'
+/org/gnome/desktop/input-sources/xkb-options
+  ['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']
+/org/gnome/desktop/interface/icon-theme
+  'Numix-Circle'
+/org/gnome/desktop/wm/keybindings/panel-main-menu
+  ['<Super>space']
+/org/gnome/desktop/wm/keybindings/close
+  ['<Super>q']
+
+
+
+
+
+
+
+End of:
+NON_EXECUTABLE_ORG_MODE
