@@ -9,7 +9,8 @@ sudo apt install vim xcape vlc xsel python-pygments openssh-server php-memcached
   memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump \
   tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
-  google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure
+  google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
+  openjdk-11-jdk openjdk-8-jdk
 
 # dotfiles
 echo 'Cloning and linking dotfiles'
@@ -56,6 +57,33 @@ echo 'ServerAliveInterval 240' >> ~/.ssh/config
 
 # No message-of-the-day
 touch ~/.hushlogin
+
+# jenv
+mkdir ~/bin
+git clone https://github.com/gcuisinier/jenv.git ~/bin/.jenv
+echo 'export PATH="$HOME/bin/.jenv/bin:$PATH"' >> ~/.bash_profile
+echo 'eval "$(jenv init -)"' >> ~/.bash_profile
+# then see [[MAKE NOTE]] & add to this section
+
+# leiningen
+curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > ~/bin/lein
+chmod a+x ~/bin/lein
+
+# keybase (for DW)
+cd ~/tmp
+curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
+sudo apt install ./keybase_amd64.deb
+run_keybase
+
+# some settings accessible in Settings and/or gnome-tweak-tool
+gsettings set /org/gnome/desktop/input-sources/sources [('xkb', 'us+dvorak')]
+gsettings set /org/gnome/settings-daemon/plugins/color/night-light-enabled true
+# prevent overview on single-key (because super_R doesn't exist)
+gsettings set /org/gnome/mutter/overlay-key 'Super_R'
+gsettings set /org/gnome/desktop/input-sources/xkb-options ['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']
+gsettings set /org/gnome/desktop/interface/icon-theme 'Numix-Circle'
+gsettings set /org/gnome/desktop/wm/keybindings/panel-main-menu ['<Super>space']
+gsettings set /org/gnome/desktop/wm/keybindings/close ['<Super>q']
 
 : <<'NON_EXECUTABLE_ORG_MODE'
 ^ see https://stackoverflow.com/a/46049228 for details on making the rest non-executable
@@ -330,9 +358,19 @@ WantedBy=default.target
 *** Close: super-q
 * Clojure:
 ** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
-   ---- TODO YOUAREHERE ----
-** 2019: use jenv to manage JDK
-** Installing OpenJDK 11: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
+** Installing OpenJDK 11 & 8 [scripted]: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
+*** sudo apt install openjdk-11-jdk
+*** sudo apt install openjdk-8-jdk
+** 2019: use jenv to manage JDK [scripted]
+*** mkdir ~/bin
+*** git clone https://github.com/gcuisinier/jenv.git ~/bin/.jenv
+*** echo 'export PATH="$HOME/bin/.jenv/bin:$PATH"' >> ~/.bash_profile
+*** echo 'eval "$(jenv init -)"' >> ~/.bash_profile
+*** <<MAKE NOTE>> of where the v11 and v8 jdk got put, then do roughly
+**** jenv add /System/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home
+**** jenv add /System/Library/Java/JavaVirtualMachines/1.11.0.jdk/Contents/Home
+*** jenv version (to show which are available)
+*** jenv global [VERSION OF 11]
 ** Java:
 *** NOTE: probably time to not use the oracle jdk shown below; use Open JDK instead.
 *** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
@@ -346,7 +384,7 @@ WantedBy=default.target
 **** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 ** Leiningen (don't install through apt, too old):
 *** https://github.com/technomancy/leiningen
-** I like to use lein-drip and drip:
+** Maybe: I like to use lein-drip and drip:
 *** drip: https://github.com/flatland/drip
 curl -L http://drip.flatland.org > ~/bin/drip
 chmod 755 ~/bin/drip
@@ -379,13 +417,10 @@ chmod 755 ~/bin/drip
 **** https://opensource.com/article/17/3/etckeeper-version-control
 **** https://help.ubuntu.com/lts/serverguide/etckeeper.html
 *** Root backups (not clones): rsync
-**** run from root, this works given enough tries:
+**** run from root, this might work given enough tries:
 ***** rsync -axqHAW --progress --ignore-existing --numeric-ids --delete-excluded --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found","/var/lib/docker","/usr/share/perl"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ 2>&1 | tee -a /tmp/rsync-errors
-
 rsync -axqHAW --progress --ignore-existing --numeric-ids --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found","/var/lib/docker","/usr/share/perl"} --info=progress2 / egg@192.168.1.222:/Volumes/LaptopBackup/x1full/ 2>&1 | tee -a /tmp/rsync-errors
 rsync -axqHAW --progress --ignore-existing --numeric-ids --info=progress2 /home/egg egg@192.168.1.222:/Volumes/LaptopBackup/x1-homedir-2019-12-25/ 2>&1 | tee -a /tmp/rsync-home-errors
-
-
 **** Note! Important not to use -X option if copying to mac.
 ** Details:
 *** TODO add aptik call to root crontab
@@ -398,7 +433,7 @@ rsync -axqHAW --progress --ignore-existing --numeric-ids --info=progress2 /home/
 ****  https://github.com/pixelastic/dconf-export
 *** /Volumes/Unused on imac2013 can become my home backup drive
 * Work stuff (DW):
-** keybase: https://keybase.io/docs/the_app/install_linux
+** keybase [scripted]: https://keybase.io/docs/the_app/install_linux
 curl -O https://prerelease.keybase.io/keybase_amd64.deb
 sudo dpkg -i keybase_amd64.deb
 sudo apt-get install -f
@@ -453,21 +488,6 @@ du -h --max-depth 0 --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp"
 
 
 * gsettings:
-/org/gnome/desktop/input-sources/sources
-  [('xkb', 'us+dvorak')]
-/org/gnome/settings-daemon/plugins/color/night-light-enabled
-  true
-# prevent overview on single-key (because super_R doesn't exist)
-/org/gnome/mutter/overlay-key
-  'Super_R'
-/org/gnome/desktop/input-sources/xkb-options
-  ['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']
-/org/gnome/desktop/interface/icon-theme
-  'Numix-Circle'
-/org/gnome/desktop/wm/keybindings/panel-main-menu
-  ['<Super>space']
-/org/gnome/desktop/wm/keybindings/close
-  ['<Super>q']
 
 
 
