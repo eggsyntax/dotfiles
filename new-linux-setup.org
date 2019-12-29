@@ -19,7 +19,7 @@ git clone git@github.com:eggsyntax/dotfiles.git
 ln -s dotfiles/.spacemacs
 ln -s dotfiles/.vimrc
 ln -s dotfiles/.bashrc
-ln -s dotfiles/.bash_login
+ln -s dotfiles/linux-.bash_login .bash_login
 ln -s dotfiles/.bash_profile
 ln -s dotfiles/.clojure
 ln -s dotfiles/.gitconfig
@@ -42,10 +42,12 @@ sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt install gnome-shel
 sudo apt install gnome-shell-extension-no-annoyance
 
 echo 'Installing cdhist'
+https://github.com/bulletmark/cdhist
 cd ~/tmp
 git clone http://github.com/bulletmark/cdhist
 cd cdhist
-sudo make install
+sudo pip3 install .
+sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > /etc/cdhist.bashrc
 
 # rename volume-change bleep to hide it, because it's annoying
 sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
