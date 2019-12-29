@@ -53,7 +53,7 @@ git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 
 # gnome extensions (most need to be manually installed)
 echo '\nInstalling gnome extensions'
-sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt -y install gnome-shell-extension-dashtodock
+sudo apt -y remove gnome-shell-extension-ubuntu-dock && sudo apt -y install gnome-shell-extension-dashtodock
 sudo apt -y install gnome-shell-extension-no-annoyance
 
 echo '\nInstalling cdhist'
@@ -92,14 +92,14 @@ chmod a+x ~/bin/lein
 # run_keybase
 
 # some settings accessible in Settings and/or gnome-tweak-tool
-gsettings set /org/gnome/desktop/input-sources/sources [('xkb', 'us+dvorak')]
-gsettings set /org/gnome/settings-daemon/plugins/color/night-light-enabled true
+dconf write /org/gnome/desktop/input-sources/sources "[('xkb', 'us+dvorak')]"
+dconf write /org/gnome/settings-daemon/plugins/color/night-light-enabled true
 # prevents overview on single-key (because super_R doesn't exist)
-gsettings set /org/gnome/mutter/overlay-key 'Super_R'
-gsettings set /org/gnome/desktop/input-sources/xkb-options ['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']
-gsettings set /org/gnome/desktop/interface/icon-theme 'Numix-Circle'
-gsettings set /org/gnome/desktop/wm/keybindings/panel-main-menu ['<Super>space']
-gsettings set /org/gnome/desktop/wm/keybindings/close ['<Super>q']
+dconf write /org/gnome/mutter/overlay-key "'Super_R'"
+dconf write /org/gnome/desktop/input-sources/xkb-options "['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']"
+dconf write /org/gnome/desktop/interface/icon-theme "'Numix-Circle'"
+dconf write /org/gnome/desktop/wm/keybindings/panel-main-menu "['<Super>space']"
+dconf write /org/gnome/desktop/wm/keybindings/close "['<Super>q']"
 
 : <<'NON_EXECUTABLE_ORG_MODE'
 ^ see https://stackoverflow.com/a/46049228 for details on making the rest non-executable
