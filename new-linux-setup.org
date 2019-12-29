@@ -5,7 +5,7 @@ sudo apt-add-repository ppa:teejee2008/ppa
 sudo add-apt-repository ppa:hluk/copyq
 sudo add-apt-repository ppa:numix/ppa
 sudo apt update
-sudo apt install curl vim xcape vlc xsel python-pygments openssh-server \
+sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag \
   autojump tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
@@ -38,8 +38,8 @@ git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 
 # gnome extensions (most need to be manually installed)
 echo 'Installing gnome extensions'
-sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt install gnome-shell-extension-dashtodock
-sudo apt install gnome-shell-extension-no-annoyance
+sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt -y install gnome-shell-extension-dashtodock
+sudo apt -y install gnome-shell-extension-no-annoyance
 
 echo 'Installing cdhist'
 cd ~/tmp
@@ -72,7 +72,7 @@ chmod a+x ~/bin/lein
 # keybase (for DW)
 cd ~/tmp
 curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
-sudo apt install ./keybase_amd64.deb
+sudo apt -y install ./keybase_amd64.deb
 run_keybase
 
 # some settings accessible in Settings and/or gnome-tweak-tool
