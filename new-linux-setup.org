@@ -7,6 +7,9 @@ set -euxo pipefail
 
 GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
 
+mkdir ~/bin
+mkdir -p ~/tmp/vim_backup
+
 echo -e'\nRunning apt upgrade before anything else'
 sudo apt -y upgrade
 
@@ -45,7 +48,6 @@ ln -s dotfiles/.tmux.conf
 # vim:
 echo -e'\nInstalling vim extensions'
 mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-mkdir -p ~/tmp/vim_backup
 
 # spacemacs
 echo -e'\nInstalling spacemacs'
@@ -62,7 +64,7 @@ cd ~/tmp
 git clone http://github.com/bulletmark/cdhist
 cd cdhist
 sudo pip3 install .
-sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > /etc/cdhist.bashrc
+sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > ~/bin/cdhist.bashrc
 
 # rename volume-change bleep to hide it, because it's annoying
 sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
@@ -76,7 +78,6 @@ echo 'ServerAliveInterval 240' >> ~/.ssh/config
 touch ~/.hushlogin
 
 # jenv
-mkdir ~/bin
 git clone https://github.com/gcuisinier/jenv.git ~/bin/.jenv
 echo 'export PATH="$HOME/bin/.jenv/bin:$PATH"' >> ~/.bash_profile
 echo 'eval "$(jenv init -)"' >> ~/.bash_profile
