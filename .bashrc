@@ -508,7 +508,7 @@ function linux-bashrc {
 
     # Create cd history function (cd --, cd -l, cd -3)
     # https://github.com/bulletmark/cdhist
-    source /etc/cdhist.bashrc
+    source ~/bin/cdhist.bashrc
 
     # Color etc -- copypasted from web, not really vetted.
     # More info at https://ubuntuforums.org/showthread.php?t=41538
