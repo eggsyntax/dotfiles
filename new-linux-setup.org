@@ -15,7 +15,7 @@ sudo apt install vim xcape vlc xsel python-pygments openssh-server php-memcached
 # dotfiles
 echo 'Cloning and linking dotfiles'
 cd ~
-git clone https://github.com/eggsyntax/dotfiles.git
+git clone git@github.com:eggsyntax/dotfiles.git
 ln -s dotfiles/.spacemacs
 ln -s dotfiles/.vimrc
 ln -s dotfiles/.bashrc
