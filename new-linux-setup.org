@@ -3,6 +3,8 @@
 
 GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
 
+echo '\nRunning apt upgrade before anything else'
+sudo apt -y upgrade
 echo '\nInstalling packages with apt'
 sudo apt-add-repository -y ppa:teejee2008/ppa
 sudo add-apt-repository -y ppa:hluk/copyq
