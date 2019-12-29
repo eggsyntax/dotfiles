@@ -7,14 +7,14 @@ set -euxo pipefail
 
 GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
 
-echo '\nRunning apt upgrade before anything else'
+echo -e'\nRunning apt upgrade before anything else'
 sudo apt -y upgrade
 
 # add chrome repo & key
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
-echo '\nInstalling packages with apt'
+echo -e'\nInstalling packages with apt'
 sudo apt-add-repository -y ppa:teejee2008/ppa
 sudo add-apt-repository -y ppa:hluk/copyq
 sudo add-apt-repository -y ppa:numix/ppa
@@ -28,7 +28,7 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
 sudo apt -y autoremove
 
 # dotfiles
-echo '\nlinking dotfiles'
+echo -e'\nlinking dotfiles'
 cd ~
 ln -s dotfiles/.spacemacs
 ln -s dotfiles/.vimrc
@@ -43,20 +43,20 @@ ln -s dotfiles/.lessfilter
 ln -s dotfiles/.tmux.conf
 
 # vim:
-echo '\nInstalling vim extensions'
+echo -e'\nInstalling vim extensions'
 mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 mkdir -p ~/tmp/vim_backup
 
 # spacemacs
-echo '\nInstalling spacemacs'
+echo -e'\nInstalling spacemacs'
 git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 
 # gnome extensions (most need to be manually installed)
-echo '\nInstalling gnome extensions'
+echo -e'\nInstalling gnome extensions'
 sudo apt -y remove gnome-shell-extension-ubuntu-dock && sudo apt -y install gnome-shell-extension-dashtodock
 sudo apt -y install gnome-shell-extension-no-annoyance
 
-echo '\nInstalling cdhist'
+echo -e'\nInstalling cdhist'
 cd ~/tmp
 git clone http://github.com/bulletmark/cdhist
 cd cdhist
@@ -100,6 +100,8 @@ dconf write /org/gnome/desktop/input-sources/xkb-options "['ctrl:swap_lalt_lctl'
 dconf write /org/gnome/desktop/interface/icon-theme "'Numix-Circle'"
 dconf write /org/gnome/desktop/wm/keybindings/panel-main-menu "['<Super>space']"
 dconf write /org/gnome/desktop/wm/keybindings/close "['<Super>q']"
+
+echo -e'\nSetup script finished!'
 
 : <<'NON_EXECUTABLE_ORG_MODE'
 ^ see https://stackoverflow.com/a/46049228 for details on making the rest non-executable
