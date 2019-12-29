@@ -537,7 +537,7 @@ function linux-bashrc {
 
     # tmuxinator. See https://github.com/tmuxinator/tmuxinator
     # TODO can I move this to OS-agnostic?
-    source ~/bin/them/tmuxinator.bash
+    source ~/bin/tmuxinator.bash
 
     alias upgrade='sudo apt-get update && sudo apt-get dist-upgrade && sudo apt-get autoremove'
 
@@ -556,7 +556,7 @@ function linux-bashrc {
     alias eq="qpaeq"
 
     # measure wifi strength
-    # Here's another command that works well & gives simple percentage. But damned if I've been able to figure out the 
+    # Here's another command that works well & gives simple percentage. But damned if I've been able to figure out the
     # quoting to wrap it in `alias`.
     # watch -n 1 "awk 'NR==3 {print \"WiFi Signal Strength = \" \$3 \"00 %\"}' /proc/net/wireless"
     alias wifi-strength-2='watch -n 1 iwconfig'

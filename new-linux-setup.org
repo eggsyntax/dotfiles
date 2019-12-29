@@ -30,11 +30,11 @@ sudo apt -y autoremove
 # dotfiles
 echo -e'\nlinking dotfiles'
 cd ~
+mv .bashrc .bashrc-original
 ln -s dotfiles/.spacemacs
 ln -s dotfiles/.vimrc
-mv .bashrc .bashrc-original
 ln -s dotfiles/.bashrc
-ln -s dotfiles/.bash_login
+ln -s dotfiles/linux-.bash_login .bash_login
 ln -s dotfiles/.bash_profile
 ln -s dotfiles/.clojure
 ln -s dotfiles/.gitconfig
@@ -57,10 +57,12 @@ sudo apt -y remove gnome-shell-extension-ubuntu-dock && sudo apt -y install gnom
 sudo apt -y install gnome-shell-extension-no-annoyance
 
 echo -e'\nInstalling cdhist'
+# https://github.com/bulletmark/cdhist
 cd ~/tmp
 git clone http://github.com/bulletmark/cdhist
 cd cdhist
-sudo make install
+sudo pip3 install .
+sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > /etc/cdhist.bashrc
 
 # rename volume-change bleep to hide it, because it's annoying
 sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
@@ -83,6 +85,8 @@ echo 'eval "$(jenv init -)"' >> ~/.bash_profile
 # leiningen
 curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > ~/bin/lein
 chmod a+x ~/bin/lein
+
+wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash ~/bin/tmuxinator.bash
 
 # TODO - not working, why?
 # keybase (for DW)
