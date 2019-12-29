@@ -1,6 +1,5 @@
 # Before running, you must:
-# sudo apt install git
-# git clone https://github.com/eggsyntax/dotfiles.git
+# sudo apt -y install git && git clone https://github.com/eggsyntax/dotfiles.git && cd dotfiles
 # wait for Software Updater to finish (visible in ps as /usr/bin/unattended-upgrade) (may take a long time)
 
 # Exit on any error, be strict
@@ -10,6 +9,10 @@ GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
 
 echo '\nRunning apt upgrade before anything else'
 sudo apt -y upgrade
+
+# add chrome repo & key
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
 echo '\nInstalling packages with apt'
 sudo apt-add-repository -y ppa:teejee2008/ppa
@@ -185,7 +188,7 @@ sudo apt install python-setuptools
 ** Virtualbox [NOT NEEDED FOR DOCKER]
 **** sudo apt install virtualbox
 **** May have to do the steps here: https://askubuntu.com/a/229908/325838
-** Aptik to auto-reinstall apps & ppas after upgrade: [installed above]
+** Aptik to auto-reinstall apps & ppas after upgrade: [scripted]
 *** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
 *** sudo apt-add-repository ppa:teejee2008/ppa
 *** sudo apt update
@@ -201,7 +204,9 @@ sudo apt install python-setuptools
 *** Oudated:
 **** docker-machine create default
 **** eval $(docker-machine env)
-** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs
+** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs [scripted]
+*** wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+*** echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 * Customization tweaks:
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
