@@ -86,6 +86,8 @@ echo 'eval "$(jenv init -)"' >> ~/.bash_profile
 curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > ~/bin/lein
 chmod a+x ~/bin/lein
 
+wget https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash ~/bin/tmuxinator.bash
+
 # TODO - not working, why?
 # keybase (for DW)
 # cd ~/tmp
