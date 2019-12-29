@@ -60,10 +60,8 @@ sudo apt -y install gnome-shell-extension-no-annoyance
 
 echo -e '\nInstalling cdhist'
 # https://github.com/bulletmark/cdhist
-cd ~/tmp
-git clone http://github.com/bulletmark/cdhist
-cd cdhist
-sudo pip3 install .
+# cd ~/tmp
+sudo pip3 install cdhist
 sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > ~/bin/cdhist.bashrc
 
 echo -e '\nMiscellaneous steps'
