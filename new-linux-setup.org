@@ -24,7 +24,7 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   autojump tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
   google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
-  openjdk-11-jdk openjdk-8-jdk python3-pip
+  openjdk-11-jdk openjdk-8-jdk python3-pip fonts-firacode fonts-hack-ttf
 sudo apt -y autoremove
 
 # dotfiles
@@ -117,46 +117,13 @@ echo -e'\nSetup script finished!'
 *** check desired repos in 1st & 2nd tab
 *** in updates tab, check desired updates
 *** Additional Drivers -- autosearch
-* Preferences:
-** dvorak
-** Displays/Night Light
-* sudo apt install (see script at top)
-** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo jq
-** lm-sensors (so system-monitor can see fan speed)
-** Windows emulation (maybe):
-*** wine, winetricks, playonlinu
-* Gnome-tweak-tool to change various settings
-** Under keyboard / 'additional layout options'
-*** caps-lock / 'swap ESC and caps lock'
-*** Under ctrl-key-position I can switch left-alt and left-ctrl
-*** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
-** Under fonts: can scale fonts
-* Vim setup:
-** vim: pathogen -
-*** mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-** mkdir -p ~/tmp/vim_backup
-** Necessary? cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
 * Download & install:
-** Firefox
+** Firefox addons
 *** https://addons.mozilla.org/en-US/firefox/addon/ctrl-number-to-switch-tabs/
 *** https://addons.mozilla.org/en-US/firefox/addon/lastpass-password-manager/
 *** LastPass
 ** Pcloud
 *** https://www.pcloud.com/how-to-install-pcloud-drive-linux.html
-*** Then clone dotfiles
-**** git clone https://github.com/eggsyntax/dotfiles.git
-**** https://github.com/eggsyntax/dotfiles
-*** Then link them
-**** ln -s dotfiles/[.spacemacs, .vimrc, .bashrc, .clojure, etc]
-** Spacemacs
-*** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-** autojump
-*** have to manually set up on ubuntu (done in .bashrc)
-** Clipboard Manager:
-*** CopyQ:
-**** sudo add-apt-repository ppa:hluk/copyq
-**** sudo apt update && sudo apt install copyq
-*** Or look for a faster one
 ** (Gnome) extensions::
 *** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
 **** https://extensions.gnome.org/extension/615/appindicator-support/
@@ -180,23 +147,10 @@ echo -e'\nSetup script finished!'
 ***** https://extensions.gnome.org/extension/1064/system-monitor/
 **** ubuntu appindicators
 **** steal my focus
-** cdhist (aka `cd --`)
-*** have to have setuptools beforehand:
-sudo apt install python-setuptools
-*** & then
-     git clone http://github.com/bulletmark/cdhist
-     cd cdhist
-     sudo make install
 ** Useful extras: http://www.omgubuntu.co.uk/2017/04/things-to-do-after-installing-ubuntu-17-04
 ** Virtualbox [NOT NEEDED FOR DOCKER]
 **** sudo apt install virtualbox
 **** May have to do the steps here: https://askubuntu.com/a/229908/325838
-** Aptik to auto-reinstall apps & ppas after upgrade: [scripted]
-*** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
-*** sudo apt-add-repository ppa:teejee2008/ppa
-*** sudo apt update
-*** sudo apt install aptik
-*** sudo apt install aptik-gtk (important! for GUI)
 ** Docker
 *** DO NOT NEED docker-machine or virtualbox!
 *** docker installation is kind of a pain in the ass.
@@ -207,14 +161,12 @@ sudo apt install python-setuptools
 *** Oudated:
 **** docker-machine create default
 **** eval $(docker-machine env)
-** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs [scripted]
-*** wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-*** echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 * Customization tweaks:
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
 *** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 *** Hack: https://sourcefoundry.org/hack/
+    --- TODO YOUAREHERE --- on moving now-automated steps
 ** Window managers:
 *** Openbox -- super minimal, elegant
 **** With tint2
@@ -496,22 +448,65 @@ sleeping (make note somewhere) (edit in dconf editor):
 - screensaver/idle-activation-enabled
 
 
-suggested at
-  sudo rsync -aAXv / --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} /mnt
-
-  --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"}
-
-
-du -h --max-depth 0 --exclude=36GiB.swap --exclude={"/dev","/proc","/sys","/tmp","/run","/mnt","/media","/lost+found"} /
-58G
+* Now automated
+** Preferences:
+*** dvorak
+*** Displays/Night Light
 
 
 
-* gsettings:
+** sudo apt install (see script at top)
+*** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo jq
+*** lm-sensors (so system-monitor can see fan speed)
+*** Windows emulation (maybe):
+**** wine, winetricks, playonlinu
+
+** Gnome-tweak-tool to change various settings
+*** Under keyboard / 'additional layout options'
+**** caps-lock / 'swap ESC and caps lock'
+**** Under ctrl-key-position I can switch left-alt and left-ctrl
+**** Change overview shortcut to (nonexistent) right-super [I use super-space instead]
+*** Under fonts: can scale fonts
+** Vim setup:
+*** vim: pathogen -
+**** mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+*** mkdir -p ~/tmp/vim_backup
+*** Necessary? cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
+** Then clone dotfiles
+*** git clone https://github.com/eggsyntax/dotfiles.git
+*** https://github.com/eggsyntax/dotfiles
+** Then link them
+*** ln -s dotfiles/[.spacemacs, .vimrc, .bashrc, .clojure, etc]
+** Spacemacs
+*** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 
 
+** autojump
+*** have to manually set up on ubuntu (done in .bashrc)
+** Clipboard Manager:
+*** CopyQ:
+**** sudo add-apt-repository ppa:hluk/copyq
+**** sudo apt update && sudo apt install copyq
+*** Or look for a faster one
 
+** cdhist (aka `cd --`)
+*** have to have setuptools beforehand:
+sudo apt install python-setuptools
+*** & then
+     git clone http://github.com/bulletmark/cdhist
+     cd cdhist
+     sudo make install
 
+** Aptik to auto-reinstall apps & ppas after upgrade: [scripted]
+*** https://www.howtogeek.com/206454/how-to-backup-and-restore-your-apps-and-ppas-in-ubuntu-using-aptik/
+*** sudo apt-add-repository ppa:teejee2008/ppa
+*** sudo apt update
+*** sudo apt install aptik
+*** sudo apt install aptik-gtk (important! for GUI)
+
+** Chrome - although I'm noticing it's a CPU hog, at least in VM, at least w/ lots of tabs [scripted]
+*** wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+*** echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
 
 
