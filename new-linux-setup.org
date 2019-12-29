@@ -1,6 +1,9 @@
+# Before running, you must:
+# git clone https://github.com/eggsyntax/dotfiles.git
+
 GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
 
-echo 'Installing packages with apt'
+echo '\nInstalling packages with apt'
 sudo apt-add-repository ppa:teejee2008/ppa
 sudo add-apt-repository ppa:hluk/copyq
 sudo add-apt-repository ppa:numix/ppa
@@ -13,11 +16,11 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   openjdk-11-jdk openjdk-8-jdk
 
 # dotfiles
-echo 'Cloning and linking dotfiles'
+echo '\nlinking dotfiles'
 cd ~
-git clone https://github.com/eggsyntax/dotfiles.git
 ln -s dotfiles/.spacemacs
 ln -s dotfiles/.vimrc
+mv .bashrc .bashrc-original
 ln -s dotfiles/.bashrc
 ln -s dotfiles/.bash_login
 ln -s dotfiles/.bash_profile
@@ -28,20 +31,20 @@ ln -s dotfiles/.lessfilter
 ln -s dotfiles/.tmux.conf
 
 # vim:
-echo 'Installing vim extensions'
+echo '\nInstalling vim extensions'
 mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 mkdir -p ~/tmp/vim_backup
 
 # spacemacs
-echo 'Installing spacemacs'
+echo '\nInstalling spacemacs'
 git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
 
 # gnome extensions (most need to be manually installed)
-echo 'Installing gnome extensions'
+echo '\nInstalling gnome extensions'
 sudo apt remove gnome-shell-extension-ubuntu-dock && sudo apt -y install gnome-shell-extension-dashtodock
 sudo apt -y install gnome-shell-extension-no-annoyance
 
-echo 'Installing cdhist'
+echo '\nInstalling cdhist'
 cd ~/tmp
 git clone http://github.com/bulletmark/cdhist
 cd cdhist
@@ -51,7 +54,7 @@ sudo make install
 sudo mv /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga /usr/share/sounds/freedesktop/stereo/audio-volume-change.oga.backup
 
 # Don't lose ssh connections so fast
-echo ''                        >> ~/.ssh/config
+echo '\n'                      >> ~/.ssh/config
 echo 'Host *'                  >> ~/.ssh/config
 echo 'ServerAliveInterval 240' >> ~/.ssh/config
 
@@ -69,16 +72,17 @@ echo 'eval "$(jenv init -)"' >> ~/.bash_profile
 curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > ~/bin/lein
 chmod a+x ~/bin/lein
 
+# TODO - not working, why?
 # keybase (for DW)
-cd ~/tmp
-curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
-sudo apt -y install ./keybase_amd64.deb
-run_keybase
+# cd ~/tmp
+# curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
+# sudo apt -y install ./keybase_amd64.deb
+# run_keybase
 
 # some settings accessible in Settings and/or gnome-tweak-tool
 gsettings set /org/gnome/desktop/input-sources/sources [('xkb', 'us+dvorak')]
 gsettings set /org/gnome/settings-daemon/plugins/color/night-light-enabled true
-# prevent overview on single-key (because super_R doesn't exist)
+# prevents overview on single-key (because super_R doesn't exist)
 gsettings set /org/gnome/mutter/overlay-key 'Super_R'
 gsettings set /org/gnome/desktop/input-sources/xkb-options ['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']
 gsettings set /org/gnome/desktop/interface/icon-theme 'Numix-Circle'
