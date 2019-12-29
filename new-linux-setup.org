@@ -24,7 +24,8 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   autojump tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
   google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
-  openjdk-11-jdk openjdk-8-jdk
+  openjdk-11-jdk openjdk-8-jdk python3-pip
+sudo apt -y autoremove
 
 # dotfiles
 echo '\nlinking dotfiles'
