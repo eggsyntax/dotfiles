@@ -48,6 +48,7 @@ ln -s dotfiles/.tmux.conf
 # vim:
 echo -e '\nInstalling vim extensions'
 mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.git
 
 # spacemacs
 echo -e '\nInstalling spacemacs'
@@ -218,7 +219,7 @@ ServerAliveInterval 240
 *** Or in terminal, `showkey`
 *** Although note differences: https://superuser.com/a/248568
 ** Final solution for the P51 (X11):
-*** 1. Do some switching in tweak-tool/typing:
+*** 1. Do some switching in tweak-tool/typing [scripted]
 **** Typing / CapsLock / 'Swap ESC and CapsLock'
 **** Typing / CtrlKeyPosition / 'Swap left Alt key with left Ctrl key'
 *** 2. config file for xkd, at 'sudo vi /usr/share/X11/xkb/keycodes/evdev'
@@ -329,46 +330,6 @@ WantedBy=default.target
 *** CopyQ keyboard shortcut doesn't work in all apps, so instead
 **** Disable it in CopyQ
 **** Add a system shortcut (typically WIN-SHIFT-c) (from settings/keyboard) that runs: copyq -e "menu()"
-* Keyboard shortcuts: [scripted]
-** settings/devices/keyboard:
-*** Set win/space to open overview
-*** Close: super-q
-* Clojure:
-** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
-** Installing OpenJDK 11 & 8 [scripted]: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
-*** sudo apt install openjdk-11-jdk
-*** sudo apt install openjdk-8-jdk
-** 2019: use jenv to manage JDK [scripted]
-*** mkdir ~/bin
-*** git clone https://github.com/gcuisinier/jenv.git ~/bin/.jenv
-*** echo 'export PATH="$HOME/bin/.jenv/bin:$PATH"' >> ~/.bash_profile
-*** echo 'eval "$(jenv init -)"' >> ~/.bash_profile
-*** <<MAKE NOTE>> of where the v11 and v8 jdk got put, then do roughly
-**** jenv add /System/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home
-**** jenv add /System/Library/Java/JavaVirtualMachines/1.11.0.jdk/Contents/Home
-*** jenv version (to show which are available)
-*** jenv global [VERSION OF 11]
-** Java:
-*** NOTE: probably time to not use the oracle jdk shown below; use Open JDK instead.
-*** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
-       sudo apt-get install python-software-properties
-       sudo add-apt-repository ppa:webupd8team/java
-       sudo apt-get update
-*** install:
-       sudo apt-get install oracle-java8-installer
-       oracle-java8-installer
-*** Discussion of the above at
-**** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
-** Leiningen (don't install through apt, too old):
-*** https://github.com/technomancy/leiningen
-** Maybe: I like to use lein-drip and drip:
-*** drip: https://github.com/flatland/drip
-curl -L http://drip.flatland.org > ~/bin/drip
-chmod 755 ~/bin/drip
-*** lein-drip: https://github.com/josteink/lein-drip
-**** just require in ~/.lein/profiles.clj
-** must follow installation directions for clojure-lint
-*** https://github.com/n2o/clojure-lint-spacemacs-layer#installation
 * Terminal:
 ** Favorites so far:
 *** Default Gnome terminal + tmux & tmuxinator
@@ -459,7 +420,6 @@ sleeping (make note somewhere) (edit in dconf editor):
 *** Displays/Night Light
 
 
-
 ** sudo apt install (see script at top)
 *** vim xcape vlc xsel python-pygments openssh-server php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag autojump tmuxinator gnome-sushi rename hardinfo jq
 *** lm-sensors (so system-monitor can see fan speed)
@@ -484,7 +444,6 @@ sleeping (make note somewhere) (edit in dconf editor):
 *** ln -s dotfiles/[.spacemacs, .vimrc, .bashrc, .clojure, etc]
 ** Spacemacs
 *** git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
-
 
 ** autojump
 *** have to manually set up on ubuntu (done in .bashrc)
@@ -514,6 +473,47 @@ sudo apt install python-setuptools
 *** echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
 
+** Keyboard shortcuts: [scripted]
+*** settings/devices/keyboard:
+**** Set win/space to open overview
+**** Close: super-q
+** Clojure [scripted]
+*** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
+*** Installing OpenJDK 11 & 8 [scripted]: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
+**** sudo apt install openjdk-11-jdk
+**** sudo apt install openjdk-8-jdk
+*** 2019: use jenv to manage JDK [scripted]
+**** mkdir ~/bin
+**** git clone https://github.com/gcuisinier/jenv.git ~/bin/.jenv
+**** echo 'export PATH="$HOME/bin/.jenv/bin:$PATH"' >> ~/.bash_profile
+**** echo 'eval "$(jenv init -)"' >> ~/.bash_profile
+**** <<MAKE NOTE>> of where the v11 and v8 jdk got put, then do roughly
+***** jenv add /System/Library/Java/JavaVirtualMachines/1.8.0.jdk/Contents/Home
+***** jenv add /System/Library/Java/JavaVirtualMachines/1.11.0.jdk/Contents/Home
+**** jenv version (to show which are available)
+**** jenv global [VERSION OF 11]
+*** Java:
+**** NOTE: probably time to not use the oracle jdk shown below; use Open JDK instead.
+**** Add repo for oracle jdk: (note: webupd8team is not as sketchy as they sound ;P )
+        sudo apt-get install python-software-properties
+        sudo add-apt-repository ppa:webupd8team/java
+        sudo apt-get update
+**** install:
+        sudo apt-get install oracle-java8-installer
+        oracle-java8-installer
+**** Discussion of the above at
+***** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
+*** Leiningen (don't install through apt, too old):
+**** https://github.com/technomancy/leiningen
+*** Maybe: I like to use lein-drip and drip:
+**** drip: https://github.com/flatland/drip
+ curl -L http://drip.flatland.org > ~/bin/drip
+ chmod 755 ~/bin/drip
+**** lein-drip: https://github.com/josteink/lein-drip
+***** just require in ~/.lein/profiles.clj
+*** must follow installation directions for clojure-lint
+**** https://github.com/n2o/clojure-lint-spacemacs-layer#installation
 
+* End org mode
 End of:
 NON_EXECUTABLE_ORG_MODE
