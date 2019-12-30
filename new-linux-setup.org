@@ -106,6 +106,9 @@ dconf write /org/gnome/desktop/interface/icon-theme "'Numix-Circle'"
 dconf write /org/gnome/desktop/wm/keybindings/panel-main-menu "['<Super>space']"
 dconf write /org/gnome/desktop/wm/keybindings/close "['<Super>q']"
 
+cd ~/dotfiles
+gsettings list-recursively > cur-settings
+
 echo -e '\nSetup script finished!'
 
 : <<'NON_EXECUTABLE_ORG_MODE'
