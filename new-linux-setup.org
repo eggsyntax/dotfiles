@@ -111,7 +111,6 @@ sudo apt update && sudo apt install signal-desktop
 
 echo -e '\nInstalling cdhist'
 # https://github.com/bulletmark/cdhist
-# cd ~/tmp
 sudo pip3 install cdhist
 sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > ~/bin/cdhist.bashrc
 
@@ -132,15 +131,15 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 touch ~/.hushlogin
 
 # jenv
-# TODO maybe .bash_profile isn't being sourced?
+# TODO .bash_profile isn't being automatically sourced
+#   Could add it to .local-bashrc, but chances are I haven't copied or
+#   created that yet so it might get overwritten
 git clone https://github.com/gcuisinier/jenv.git ~/bin/.jenv
 echo 'export PATH="$HOME/bin/.jenv/bin:$PATH"' >> ~/.bash_profile
 echo 'eval "$(jenv init -)"' >> ~/.bash_profile
-# TODO I haven't confirmed that this works during setup:
 source ~/.bash_profile
 jenv add /usr/lib/jvm/java-11-openjdk-amd64
 jenv add /usr/lib/jvm/java-8-openjdk-amd64
-# then see [[MAKE NOTE]] & add to this section
 
 # leiningen
 curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > ~/bin/lein
@@ -218,8 +217,6 @@ dconf write /org/gnome/shell/favorite-apps "['org.gnome.Terminal.desktop', 'emac
 dconf write /org/gnome/shell/keybindings/toggle-overview "['<Super>space']"
 dconf write /org/gnome/terminal/legacy/keybindings/paste '<Primary>v'
 dconf write /org/gtk/settings/file-chooser/sort-directories-first false
-# dconf write
-# dconf write
 # dconf write
 
 # services
