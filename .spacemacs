@@ -65,7 +65,7 @@ values."
      ruby
      python
      (clojure :variables
-              clojure-enable-clj-refactor t
+              ;; clojure-enable-clj-refactor t
               clojure-enable-sayid t
               ;; I want this to work but it just seems to be a no-op. global-prettify-symbols-mode
               ;; (see below) works fine but throws off indentation in the plaintext file.
@@ -77,7 +77,7 @@ values."
               ;; clojure-enable-linters '(clj-kondo joker)
               )
      ;; in ~/.emacs.private-libs, linked to ~/.emacs.d/private:
-     clojure-lint
+     ;; clojure-lint ; now superseded in spacemacs-develop by clj-kondo
      csv
      emacs-lisp
      ;; common-lisp
@@ -90,6 +90,9 @@ values."
      syntax-checking
      version-control
      yaml
+     ;; (shell :variables
+     ;;        shell-default-height 30
+     ;;        shell-default-position 'bottom)
      (helm :variables
            helm-use-frame-when-more-than-two-windows nil)
      ;; (colors :variables
@@ -112,21 +115,25 @@ values."
      ;;             (define-key winum-keymap (kbd "M-0") #'treemacs-select-window)
      ;;             ;; Don't notify about treemacs refresh; it gets in the way of repl-started msg
      ;;             (setq treemacs-silent-refresh t)))
+     multiple-cursors ; keybindings: https://github.com/syl20bnr/spacemacs/blob/develop/layers/+misc/multiple-cursors/README.org#evil-mc
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(slime-docker
-                                      flatui-theme
-                                      apropospriate-theme
+                                      (cider :min-version "0.20")
+
+                                      ;; Themes:
+                                      solarized-theme
                                       alect-themes
                                       ample-theme
-                                      dracula-theme
                                       zenburn-theme
-                                      flatland-theme
-                                      solarized-theme
-                                      (cider :min-version "0.20")
+                                      organic-green-theme
+                                      ;; flatland-theme
+                                      ;; dracula-theme
+                                      flatui-theme
+                                      kaolin-themes
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -150,9 +157,10 @@ You should not put any user code in there besides modifying the variable
 values."
   ;; This has to go here, unfortunately.
   (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-  (add-to-list 'package-pinned-packages '(cider         . "melpa-stable") t)
-  (add-to-list 'package-pinned-packages '(cider-nrepl   . "melpa-stable") t)
-  (add-to-list 'package-pinned-packages '(clojure       . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(cider          . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(cider-nrepl    . "melpa-stable") t)
+  ;; (add-to-list 'package-pinned-packages '(clj-refactor   . "melpa-stable") t)
+  (add-to-list 'package-pinned-packages '(clojure        . "melpa-stable") t)
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
@@ -257,7 +265,7 @@ values."
    ;; (default "SPC")
    dotspacemacs-emacs-command-key "SPC"
    ;; The key used for Vim Ex commands (default ":")
-   dotspacemacs-command-key ";" ; No longer used in newest?
+   ;; dotspacemacs-command-key ";" ; No longer used in newest?
    dotspacemacs-ex-command-key ";"
    ;; The leader key accessible in `emacs state' and `insert state'
    ;; (default "M-m")
@@ -433,9 +441,6 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-   ;; Either nil or a number of seconds. If non-nil zone out after the specified
-   ;; number of seconds. (default nil)
-   dotspacemacs-zone-out-when-idle nil
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
@@ -449,6 +454,7 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
+  ;; (setq debug-on-error 't)
   )
 
 ;; clj-find-var courtesy of @ag on Clojurians
@@ -466,6 +472,18 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (add-hook 'clojurescript-mode-hook #'spacemacs//init-jump-handlers-clojurescript-mode)
   (add-hook 'clojurec-mode-hook #'spacemacs//init-jump-handlers-clojurec-mode)
   (add-hook 'cider-repl-mode-hook #'spacemacs//init-jump-handlers-cider-repl-mode)
+
+  (setq-default cljr-magic-require-namespaces
+                '(
+                  ("io"     . "clojure.java.io")
+                  ("set"    . "clojure.set")
+                  ("str"    . "clojure.string")
+                  ("walk"   . "clojure.walk")
+                  ("zip"    . "clojure.zip")
+                  ("spec"    . "clojure.spec.alpha")
+                  ("stest"   . "clojure.spec.test.alpha")
+                  ("datomic" . "datomic.api")
+                  ))
 
   (dolist (x '(spacemacs-jump-handlers-clojure-mode
                spacemacs-jump-handlers-clojurec-mode
@@ -491,7 +509,27 @@ before packages are loaded. If you are unsure, you should try in setting them in
       (evil-normal-state)
       )))
 
+(defun ensure-theme (theme buf-name)
+  (when (and (string-match-p buf-name (or buffer-file-name ""))
+             (not (string= spacemacs--cur-theme theme)))
+    (message "Loading " theme " for " buf-name)
+    (spacemacs/load-theme theme)))
+
+;; Use different themes for certain files
+(defun per-file-colors (filename)
+  (ensure-theme 'zenburn         "dw-TODO.org")
+  (ensure-theme 'spacemacs-light "egg-works/project.clj")
+  (ensure-theme 'ample-light     "turbovote-http-api/project.clj")
+  (ensure-theme 'organic-green   "turbovote-web/project.clj")
+  (ensure-theme 'organic-green   "turbovote-web-reframe/project.clj")
+  (ensure-theme 'flatui          "tv-rabbit-client/project.clj")
+  )
+(add-hook 'after-load-functions 'per-file-colors)
+
 ;; TARGET: egg-bindings
+
+;; Top-level keys available for binding:
+;; - Backtick (currently bound to evil-goto-mark-line, but I have tick bound to evil-goto-mark which is better)
 (defun set-egg-key-bindings ()
   "All my personal keybindings and key chords"
 
@@ -500,7 +538,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; First of all, use ctrl-number to switch to a window! Already works on
   ;; Mac with the command key, so we just need to set literal ctrl instead of
   ;; right-mod.
-  ;; (global-set-key (kbd "C-0") 'treemacs-select-window)
+  (global-set-key (kbd "C-0") 'treemacs-select-window)
   (global-set-key (kbd "C-1") 'winum-select-window-1)
   (global-set-key (kbd "C-2") 'winum-select-window-2)
   (global-set-key (kbd "C-3") 'winum-select-window-3)
@@ -521,11 +559,11 @@ before packages are loaded. If you are unsure, you should try in setting them in
   ;; Make ESC quit every damn thing:
   (define-key evil-normal-state-map [escape] 'keyboard-quit)
   (define-key evil-visual-state-map [escape] 'keyboard-quit)
-  (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-  (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-map [escape] 'pupo/close-window)
+  (define-key minibuffer-local-ns-map [escape] 'pupo/close-window)
+  (define-key minibuffer-local-completion-map [escape] 'pupo/close-window)
+  (define-key minibuffer-local-must-match-map [escape] 'pupo/close-window)
+  (define-key minibuffer-local-isearch-map [escape] 'pupo/close-window)
 
   ;; Make = and \ stand in for ^ and $ like I do in vim
   ;; (this makes sense only for dvorakians)
@@ -624,6 +662,8 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (global-set-key (kbd "C-z") 'undo-tree-redo)
 
   (define-key evil-normal-state-map (kbd ":") 'spacemacs/evil-search-clear-highlight)
+  (define-key evil-normal-state-map (kbd (right-mod "/")) 'nonincremental-re-search-forward)
+
   ;; U ("union") joins line to the PRECEDING line
   (define-key evil-normal-state-map (kbd "U") "kJ")
   ;; ;; bind E to end of _previous_ word
@@ -661,7 +701,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (which-key-add-key-based-replacements "SPC d" "egg stuff") ; name prefix
   (define-key evil-normal-state-map (kbd "SPC d d") 'spacemacs/duplicate-line-or-region)
 
-  ;; ctrl-g is redundant with <esc> by default -- use it to trigger git
+  ;; left-mod-g is redundant with <esc> by default -- use it to trigger git
   (global-set-key (kbd (left-mod "g")) 'magit-status)
 
   ;;;;;;;; Mode-specific key bindings ;;;;;;;
@@ -719,6 +759,14 @@ before packages are loaded. If you are unsure, you should try in setting them in
     (interactive)
     (kill-new (cider-current-ns)))
 
+  ;; grab the fully-qualified symbol name at point
+ (defun copy-current-qualified-symbol-name ()
+   (interactive)
+   (kill-new
+    (concat (cider-current-ns)
+            "/"
+            (symbol-name (symbol-at-point)))))
+
   (defun save-and-send-to-switch-to-repl ()
     (interactive)
     (save-buffer)
@@ -748,6 +796,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
     ;; (define-key evil-normal-state-map (kbd (left-mod "a")) 'delete-sexp) ; murder sexp (don't put on kill ring)
     (define-key evil-normal-state-map (kbd (left-mod "r")) 'evil-lisp-state-sp-raise-sexp) ; raise sexp
     (define-key evil-normal-state-map (kbd (left-mod "w")) 'evil-lisp-state-wrap) ; wrap in sexp
+
+
+    ;; TODO decide if I really want these. I find it pretty nonintuitive...
+    (global-set-key (kbd (left-mod "<left>")) 'paredit-backward)
+    (global-set-key (kbd (left-mod "<right>")) 'paredit-forward)
+    (global-set-key (kbd (left-mod "<up>")) 'paredit-backward-up)
+    (global-set-key (kbd (left-mod "<down>")) 'paredit-forward-down)
     )
 
   (defun format-data (&optional arg)
@@ -776,10 +831,13 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
     ;; Use lispy definition of words
     ;; from https://timothypratley.blogspot.com/2014/08/clojure-friendly-word-definitions-in.html
-    ;; (dolist (c (string-to-list ":_-?!#*"))
-    ;;   (modify-syntax-entry c "w" clojure-mode-syntax-table ))
+    (dolist (c (string-to-list ":_-?!#*"))
+      (modify-syntax-entry c "w" clojure-mode-syntax-table ))
     ;; Above is now replaced by:
-    (add-hook 'cider-repl-mode-hook #'subword-mode)
+    ;; (add-hook 'cider-repl-mode-hook #'subword-mode)
+    ;; ^ but that stopped working after OS reinstall, and doesn't seem like it
+    ;;   should have worked in the first place, because subword-mode is about
+    ;;   CamelCase. https://wikemacs.org/wiki/Subword-mode
 
     ;; Use @ag's clj-find-var
     (define-key evil-normal-state-map (kbd "g c") 'clj-find-var)
@@ -831,7 +889,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
       (kbd (left-mod "-")) 'jump-past-hyphen
       (kbd (left-mod "_")) 'jump-past-hyphen-back
       (kbd (left-mod "n")) 'copy-current-ns
-      (kbd (left-mod "n")) 'copy-current-ns
+      (kbd (right-mod "n")) 'copy-current-qualified-symbol-name
       (kbd (left-mod "f")) 'cider-format-region-or-buffer
       )
 
@@ -878,7 +936,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   (with-eval-after-load 'org
     (evil-define-key '(normal insert) 'org-mode-map
-      (kbd "M-<up>") 'outline-up-heading)
+      (kbd "C-<up>") 'outline-up-heading)
+    (evil-define-key '(normal insert) 'org-mode-map
+      (kbd "M-<up>") 'outline-backward-same-level)
     (evil-define-key '(normal insert) 'org-mode-map
       (kbd "M-<down>") 'outline-forward-same-level)
     (evil-define-key '(normal insert) 'org-mode-map
@@ -913,6 +973,7 @@ before packages are loaded. If you are unsure, you should try in setting them in
 ;; debug-on-interrupt (w C-g):
 ;; toggle-debug-on-quit
 
+
 ;; TODO create key binding to toggle boolean
 ;; Jump target egg-main
 (defun dotspacemacs/user-config ()
@@ -922,6 +983,7 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
   (require 'helm-bookmark)
 
   ;; TODO temp, see above
@@ -949,6 +1011,8 @@ you should place your code here."
 
    ;; ;; pretty-print always in repl
    cider-repl-use-pretty-printing t
+
+   cider-print-options '(("length" 100))
 
    )
 
@@ -989,7 +1053,7 @@ you should place your code here."
   ;; (global-prettify-symbols-mode t)
   ;; (setq clojure-enable-fancify-symbols t)
 
-  ;; Never mind, no luck :(
+  ;; Never mind, no luck :/
   ;; ~But compensate for indentation changes from fancified symbols (suggestions from jr0cket)~
   ;; (setq clojure-indent-style 'align-arguments)
   ;; (setq clojure-align-forms-automatically t)
@@ -1197,7 +1261,7 @@ you should place your code here."
   ;; Make function pasting indent properly in idris:
   (add-to-list 'spacemacs-indent-sensitive-modes 'idris-mode)
 
-  ;; TODO meh doesn't work :(
+  ;; TODO meh doesn't work :/
   ;; (defun helm-project-search-sorted (&optional default-inputp)
   ;;   (interactive)
   ;;   (sort
@@ -1210,6 +1274,48 @@ you should place your code here."
   (slime-setup '(slime-fancy slime-tramp))
   ;; Set the default lisp you want to use (here it's SBCL).
   (setq inferior-lisp-program "sbcl")
+
+;; Helper functions to hotload clojure dependencies
+;; Taken from https://www.eigenbahn.com/2020/05/06/fast-clojure-deps-auto-reload
+
+(defun prf/cider/send-to-repl (sexp &optional eval ns)
+  "Send SEXP to Cider Repl. If EVAL is t, evaluate it.
+Optionally, we can change namespace by specifying NS."
+  (cider-switch-to-repl-buffer ns)
+  (goto-char cider-repl-input-start-mark)
+  (delete-region (point) (point-max))
+  (save-excursion
+    (insert sexp)
+    (when (equal (char-before) ?\n)
+      (delete-char -1)))
+  (when eval
+    (cider-repl--send-input t)))
+
+(defun prf/clj/pomegranate-dep (dep)
+  "Format a Clojure Pomegranate dependency import for DEP."
+  (concat
+   (format
+    "%s"
+    ;; NB: this is clojure!
+    `(use '[cemerick.pomegranate :only (add-dependencies)]))
+   (s-replace-all
+    `(("\\." . ".")
+      ("mydep" . ,dep))
+    (format
+     "%S"
+     ;; NB: this is clojure!
+     `(add-dependencies :coordinates '[mydep]
+                        :repositories (merge cemerick.pomegranate.aether/maven-central
+                                             {"clojars" "https://clojars.org/repo"}))))))
+
+(defun egg-hotload-dependency (&optional dep ns)
+  "Auto-import DEP in the current Clojure Repl using Pomegranate.
+Optionally, we can change namespace by specifying NS."
+  (interactive)
+  (setq dep (or dep (read-string "Dep: ")))
+  (prf/cider/send-to-repl (prf/clj/pomegranate-dep dep) t ns))
+
+;; End helper functions to hotload clojure dependencies
 
   )
 ;; TARGET: ENDEGG
@@ -1254,7 +1360,7 @@ you should place your code here."
 ;;  '(magit-diff-use-overlays nil)
 ;;  '(package-selected-packages
 ;;    (quote
-;;     (flycheck-pos-tip csv-mode web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js-doc parent-mode request haml-mode gitignore-mode flx anzu undo-tree diminish web-completion-data company-tern dash-functional tern pos-tip coffee-mode inflections edn multiple-cursors peg eval-sexp-fu seq spinner queue pkg-info bind-map packed auto-complete popup flycheck-joker flycheck org-plus-contrib bind-key hydra cider clojure-mode paredit company iedit smartparens highlight f evil goto-chg projectile epl helm helm-core yasnippet avy magit magit-popup git-commit ghub let-alist with-editor async markdown-mode js2-mode powerline s sql-indent git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl solarized-theme zenburn-theme yaml-mode ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+;;     (flycheck-pos-tip csv-mode web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor js-doc parent-mode request haml-mode gitignore-mode flx anzu undo-tree diminish web-completion-data company-tern dash-functional tern pos-tip coffee-mode inflections edn multiple-cursors peg eval-sexp-fu seq spinner queue pkg-info bind-map packed flycheck-joker flycheck org-plus-contrib bind-key hydra cider clojure-mode paredit company iedit smartparens highlight f evil goto-chg projectile epl helm helm-core yasnippet avy magit magit-popup git-commit ghub let-alist with-editor async markdown-mode js2-mode powerline s sql-indent git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter diff-hl solarized-theme zenburn-theme yaml-mode ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit spaceline smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-delimiters pug-mode popwin persp-mode pcre2el paradox orgit org-bullets open-junk-file neotree move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative link-hint less-css-mode info+ indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flx-ido flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu emmet-mode elisp-slime-nav dumb-jump dracula-theme define-word company-web company-statistics company-quickhelp column-enforce-mode clojure-snippets clj-refactor clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-compile apropospriate-theme ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
 ;;  '(pos-tip-background-color "#eee8d5")
 ;;  '(pos-tip-foreground-color "#586e75")
 ;;  '(safe-local-variable-values (quote ((cider-default-cljs-repl . harmonium))))
@@ -1277,6 +1383,28 @@ you should place your code here."
 ;;  ;; If there is more than one, they won't work right.
 ;;  )
 
+;;(defun dotspacemacs/emacs-custom-settings ()
+;;  "Emacs custom settings.
+;;This is an auto-generated function, do not modify its content directly, use
+;;Emacs customize menu instead.
+;;This function is called at the very end of Spacemacs initialization."
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (slime-docker docker-tramp slime rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest graphviz-dot-mode transient lv parseedn parseclj a chruby bundler inf-ruby zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets hydra inflections edn paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell ))))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -1287,9 +1415,43 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#657b83")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
+ '(custom-safe-themes
+   (quote
+    ("392395ee6e6844aec5a76ca4f5c820b97119ddc5290f4e0f58b38c9748181e8d" default)))
+ '(evil-want-Y-yank-to-eol nil)
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (quote
+    ("#eed9af" "#cee0cf" "#fdc9b2" "#dad2dc" "#e0deaf" "#f8cbad" "#d2d9df")))
+ '(highlight-symbol-foreground-color "#586e75")
+ '(highlight-tail-colors
+   (quote
+    (("#eee8d5" . 0)
+     ("#b3c34d" . 20)
+     ("#6ccec0" . 30)
+     ("#74adf5" . 50)
+     ("#e1af4b" . 60)
+     ("#fb7640" . 70)
+     ("#ff699e" . 85)
+     ("#eee8d5" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#e1af4b" "#fb7640" "#ff6849" "#ff699e" "#8d85e7" "#74adf5" "#6ccec0" "#b3c34d")))
+ '(hl-fg-colors
+   (quote
+    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
+ '(hl-paren-background-colors (quote ("#2492db" "#95a5a6" nil)))
+ '(hl-paren-colors (quote ("#ecf0f1" "#ecf0f1" "#c0392b")))
  '(package-selected-packages
    (quote
-    (slime-docker docker-tramp zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup)))
+    (git commander slime-docker docker-tramp zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets hydra inflections edn paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell)))
+ '(pos-tip-background-color "#eee8d5")
+ '(pos-tip-foreground-color "#586e75")
  '(safe-local-variable-values
    (quote
     ((cider-cljs-repl-types
@@ -1298,25 +1460,192 @@ This function is called at the very end of Spacemacs initialization."
             (figwheel-sidecar.repl-api/cljs-repl))"))
      (javascript-backend . tern)
      (javascript-backend . lsp))))
- '(standard-indent 2))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ '(sml/active-background-color "#34495e")
+ '(sml/active-foreground-color "#ecf0f1")
+ '(sml/inactive-background-color "#dfe4ea")
+ '(sml/inactive-foreground-color "#34495e")
+ '(standard-indent 2)
+ '(term-default-bg-color "#fdf6e3")
+ '(term-default-fg-color "#657b83")
+ '(vc-annotate-background-mode nil)
+ '(weechat-color-list
+   (quote
+    (unspecified "#fdf6e3" "#eee8d5" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900" "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#657b83" "#839496")))
+ '(xterm-color-names
+   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
+ '(xterm-color-names-bright
+   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ ;; '(default ((((class color) (min-colors 89)) (:foreground "#657b83" :background "#fdf6e3"))))
  )
 )
+
+;;(defun dotspacemacs/emacs-custom-settings ()
+;;  "Emacs custom settings.
+;;This is an auto-generated function, do not modify its content directly, use
+;;Emacs customize menu instead.
+;;This function is called at the very end of Spacemacs initialization."
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#657b83")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
+ '(custom-safe-themes
+   (quote
+    ("392395ee6e6844aec5a76ca4f5c820b97119ddc5290f4e0f58b38c9748181e8d" default)))
+ '(evil-want-Y-yank-to-eol nil)
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (quote
+    ("#eed9af" "#cee0cf" "#fdc9b2" "#dad2dc" "#e0deaf" "#f8cbad" "#d2d9df")))
+ '(highlight-symbol-foreground-color "#586e75")
+ '(highlight-tail-colors
+   (quote
+    (("#eee8d5" . 0)
+     ("#b3c34d" . 20)
+     ("#6ccec0" . 30)
+     ("#74adf5" . 50)
+     ("#e1af4b" . 60)
+     ("#fb7640" . 70)
+     ("#ff699e" . 85)
+     ("#eee8d5" . 100))))
+ '(hl-bg-colors
+   (quote
+    ("#e1af4b" "#fb7640" "#ff6849" "#ff699e" "#8d85e7" "#74adf5" "#6ccec0" "#b3c34d")))
+ '(hl-fg-colors
+   (quote
+    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
+ '(hl-paren-background-colors (quote ("#2492db" "#95a5a6" nil)))
+ '(hl-paren-colors (quote ("#ecf0f1" "#ecf0f1" "#c0392b")))
  '(package-selected-packages
    (quote
-    (zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets clj-refactor hydra inflections edn multiple-cursors paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
+    (package-build shut-up git commander slime-docker docker-tramp zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets hydra inflections edn paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell)))
+ '(pos-tip-background-color "#eee8d5")
+ '(pos-tip-foreground-color "#586e75")
+ '(safe-local-variable-values
+   (quote
+    ((cider-cljs-repl-types
+      (harmonium "(do (require 'figwheel-sidecar.repl-api)
+            (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
+            (figwheel-sidecar.repl-api/cljs-repl))"))
+     (javascript-backend . tern)
+     (javascript-backend . lsp))))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ ;; '(sml/active-background-color "#34495e")
+ ;; '(sml/active-foreground-color "#ecf0f1")
+ ;; '(sml/inactive-background-color "#dfe4ea")
+ ;; '(sml/inactive-foreground-color "#34495e")
+ ;; '(standard-indent 2)
+ ;; '(term-default-bg-color "#fdf6e3")
+ ;; '(term-default-fg-color "#657b83")
+ '(vc-annotate-background-mode nil)
+ '(weechat-color-list
+   (quote
+    (unspecified "#fdf6e3" "#eee8d5" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900" "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#657b83" "#839496")))
+ '(xterm-color-names
+   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
+ '(xterm-color-names-bright
+   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((((class color) (min-colors 89)) (:foreground "#657b83" :background "#fdf6e3"))))
  )
+)
+
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(compilation-message-face (quote default))
+ '(cua-global-mark-cursor-color "#2aa198")
+ '(cua-normal-cursor-color "#657b83")
+ '(cua-overwrite-cursor-color "#b58900")
+ '(cua-read-only-cursor-color "#859900")
+ '(custom-safe-themes
+   (quote
+    ("392395ee6e6844aec5a76ca4f5c820b97119ddc5290f4e0f58b38c9748181e8d" default)))
+ '(evil-want-Y-yank-to-eol nil)
+ '(highlight-changes-colors (quote ("#d33682" "#6c71c4")))
+ '(highlight-symbol-colors
+   (quote
+    ("#eed9af" "#cee0cf" "#fdc9b2" "#dad2dc" "#e0deaf" "#f8cbad" "#d2d9df")))
+ '(highlight-symbol-foreground-color "#586e75")
+ '(highlight-tail-colors
+   (quote
+    (("#eee8d5" . 0)
+     ("#b3c34d" . 20)
+     ("#6ccec0" . 30)
+     ("#74adf5" . 50)
+     ("#e1af4b" . 60)
+     ("#fb7640" . 70)
+     ("#ff699e" . 85)
+     ("#eee8d5" . 100))))
+ ;; '(hl-bg-colors
+ ;;   (quote
+ ;;    ("#e1af4b" "#fb7640" "#ff6849" "#ff699e" "#8d85e7" "#74adf5" "#6ccec0" "#b3c34d")))
+ ;; '(hl-fg-colors
+ ;;   (quote
+ ;;    ("#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3" "#fdf6e3")))
+ ;; '(hl-paren-background-colors (quote ("#2492db" "#95a5a6" nil)))
+ ;; '(hl-paren-colors (quote ("#ecf0f1" "#ecf0f1" "#c0392b")))
+ '(package-selected-packages
+   (quote
+    (ansi package-build shut-up git commander slime-docker docker-tramp zenburn-theme yapfify yaml-mode ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tagedit sql-indent spaceline powerline solarized-theme smeargle slim-mode scss-mode sass-mode restart-emacs rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file neotree move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode simple-httpd live-py-mode linum-relative link-hint less-css-mode json-mode json-snatcher json-reformat js2-refactor js2-mode js-doc indent-guide idris-mode prop-menu hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flycheck-pos-tip flycheck flx-ido flx flatui-theme flatland-theme fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree emmet-mode elisp-slime-nav dumb-jump dracula-theme diminish diff-hl define-word cython-mode csv-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-quickhelp pos-tip company-anaconda company column-enforce-mode color-identifiers-mode coffee-mode clojure-snippets hydra inflections edn paredit peg clean-aindent-mode cider-eval-sexp-fu eval-sexp-fu highlight cider sesman seq spinner queue pkg-info clojure-mode epl bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed apropospriate-theme anaconda-mode pythonic f dash s ample-theme alect-themes aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell)))
+ ;; '(pos-tip-background-color "#eee8d5")
+ ;; '(pos-tip-foreground-color "#586e75")
+ '(safe-local-variable-values
+   (quote
+    ((cider-cljs-repl-types
+      (harmonium "(do (require 'figwheel-sidecar.repl-api)
+            (figwheel-sidecar.repl-api/start-figwheel! \"login\" \"imageviewer\" \"harmonium\")
+            (figwheel-sidecar.repl-api/cljs-repl))"))
+     (javascript-backend . tern)
+     (javascript-backend . lsp))))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#eee8d5" 0.2))
+ ;; '(sml/active-background-color "#34495e")
+ ;; '(sml/active-foreground-color "#ecf0f1")
+ ;; '(sml/inactive-background-color "#dfe4ea")
+ ;; '(sml/inactive-foreground-color "#34495e")
+ '(standard-indent 2)
+ ;; '(term-default-bg-color "#fdf6e3")
+ ;; '(term-default-fg-color "#657b83")
+ '(vc-annotate-background-mode nil)
+ '(weechat-color-list
+   (quote
+    (unspecified "#fdf6e3" "#eee8d5" "#a7020a" "#dc322f" "#5b7300" "#859900" "#866300" "#b58900" "#0061a8" "#268bd2" "#a00559" "#d33682" "#007d76" "#2aa198" "#657b83" "#839496")))
+ '(xterm-color-names
+   ["#eee8d5" "#dc322f" "#859900" "#b58900" "#268bd2" "#d33682" "#2aa198" "#073642"])
+ '(xterm-color-names-bright
+   ["#fdf6e3" "#cb4b16" "#93a1a1" "#839496" "#657b83" "#6c71c4" "#586e75" "#002b36"]))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ ;; '(default ((((class color) (min-colors 89)) (:foreground "#657b83" :background "#fdf6e3"))))
+ )
+)
