@@ -7,10 +7,20 @@
 
 (message "Loading egg-init.el")
 
+;;;; Pinned packages
+
+(add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+(add-to-list 'package-pinned-packages '(cider          . "melpa-stable") t)
+(add-to-list 'package-pinned-packages '(cider-nrepl    . "melpa-stable") t)
+;; (add-to-list 'package-pinned-packages '(clj-refactor   . "melpa-stable") t)
+(add-to-list 'package-pinned-packages '(clojure        . "melpa-stable") t)
+
+;;;; Var settings
+
 (setq-default
 
- dotspacemacs-themes '(spacemacs-dark
-                       solarized-light
+ dotspacemacs-themes '(solarized-light
+                       spacemacs-dark
                        spacemacs-light
                        apropospriate-light
                        zenburn
@@ -36,3 +46,5 @@
 
 
  )
+
+;;;; Other stuff

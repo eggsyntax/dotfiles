@@ -1,3 +1,5 @@
+# (See bottom for extensive notes)
+
 # Before running, you must:
 # sudo apt -y install git && git clone https://github.com/eggsyntax/dotfiles.git && cd dotfiles
 # Wait for Software Updater to finish (visible in ps as /usr/bin/unattended-upgrade) (may take a long time)
@@ -49,9 +51,9 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
   openjdk-11-jdk openjdk-8-jdk python3-pip fonts-firacode fonts-hack-ttf emacs \
   net-tools chromium-browser tree sshuttle docker-ce docker-ce-cli containerd.io \
-  dconf-editor graphviz gimp python-pip \
+  dconf-editor graphviz gimp python-pip markdown \
   # for system-monitor, see below:
-  gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0
+  gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 \
 
 sudo apt -y autoremove
 
@@ -292,6 +294,8 @@ echo -e '\nSetup script finished!'
 * Customization tweaks:
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
+*** Source Code Pro: https://github.com/adobe-fonts/source-code-pro/releases/latest
+**** TODO can automate like so: https://askubuntu.com/a/193073/325838
 *** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 *** Hack: https://sourcefoundry.org/hack/
     --- TODO YOUAREHERE --- on moving now-automated steps

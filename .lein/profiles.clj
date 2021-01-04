@@ -1,7 +1,9 @@
-;; TODO possibly add:
-;; - speculative (specs for core fns from borkdude):
+;; Recent additions:
 ;; - re-find (leverages speculative to search for fns by the effect you want
 ;;   them to have): https://github.com/borkdude/re-find
+;; - speculative (specs for core fns from borkdude):
+
+;; TODO possibly add:
 {:user  {:plugins  [[lein-drip "0.1.2-SNAPSHOT"]
                     [com.jakemccrary/lein-test-refresh "0.23.0"]
                     [venantius/yagni "0.1.4"]

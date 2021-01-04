@@ -35,3 +35,7 @@
 	autocorrect = 10
 [tag]
 	sort = version:refname
+[diff]
+	colorMoved = zebra
+[include]
+    path = ~/.gitconfig_private

@@ -32,7 +32,7 @@
 ;; (spacemacs/toggle-maximize-frame-on)
 
 ;; force-enable undo-tree mode everywhere
-(undo-tree-mode 1)
+;; (undo-tree-mode 1)
 ;; (global-undo-tree-mode)
 
 ;; don't save desktop layout
@@ -133,3 +133,6 @@
 
 
   )
+
+;; Otherwise spacemacs disables undo-tree in many buffers; see https://github.com/syl20bnr/spacemacs/issues/14064
+(with-eval-after-load 'undo-tree (defun undo-tree-overridden-undo-bindings-p () nil))

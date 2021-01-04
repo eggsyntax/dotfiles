@@ -69,6 +69,7 @@
 
 ;; SM on mac has stopped recognizing ";" as evil-ex
 (define-key evil-normal-state-map (kbd ";") 'evil-ex)
+(define-key evil-visual-state-map (kbd ";") 'evil-ex)
 ;; and ""
 (setq-default dotspacemacs-major-mode-leader-key ",")
 ;; (define-key evil-normal-state-map (kbd ",") 'major-mode-cmd)
@@ -329,6 +330,7 @@
     (kbd ", e x") 'cider-eval-last-sexp-to-repl
     (kbd ", e c") 'cider-pprint-eval-last-sexp-to-comment
     (kbd ", s w") 'cider-repl-set-ns
+    (kbd ", s s") 'cider-switch-to-repl-buffer
     (kbd "SPC s ,") 'format-data
     (kbd "SPC i r") 'indent-region
     (kbd (right-mod ",")) 'clojure-toggle-keyword-string ; toggle (ie cycle) between str and kwd
