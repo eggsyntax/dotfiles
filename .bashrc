@@ -18,18 +18,24 @@ alias serve='python -m SimpleHTTPServer' # Must be followed by a port of your ch
 alias agc="ag --pager less --clojure"
 alias ag="ag --pager less"
 
-# Quick alias to edit then source .bashrc
-function rc {
-    vi ~/.bashrc
-    . ~/.bashrc
-}
+#### Alias to edit then source .bashrc / .local-bashrc
 
-function rcl {
-    vi ~/.local-bashrc
-    . ~/.local-bashrc
+function edit-and-source {
+    local last_modified_1=`/usr/bin/stat -c '%Y' $1`
+    vi $1
+    local last_modified_2=`/usr/bin/stat -c '%Y' $1`
+    if [ $last_modified_2 -gt $last_modified_1 ]; then
+        echo "Updated; sourcing."
+        . $1
+    else
+        echo "Last_modified went from $last_modified_1 to $last_modified_2"
+        echo "Unmodified; not sourcing."
+    fi
 }
+alias rc='edit-and-source ~/dotfiles/.bashrc'
+alias rcl='edit-and-source ~/.local-bashrc'
 
-# see also LESSOPEN below
+## see also LESSOPEN below
 export LESS=' -R '
 
 ##### Clojure
@@ -101,7 +107,8 @@ alias youtube-audio="youtube-dl -x --audio-format mp3 --restrict-filenames --no-
 
 # Weather in the terminal, because why the hell not?
 # TODO consider improving colors: https://github.com/chubin/wttr.in/issues/11
-alias weather="curl wttr.in/asheville | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m:g'"
+alias weather="curl wttr.in/asheville"
+alias weather-light="curl wttr.in/asheville | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m:g'"
 alias moon="curl wttr.in/Moon | sed -e 's/38;5/1;38;5/g' -e 's:226m:202m:g'"
 
 ################ Begin git stuff ###################
@@ -317,8 +324,9 @@ if [ -f ~/.local-bashrc ]; then
     source ~/.local-bashrc
 fi
 
-export NVM_DIR="/home/egg/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+# NVM loading moved to .local-bashrc
+# export NVM_DIR="/home/egg/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 # Overridden on at least one system
 alias figwheel='LEIN_FAST_TRAMPOLINE=y rlwrap lein trampoline figwheel "$@"'
@@ -350,6 +358,7 @@ alias sub='sed -i --'
 # Show 1st-level subdirs by size:
 alias dirsizes='du -BM --max-depth 1 2>/dev/null | sort -n'
 
+# (for clojure only)
 # Start emacs in the background on the current dir's project.clj. Goes up a dir
 # and then down so that it'll be clear in ps which emacs is which.
 function epr {
@@ -359,6 +368,19 @@ function epr {
     # TODO can only run one as daemon at a time? So problematic in a microservice environment
     # $curemacs --daemon --maximized "$curdir/project.clj" &
     $curemacs --maximized "$curdir/project.clj" &
+}
+
+# (for DW/krakenstein only)
+# Call from the top-level directory of a TV service (eg election-works).
+# Stops the project in krakenstein, and starts a new shell which includes the current project's
+# env vars in the shell so that it knows how to connect to krak.
+function krakit {
+    curdir=`pwd`
+    project=`basename "$curdir"`
+    pushd ../krakenstein
+    docker-compose stop $project
+    ./krak-env <(cat .env .env.external) $project bash
+    popd
 }
 
 # Quick alias: pss = "processes matching ..."
@@ -444,7 +466,7 @@ function mac-bashrc {
     #    server is not running.
     # (alternate approach: start the server, sleep a few secs, then run)
     function em {
-        ( /usr/local/bin/emacsclient -c -a /usr/local/bin/mvim -n "$@" >/dev/null & )
+        ( /usr/local/bin/emacsclient -c -n "$@" >/dev/null & )
     }
 
     ################ RabbitMQ ########################
@@ -491,16 +513,21 @@ function linux-bashrc {
     function em {
         # TODO temp: don't send to /dev/null until I know things are working well
         # ( /usr/bin/emacsclient -c -a /usr/bin/vim -n "$@" >/dev/null & )
-        ( /usr/bin/emacsclient -c -a /usr/bin/vim -n "$@" >/dev/null & )
+        # ( /usr/bin/emacsclient -c -a /usr/bin/vim -n "$@" >/dev/null & )
+        ( /usr/bin/emacsclient -c -a /usr/bin/vim -n "$@" & )
     }
 
     # Load autojump
     # ie 'j foo' takes you to fuzzy-matched foo directory
     . /usr/share/autojump/autojump.bash
 
-    # like pbcopy on mac -- pipe inputto it & it goes to the clipboard (after stripping newline)
+    # like pbcopy on mac -- pipe input to it & it goes to the clipboard (after stripping newline)
     # alias clip='tr -d "\n" | xsel --clipboard --input'
     alias clip='xsel --clipboard --input'
+
+    function path-copy {
+        realpath -z $1 | xsel --clipboard --input
+    }
 
     # like `open` on a mac, ie look at a file:
     alias o='xdg-open'
@@ -541,7 +568,24 @@ function linux-bashrc {
     [[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && \
         . /usr/share/bash-completion/bash_completion
 
-    alias top=htop
+    # Ditching this becuase `top` shows some useful info that htop doesn't (top gathers
+    # resource usage into a single top-level process, while htop splits it up into many
+    # processes -- this is a problem for eg java).
+    # alias top=htop
+
+    alias top-mem='top -o %MEM'
+
+    function proc-info {
+        ps aux -q $1 | cat
+    }
+
+    function sys-info {
+        echo "Distro information:"
+        lsb_release -a
+        echo
+        echo "Kernel information:"
+        uname -mrs
+    }
 
     # tmuxinator. See https://github.com/tmuxinator/tmuxinator
     # TODO can I move this to OS-agnostic?
@@ -569,10 +613,11 @@ function linux-bashrc {
     # watch -n 1 "awk 'NR==3 {print \"WiFi Signal Strength = \" \$3 \"00 %\"}' /proc/net/wireless"
     alias wifi-strength-2='watch -n 1 iwconfig'
 
-    # run aptik with my preferred settings (prereq: make sure aptik is installed & ~/Documents/aptik exists)
-    alias aptik-egg='sudo aptik --backup-all --comp lz4 --basepath "/home/egg/Documents/aptik" --skip-flatpaks --skip-cache --skip-packages --skip-snaps --skip-users --skip-mounts --skip-home --yes'
+    # run aptik with my preferred settings (prereq: make sure aptik is installed & ~/aptik-backps exists)
+    alias aptik-egg='sudo aptik --backup-all --basepath "/home/egg/aptik-backups" --skip-cache --skip-packages --skip-fonts --skip-icons --skip-users --skip-groups --skip-mounts --skip-home'
 }
 
+############### End Linux-specific #################
 
 unamestr=`uname`
 if [[ "$unamestr" == 'Linux' ]]; then

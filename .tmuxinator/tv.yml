@@ -40,6 +40,7 @@ windows:
       #   - vim
       #   - guard
     - secundus: cd /home/egg/Documents/Work/dw/repos/krakenstein
-    - tertius: cd /home/egg/Documents/Work/dw/repos
-    - quartus: cd /home/egg/Documents/Work/dw/repos
-    - quintus: cd /home/egg/Documents/Work/dw/repos
+    - tertius:  cd /home/egg/Documents/Work/dw/repos
+    - quartus:  cd /home/egg/Documents/Work/dw/repos
+    - quintus:  cd /home/egg/Documents/Work/dw/repos
+    - sextus:   cd /home/egg/Documents/Work/dw/repos

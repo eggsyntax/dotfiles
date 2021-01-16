@@ -1,9 +1,16 @@
+# (See bottom for extensive notes)
+
 # Before running, you must:
 # sudo apt -y install git && git clone https://github.com/eggsyntax/dotfiles.git && cd dotfiles
-# wait for Software Updater to finish (visible in ps as /usr/bin/unattended-upgrade) (may take a long time)
+# Wait for Software Updater to finish (visible in ps as /usr/bin/unattended-upgrade) (may take a long time)
+# Check the version numbers immediately below
 
 # Exit on any error, be strict
 set -euxo pipefail
+
+# TODO check the version numbers in this section:
+DOCKER_COMPOSE_VERSION='1.25.3' # check at https://docs.docker.com/compose/install/
+CLOJURE_VERSION='1.10.1.492'    # check at https://clojure.org/guides/getting_started
 
 GNOME_VERSION=`gnome-shell --version | cut -d ' ' -f 3 | tr -d '\n'`
 
@@ -21,6 +28,17 @@ sudo apt -y upgrade
 wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
 
+# docker repo & key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+# docker post-install setup
+sudo groupadd docker
+sudo usermod -aG docker $USER
+newgrp docker
+# verify (after the apt installs below) with `docker run hello-world`
+
+# main apt installs
 echo -e '\nInstalling packages with apt'
 sudo apt-add-repository -y ppa:teejee2008/ppa
 sudo add-apt-repository -y ppa:hluk/copyq
@@ -32,12 +50,26 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
   google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
   openjdk-11-jdk openjdk-8-jdk python3-pip fonts-firacode fonts-hack-ttf emacs \
-  net-tools chromium-browser tree
+  net-tools chromium-browser tree sshuttle docker-ce docker-ce-cli containerd.io \
+  dconf-editor graphviz gimp python-pip markdown \
+  # for system-monitor, see below:
+  gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 \
+
 sudo apt -y autoremove
 
 echo -e '\nInstalling snaps (sigh)'
-sudo snap install slack   --classic
 sudo snap install kubectl --classic
+
+# docker-compose
+echo -e '\nInstalling docker-compose'
+sudo curl -L "http://github.com/docker/compose/releases/download/$DOCKER_COMPOSE_VERSION/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# kops
+echo -e '\nInstalling kops'
+curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops-linux-amd64
+sudo mv kops-linux-amd64 /usr/local/bin/kops
 
 # dotfiles
 echo -e '\nlinking dotfiles'
@@ -64,6 +96,10 @@ cd ~/.vim/bundle && git clone git://github.com/altercation/vim-colors-solarized.
 echo -e '\nInstalling spacemacs'
 cd
 git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+# I stick with the develop branch for now, which is updated much more frequently
+cd .emacs.d/
+git checkout develop
+git pull
 
 # gnome extensions (most need to be manually installed)
 echo -e '\nInstalling gnome extensions'
@@ -111,6 +147,29 @@ jenv add /usr/lib/jvm/java-8-openjdk-amd64
 curl https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein > ~/bin/lein
 chmod a+x ~/bin/lein
 
+# clojure command-line tools: https://clojure.org/guides/getting_started
+cd ~/tmp
+curl -O https://download.clojure.org/install/linux-install-$CLOJURE_VERSION.sh
+chmod +x linux-install-$CLOJURE_VERSION.sh
+sudo ./linux-install-$CLOJURE_VERSION.sh
+rm ./linux-install-$CLOJURE_VERSION.sh
+
+# personal libraries
+mkdir -p ~/Documents/Programming
+cd ~/Documents/Programming
+git clone git@github.com:eggsyntax/reconstructorepl.git
+git clone git@github.com:eggsyntax/egg-cljc-utils.git
+cd reconstructorepl
+lein install
+cd ../egg-cljc-utils
+lein install
+
+# clj-kondo (clojure linter) (installs to /usr/local/bin/clj-kondo)
+cd ~/tmp
+curl -s https://raw.githubusercontent.com/borkdude/clj-kondo/master/script/install-clj-kondo > clj-kondo-install
+chmod +x clj-kondo-install
+sudo ./clj-kondo-install
+
 curl https://raw.githubusercontent.com/tmuxinator/tmuxinator/master/completion/tmuxinator.bash > ~/bin/tmuxinator.bash
 source ~/bin/tmuxinator.bash
 
@@ -123,34 +182,43 @@ cd ~/tmp
 curl --remote-name https://prerelease.keybase.io/keybase_amd64.deb
 sudo apt -y install ./keybase_amd64.deb
 
+# aws-iam-authenticator (for DW)
+curl -o ~/bin/aws-iam-authenticator https://amazon-eks.s3-us-west-2.amazonaws.com/1.14.6/2019-08-22/bin/linux/amd64/aws-iam-authenticator
+chmod +x ~/bin/aws-iam-authenticator
+
+# TODO keep sorted
+dconf write /org/gnome/desktop/background/show-desktop-icons false
 # some settings accessible in Settings and/or gnome-tweak-tool
 dconf write /org/gnome/desktop/input-sources/sources "[('xkb', 'us+dvorak')]"
-dconf write /org/gnome/settings-daemon/plugins/color/night-light-enabled true
-# prevents overview on single-key (because super_R doesn't exist)
-dconf write /org/gnome/mutter/overlay-key "'Super_R'"
-dconf write /org/gnome/desktop/input-sources/xkb-options "['ctrl:swap_lalt_lctl', 'ctrl:swap_rwin_rctl', 'compose:rctrl', 'caps:swapescape']"
-dconf write /org/gnome/desktop/interface/icon-theme "'Numix-Circle'"
-dconf write /org/gnome/shell/keybindings/toggle-overview "['<Super>space']"
-dconf write /org/gnome/desktop/wm/keybindings/close "['<Super>q']"
-dconf write /org/gnome/desktop/peripherals/mouse/accel-profile 'adaptive'
+dconf write /org/gnome/desktop/input-sources/xkb-options "['ctrl:swap_lalt_lctl', 'caps:swapescape', 'ctrl:swap_rwin_rctl', 'compose:ralt']"
+dconf write /org/gnome/desktop/interface/clock-show-date true
+dconf write /org/gnome/desktop/interface/clock-show-seconds true
 # no middle-mouse-click-to-paste
 dconf write /org/gnome/desktop/interface/gtk-enable-primary-paste false
+dconf write /org/gnome/desktop/interface/icon-theme "'Numix-Circle'"
+dconf write /org/gnome/desktop/interface/show-battery-percentage true
+dconf write /org/gnome/desktop/notifications/show-in-lock-screen false
+dconf write /org/gnome/desktop/peripherals/mouse/accel-profile 'adaptive'
 dconf write /org/gnome/desktop/peripherals/mouse/speed -0.4245
+dconf write /org/gnome/desktop/peripherals/touchpad/send-events 'disabled'
+dconf write /org/gnome/desktop/session/idle-delay "uint32 600"
+dconf write /org/gnome/desktop/wm/keybindings/close "['<Super>q']"
+dconf write /org/gnome/gnome-system-monitor/cpu-stacked-area-chart true
+dconf write /org/gnome/gnome-system-monitor/graph-update-interval 3000
+# prevents overview on single-key (because super_R doesn't exist)
+dconf write /org/gnome/mutter/overlay-key "'Super_R'"
+dconf write /org/gnome/nautilus/list-view/default-column-order "['name', 'size', 'type', 'owner', 'group', 'permissions', 'mime_type', 'where', 'date_modified', 'date_modified_with_time', 'date_accessed', 'recency']"
+dconf write /org/gnome/nautilus/list-view/use-tree-view true
+dconf write /org/gnome/nautilus/preferences/default-folder-viewer 'list-view'
+dconf write /org/gnome/nautilus/preferences/show-delete-permanently true
+dconf write /org/gnome/settings-daemon/plugins/color/night-light-enabled true
+dconf write /org/gnome/shell/extensions/dash-to-dock/dock-position 'BOTTOM'
 dconf write /org/gnome/shell/extensions/dash-to-dock/hide-delay 0.3
 dconf write /org/gnome/shell/extensions/dash-to-dock/intellihide-mode 'ALL_WINDOWS'
-dconf write /org/gnome/shell/extensions/dash-to-dock/dock-position 'BOTTOM'
-dconf write /org/gnome/desktop/peripherals/touchpad/send-events 'disabled'
-dconf write /org/gnome/terminal/legacy/keybindings/paste '<Primary>v'
-dconf write /org/gnome/nautilus/preferences/default-folder-viewer 'list-view'
-dconf write /org/gtk/settings/file-chooser/sort-directories-first false
-dconf write /org/gnome/nautilus/list-view/use-tree-view true
-dconf write /org/gnome/nautilus/preferences/show-delete-permanently true
-dconf write /org/gnome/nautilus/list-view/default-column-order "['name', 'size', 'type', 'owner', 'group', 'permissions', 'mime_type', 'where', 'date_modified', 'date_modified_with_time', 'date_accessed', 'recency']"
 dconf write /org/gnome/shell/favorite-apps "['org.gnome.Terminal.desktop', 'emacs25.desktop', 'firefox.desktop', 'org.gnome.Nautilus.desktop', 'slack_slack.desktop', 'gnome-control-center.desktop', 'gnome-system-monitor_gnome-system-monitor.desktop', 'chromium-browser.desktop', 'google-chrome.desktop', 'signal-desktop.desktop']"
-dconf write /org/gnome/gnome-system-monitor/graph-update-interval 3000
-dconf write /org/gnome/gnome-system-monitor/cpu-stacked-area-chart true
-dconf write /org/gnome/desktop/notifications/show-in-lock-screen false
-# dconf write
+dconf write /org/gnome/shell/keybindings/toggle-overview "['<Super>space']"
+dconf write /org/gnome/terminal/legacy/keybindings/paste '<Primary>v'
+dconf write /org/gtk/settings/file-chooser/sort-directories-first false
 # dconf write
 
 # services
@@ -182,10 +250,7 @@ echo -e '\nSetup script finished!'
 *** LastPass
 ** Pcloud
 *** https://www.pcloud.com/how-to-install-pcloud-drive-linux.html
-** (Gnome) extensions::
-*** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
-**** https://extensions.gnome.org/extension/615/appindicator-support/
-**** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
+** Gnome extensions:
 *** dash-to-dock. NOTE: [installed above]
 **** Must uninstall gnome version?
 ***** https://github.com/micheleg/dash-to-dock/issues/643#issuecomment-345525969
@@ -196,10 +261,15 @@ echo -e '\nSetup script finished!'
 *** Notification counter - https://extensions.gnome.org/extension/1386/notification-counter/
 *** NoAnnoyance (eliminate "..window is created" by auto-raising created windows [installed above]
 *** openweather - https://extensions.gnome.org/extension/750/openweather/
-*** DO NOT install Indicator Multiload, breaks 18.04
 *** gnome-sushi -- preview from file browser with space bar
+*** system-monitor (right one): https://extensions.gnome.org/extension/120/system-monitor/
+**** Prerequisite [scripted]: sudo apt-get install gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0
+**** Will look broken until gnome restart (or possibly reboot?)
 *** OLD:
-**** system-monitor (right one): https://extensions.gnome.org/extension/120/system-monitor/
+**** DO NOT install Indicator Multiload, breaks 18.04
+**** (unneeded in 18.04+ ?) Show indicators on top bar, not just that little bottom tray.
+***** https://extensions.gnome.org/extension/615/appindicator-support/
+***** (discussed at http://www.omgubuntu.co.uk/2017/03/use-indicator-applets-gnome-shell )
 **** touchpad indicator
 **** System monitor: [wrong one]
 ***** https://extensions.gnome.org/extension/1064/system-monitor/
@@ -211,14 +281,21 @@ echo -e '\nSetup script finished!'
 *** docker installation is kind of a pain in the ass.
 *** https://docs.docker.com/install/linux/docker-ce/ubuntu/
 *** Be sure to add self to docker group, start docker service. May need to reboot.
-*** then install docker-compose:
+*** then install docker-compose: [scripted]
 **** https://docs.docker.com/compose/install/
-*** Oudated:
+*** Outdated:
 **** docker-machine create default
 **** eval $(docker-machine env)
+** Slack
+*** The one in the snap folder causes problems; need to manually download the deb from
+*** https://slack.com/downloads/linux
+*** sigh
+
 * Customization tweaks:
 ** NOTE: MOST CUSTOMIZATION CAN BE SKIPPED BY COPYING OVER .CONFIG
 ** Fonts:
+*** Source Code Pro: https://github.com/adobe-fonts/source-code-pro/releases/latest
+**** TODO can automate like so: https://askubuntu.com/a/193073/325838
 *** Fira Mono: https://fonts.google.com/specimen/Fira+Mono
 *** Hack: https://sourcefoundry.org/hack/
     --- TODO YOUAREHERE --- on moving now-automated steps
@@ -280,6 +357,7 @@ ServerAliveInterval 240
       <RCTL> = 108;
       <RALT> = 105;
       & now we have overridden keycodes at low level.
+**** For the X1-Extreme I had to swap RCTL and RWIN instead, along with doing 'Swap Right Win with Right Ctrl' in tweaks [latter is scripted]
 *** 3. And then to set left & rt control to l & r parens:
 ****  [Doesn't seem to work, still having to run xcape manually] Link dotfiles/linux-.bash_login to ~/.bash_login (so that it runs once on startup):
 ***** xcape -e 'Control_L=Shift_L|parenleft;Control_R=Shift_R|parenright'
@@ -394,6 +472,10 @@ WantedBy=default.target
 * Backup:
 ** Strategy:
 *** deja dup (just called `Backups` in ubuntu) backs up ~/home/ (including aptik-settings-backup) to iMac.
+**** Backup location (on x1):
+***** sftp://
+***** /Volumes/LaptopBackup/x1-backup
+**** Ignore: Trash, Downloads, tmp, .cache, pcloud, pCloudDrive
 *** Aptik can be used to back up most of the other config -- dconf settings, groups, icons, repos, themes...
 **** Install aptik (probably) 19.07
 **** mkdir ~/Documents/aptik (ONLY if doesn't exist, which it should if I've restored home dir)
@@ -419,12 +501,30 @@ rsync -axqHAW --progress --ignore-existing --numeric-ids --info=progress2 /home/
 *** There's also dconf-backup (maybe aptik doesn't do dconf? :( )
 ****  https://github.com/pixelastic/dconf-export
 *** /Volumes/Unused on imac2013 can become my home backup drive
+* Things to likely copy over from old system (if this is a replacement or reinstall):
+** ~/.ssh
+** ~/.aws
+** ~/.lein
+** ~/.gnupg
+** ~/Documents
+** ~/Pictures/Wallpaper
 * Work stuff (DW):
 ** keybase [scripted]: https://keybase.io/docs/the_app/install_linux
 curl -O https://prerelease.keybase.io/keybase_amd64.deb
 sudo dpkg -i keybase_amd64.deb
 sudo apt-get install -f
 run_keybase
+** 1password CLI tool: https://1password.com/downloads/linux/
+** op-creds: https://github.com/democracyworks/dw-tools/blob/master/doc/op-creds.md
+** sops: https://github.com/mozilla/sops
+** aws:
+** aws-vault: https://democracyworks.atlassian.net/wiki/spaces/INFRA/pages/28639280/Amazon+Web+Services+AWS
+** k8s/kubectl/kops [scripted]
+*** kubectl (scripted): snap
+*** kops (scripted):
+curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops-linux-amd64
+sudo mv kops-linux-amd64 /usr/local/bin/kops
 * Future:
 ** Investigate running multiple Linux distros simultaneously
 *** Virtualbox, but it went so terribly wrong last time. Probably try this first, but clone FIRST
@@ -515,8 +615,9 @@ sudo apt install python-setuptools
 *** settings/devices/keyboard:
 **** Set win/space to open overview
 **** Close: super-q
-** Clojure [scripted]
-*** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure)
+** Clojure [partially scripted]
+*** 2019: `sudo apt install clojure` is enough; no need to manually install Java (but what version does that install? I'm not sure) [scripted]
+*** But also install `clj` command line tools [scripted]
 *** Installing OpenJDK 11 & 8 [scripted]: https://linuxize.com/post/install-java-on-ubuntu-18-04/#installing-the-default-openjdk-java-11
 **** sudo apt install openjdk-11-jdk
 **** sudo apt install openjdk-8-jdk
@@ -543,6 +644,7 @@ sudo apt install python-setuptools
 ***** https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 *** Leiningen (don't install through apt, too old):
 **** https://github.com/technomancy/leiningen
+*** Joker - https://github.com/candid82/joker#installation
 *** Maybe: I like to use lein-drip and drip:
 **** drip: https://github.com/flatland/drip
  curl -L http://drip.flatland.org > ~/bin/drip

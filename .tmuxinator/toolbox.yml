@@ -1,6 +1,6 @@
 # ~/.tmuxinator/home.yml
 
-name: home
+name: toolbox
 root: ~/
 
 # Optional tmux socket
