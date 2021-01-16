@@ -16,11 +16,6 @@
 ;; dotspacemacs-startup-lists '((recents . 7)
 ;;                              (projects . 7))
 ;; dotspacemacs-scratch-buffer-persistent t
-;; dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
-;; dotspacemacs-default-font '("Source Code Pro"
-;;                             :size 10.0
-;;                             :weight normal
-;;                             :width normal)
 
 ;;; in dotspacemacs/layers:
 ;; dotspacemacs-configuration-layers
@@ -81,11 +76,4 @@
 ;;   ;; dracula-theme
 ;;   flatui-theme
 ;;   kaolin-themes
-;;   ;; themes-megapack
-;;   ;; spell-checking
-;;   ;; (treemacs :init ; neotree replacement
-;;   ;;           (with-eval-after-load 'winum
-;;   ;;             (define-key winum-keymap (kbd "M-0") #'treemacs-select-window)
-;;   ;;             ;; Don't notify about treemacs refresh; it gets in the way of repl-started msg
-;;   ;;             (setq treemacs-silent-refresh t)))
 ;; )
