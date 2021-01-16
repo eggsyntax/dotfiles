@@ -4,7 +4,7 @@
 
 # Don't forget that https://github.com/koalaman/shellcheck is a thing!
 
-alias l="ls -G "
+alias l="ls -G --color=auto"
 alias ltr="ls -ltr "
 alias ltrh="ls -ltrh "
 alias ltra="ls -ltra "
@@ -55,6 +55,11 @@ function ifn {
 function fn-more {
     find . -name '*.pyc' -prune -o -name '*.rst' -prune -o -name "$1*" -print -exec cat {} \; | more
 }
+
+# I have no idea what I was intending here...
+# function vimp {
+#     vim - -esbnN -c $1 -c 'w!/dev/stderr|q!' 2>&1 >/dev/null
+# }
 
 # TODO change the hardcoded IP address once I have things working
 # Acceptable values 0.0 - 10.0 (maybe more, dunno)
@@ -195,7 +200,10 @@ function mp3ize-one {
     # Convert a file to v0 mp3 using ffmpeg
     # We get the name without the final extension so we can rename to .mp3
     basename=` echo "$1" | perl -pe "s/(.*)\..*$/\1/" `
-    ffmpeg -i "$1" -qscale:a 0 "$basename.mp3"
+    # variable bitrate:
+    # ffmpeg -i "$1" -qscale:a 0 "$basename.mp3"
+    # fixed bitrate 320k
+    ffmpeg -i "$1" -b:a 320k "$basename.mp3"
 }
 
 function mp3ize {
@@ -575,3 +583,4 @@ else echo "PLATFORM UNKNOWN! Check output of uname";
 fi
 
 #### [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
