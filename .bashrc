@@ -262,7 +262,7 @@ function runit {
 }
 
 # Run frink (for unit-aware calculations & conversions -- http://frinklang.org)
-rlwrap java -classpath /Users/egg/bin/frink.jar frink.gui.FrinkStarter
+alias frink='rlwrap java -classpath /Users/egg/bin/frink.jar frink.gui.FrinkStarter'
 
 # Set prompt
 # This should be copied into .local-bashrc and the number (setaf _) changed for unique
