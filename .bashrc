@@ -73,20 +73,6 @@ function vol {
     ssh 192.168.1.222 "osascript -e \"set Volume $1\"" 2>/dev/null
 }
 
-# Change prompt color if currently sshed.
-# It was a fun idea, but doesn't work because it's the prompt in the ssh that matters
-# function ssh-with-prompt {
-#   sshprompt="\n\[\033[48;5;0m\]\[\033[38;5;51m\]\u@\h>\[$(tput sgr0)\]"
-#   oldprompt=$PS1
-#   export PS1=$sshprompt
-#   /usr/bin/ssh $@ # Call the real ssh
-#   echo "step 1"
-#   export PS1=$oldprompt
-#   echo "PS1 is now $PS1"
-#   echo "step 2"
-#   }
-# alias ssh=ssh-with-prompt
-
 # Start the Emacs GUI App, aka Emacs.app (installed by homebrew spacemacs)
 alias spacemacs='emacs &'
 
@@ -274,6 +260,9 @@ function runit {
         $@
     done
 }
+
+# Run frink (for unit-aware calculations & conversions -- http://frinklang.org)
+rlwrap java -classpath /Users/egg/bin/frink.jar frink.gui.FrinkStarter
 
 # Set prompt
 # This should be copied into .local-bashrc and the number (setaf _) changed for unique
