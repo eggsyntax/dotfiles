@@ -511,7 +511,10 @@ function linux-bashrc {
 
     # Load autojump
     # ie 'j foo' takes you to fuzzy-matched foo directory
-    . /usr/share/autojump/autojump.bash
+    # . /usr/share/autojump/autojump.bash
+
+    # Load jump (replaces autojump above)
+    eval "$(jump shell)"
 
     # like pbcopy on mac -- pipe input to it & it goes to the clipboard (after stripping newline)
     # alias clip='tr -d "\n" | xsel --clipboard --input'

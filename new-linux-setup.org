@@ -46,14 +46,14 @@ sudo add-apt-repository -y ppa:numix/ppa
 sudo apt update
 sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   php-memcached memcached tmux htop make chrome-gnome-shell silversearcher-ag \
-  autojump tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
+  tmuxinator gnome-sushi rename hardinfo jq lm-sensors firefox git copyq \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
   google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
   openjdk-11-jdk openjdk-8-jdk python3-pip fonts-firacode fonts-hack-ttf emacs \
   net-tools chromium-browser tree sshuttle docker-ce docker-ce-cli containerd.io \
   dconf-editor graphviz gimp python-pip markdown \
   # for system-monitor, see below:
-  gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0 \
+  gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0
 
 sudo apt -y autoremove
 
@@ -115,6 +115,11 @@ echo -e '\nInstalling cdhist'
 # https://github.com/bulletmark/cdhist
 sudo pip3 install cdhist
 sudo curl https://raw.githubusercontent.com/bulletmark/cdhist/master/cdhist.bashrc > ~/bin/cdhist.bashrc
+
+echo -e '\n Installing jump (replaces autojump)'
+# https://github.com/gsamokovarov/jump
+# why this instead of autojump/ https://twitter.com/hkdobrev/status/838398833419767808
+wget https://github.com/gsamokovarov/jump/releases/download/v0.30.1/jump_0.30.1_amd64.deb && sudo dpkg -i jump_0.30.1_amd64.deb && rm jump_0.30.1_amd64.deb
 
 echo -e '\nMiscellaneous steps'
 # rename volume-change bleep to hide it, because it's annoying
