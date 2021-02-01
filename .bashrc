@@ -4,7 +4,7 @@
 
 # Don't forget that https://github.com/koalaman/shellcheck is a thing!
 
-alias l="ls -G "
+alias l="ls -G --color=auto"
 alias ltr="ls -ltr "
 alias ltrh="ls -ltrh "
 alias ltra="ls -ltra "
@@ -62,25 +62,16 @@ function fn-more {
     find . -name '*.pyc' -prune -o -name '*.rst' -prune -o -name "$1*" -print -exec cat {} \; | more
 }
 
+# I have no idea what I was intending here...
+# function vimp {
+#     vim - -esbnN -c $1 -c 'w!/dev/stderr|q!' 2>&1 >/dev/null
+# }
+
 # TODO change the hardcoded IP address once I have things working
 # Acceptable values 0.0 - 10.0 (maybe more, dunno)
 function vol {
     ssh 192.168.1.222 "osascript -e \"set Volume $1\"" 2>/dev/null
 }
-
-# Change prompt color if currently sshed.
-# It was a fun idea, but doesn't work because it's the prompt in the ssh that matters
-# function ssh-with-prompt {
-#   sshprompt="\n\[\033[48;5;0m\]\[\033[38;5;51m\]\u@\h>\[$(tput sgr0)\]"
-#   oldprompt=$PS1
-#   export PS1=$sshprompt
-#   /usr/bin/ssh $@ # Call the real ssh
-#   echo "step 1"
-#   export PS1=$oldprompt
-#   echo "PS1 is now $PS1"
-#   echo "step 2"
-#   }
-# alias ssh=ssh-with-prompt
 
 # Start the Emacs GUI App, aka Emacs.app (installed by homebrew spacemacs)
 alias spacemacs='emacs &'
@@ -202,7 +193,10 @@ function mp3ize-one {
     # Convert a file to v0 mp3 using ffmpeg
     # We get the name without the final extension so we can rename to .mp3
     basename=` echo "$1" | perl -pe "s/(.*)\..*$/\1/" `
-    ffmpeg -i "$1" -qscale:a 0 "$basename.mp3"
+    # variable bitrate:
+    # ffmpeg -i "$1" -qscale:a 0 "$basename.mp3"
+    # fixed bitrate 320k
+    ffmpeg -i "$1" -b:a 320k "$basename.mp3"
 }
 
 function mp3ize {
@@ -266,6 +260,9 @@ function runit {
         $@
     done
 }
+
+# Run frink (for unit-aware calculations & conversions -- http://frinklang.org)
+alias frink='rlwrap java -classpath /Users/egg/bin/frink.jar frink.gui.FrinkStarter'
 
 # Set prompt
 # This should be copied into .local-bashrc and the number (setaf _) changed for unique
@@ -623,3 +620,4 @@ else echo "PLATFORM UNKNOWN! Check output of uname";
 fi
 
 #### [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
