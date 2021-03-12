@@ -1,7 +1,15 @@
 Mac setup:
 
 Preferences: Dvorak, trackpad speed, unnatural scroll
-Download & install: chrome, git, dropbox, Little Snitch, iterm2, macvim
+Download & install:
+- homebrew (https://brew.sh): /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+- firefox: 
+- git: brew install git
+- ~dropbox~ syncthing: https://syncthing.net
+- Little Snitch
+- iterm2 
+- spacemacs
+- tmux?
 Turn off mail and web results in spotlight preferences
 
 Dotfiles are under source control here, and should be symbolically linked from ~:
