@@ -4,7 +4,7 @@
 
 # Don't forget that https://github.com/koalaman/shellcheck is a thing!
 
-alias l="ls -G --color=auto"
+alias l="ls -G"
 alias ltr="ls -ltr "
 alias ltrh="ls -ltrh "
 alias ltra="ls -ltra "
@@ -18,20 +18,24 @@ alias serve='python -m SimpleHTTPServer' # Must be followed by a port of your ch
 alias agc="ag --pager less --clojure"
 alias ag="ag --pager less"
 
+# Create cd history function (cd --, cd -l, cd -3)
+# https://github.com/bulletmark/cdhist
+source ~/bin/cdhist.bashrc
+
 #### Alias to edit then source .bashrc / .local-bashrc
 
 function edit-and-source {
-    local last_modified_1=`/usr/bin/stat -c '%Y' $1`
+    local last_modified_1=`stat -c '%Y' $1`
     vi $1
-    local last_modified_2=`/usr/bin/stat -c '%Y' $1`
+    local last_modified_2=`stat -c '%Y' $1`
     if [ $last_modified_2 -gt $last_modified_1 ]; then
         echo "Updated; sourcing."
         . $1
     else
-        echo "Last_modified went from $last_modified_1 to $last_modified_2"
         echo "Unmodified; not sourcing."
     fi
 }
+
 alias rc='edit-and-source ~/dotfiles/.bashrc'
 alias rcl='edit-and-source ~/.local-bashrc'
 
@@ -151,7 +155,7 @@ function fetchbranch {
 }
 
 # Show set of unique branch prefixes
-alias show-branchtypes='git branch -r | sed 's#origin/##' | grep '\/' | sed 's#/.*##' | uniq'
+alias show-branchtypes='git branch -r | sed "s#origin/##" | grep "\/" | sed "s#/.*##" | uniq'
 
 alias here='git grep YOUAREHERE | cat'
 alias gdm='git diff master --name-status'
@@ -359,19 +363,6 @@ function epr {
     $curemacs --maximized "$curdir/project.clj" &
 }
 
-# (for DW/krakenstein only)
-# Call from the top-level directory of a TV service (eg election-works).
-# Stops the project in krakenstein, and starts a new shell which includes the current project's
-# env vars in the shell so that it knows how to connect to krak.
-function krakit {
-    curdir=`pwd`
-    project=`basename "$curdir"`
-    pushd ../krakenstein
-    docker-compose stop $project
-    ./krak-env <(cat .env .env.external) $project bash
-    popd
-}
-
 # Quick alias: pss = "processes matching ..."
 alias pss="ps aux | grep -i"
 
@@ -379,6 +370,9 @@ alias pss="ps aux | grep -i"
 
 alias dk=`which docker`
 alias dkc=`which docker-compose`
+
+### Direnv
+eval "$(direnv hook bash)"
 
 ######### Mac-specific ########
 
@@ -392,8 +386,8 @@ function mac-bashrc {
     #fi
 
     # Should be -1 (see above) on bash >= 4.3, aka non-mac
-    export HISTSIZE=
-    export HISTFILESIZE=
+    export HISTSIZE=100000
+    export HISTFILESIZE=100000
 
     alias v="/Applications/MacVim.app/Contents/MacOS/Vim" #TODO mac-specific
     alias vm="/usr/local/bin/mvim" # See vm below
@@ -423,7 +417,7 @@ function mac-bashrc {
     PATH="/usr/local/git/bin:${PATH}"
 
     # Add GNU coreutils precedence over mac versions:
-    PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+    PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
 
     export PATH
 
@@ -465,15 +459,13 @@ function mac-bashrc {
 
     ################ End RabbitMQ ####################
 
-    # Some extra bash completion:
-    eval "$(stack --bash-completion-script stack)"
-
     # Load autojump
     # ie 'j foo' takes you to fuzzy-matched foo directory
-    [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
+    # [[ -s $(brew --prefix)/etc/profile.d/autojump.sh ]] && . $(brew --prefix)/etc/profile.d/autojump.sh
 
-    # Create cd history function (cd --, cd -3)
-    source ~/.cd_history.sh
+    # z instead of autojump
+    . /usr/local/etc/profile.d/z.sh
+    export _Z_CMD="j"
 
     # Set JAVA_HOME
     # export JAVA_HOME="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"
@@ -481,6 +473,9 @@ function mac-bashrc {
 
     # Sierra annoyingly got rid of ftp and telnet, grr. Reinstall with
     # brew install tnftp telnet (executable will still be named `ftp`)
+
+    # Shut up about zsh
+    export BASH_SILENCE_DEPRECATION_WARNING=1
 
 }
 
@@ -532,10 +527,6 @@ function linux-bashrc {
 
     export EDITOR='vim'
     export VISUAL='vim'
-
-    # Create cd history function (cd --, cd -l, cd -3)
-    # https://github.com/bulletmark/cdhist
-    source ~/bin/cdhist.bashrc
 
     # Color etc -- copypasted from web, not really vetted.
     # More info at https://ubuntuforums.org/showthread.php?t=41538

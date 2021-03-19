@@ -232,10 +232,14 @@
 
 
   ;; TODO decide if I really want these. I find it pretty nonintuitive...
-  (global-set-key (kbd (left-mod "<left>")) 'paredit-backward)
-  (global-set-key (kbd (left-mod "<right>")) 'paredit-forward)
-  (global-set-key (kbd (left-mod "<up>")) 'paredit-backward-up)
-  (global-set-key (kbd (left-mod "<down>")) 'paredit-forward-down)
+  (define-key evil-normal-state-map (kbd (left-mod "<left>")) 'paredit-backward)
+  (define-key evil-normal-state-map (kbd (left-mod "<right>")) 'paredit-forward)
+  (define-key evil-normal-state-map (kbd (left-mod "<up>")) 'paredit-backward-up)
+  (define-key evil-normal-state-map (kbd (left-mod "<down>")) 'paredit-forward-down)
+  ;; (global-set-key (kbd (left-mod "<left>")) 'paredit-backward)
+  ;; (global-set-key (kbd (left-mod "<right>")) 'paredit-forward)
+  ;; (global-set-key (kbd (left-mod "<up>")) 'paredit-backward-up)
+  ;; (global-set-key (kbd (left-mod "<down>")) 'paredit-forward-down)
   )
 
 (defun format-data (&optional arg)
@@ -357,5 +361,4 @@
     (kbd "M-<return>") 'org-insert-heading)
   (evil-define-key '(normal insert) 'org-mode-map
     (kbd "C-<return>") 'org-insert-heading)
-
   )

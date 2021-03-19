@@ -32,8 +32,8 @@
                        )
 
  dotspacemacs-default-font (if (string-equal system-type "darwin")
-                               '("Fira Mono"
-                                 :size 16
+                               '("Hack"
+                                 :size 13
                                  :weight normal
                                  :width normal)
                              '("Hack"

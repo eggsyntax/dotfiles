@@ -2,14 +2,36 @@ Mac setup:
 
 Preferences: Dvorak, trackpad speed, unnatural scroll
 Download & install:
-- homebrew (https://brew.sh): /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-- firefox: 
-- git: brew install git
-- ~dropbox~ syncthing: https://syncthing.net
+- homebrew (https://brew.sh):
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+- firefox:
+- git:
+  brew install git
+- syncthing: https://syncthing.net
 - Little Snitch
-- iterm2 
-- spacemacs
+- iterm2: https://iterm2.com/
+- spacemacs:
+  brew install --cask emacs
+  brew install --cask font-source-code-pro
+  brew install --cask font-hack
+  git clone https://github.com/syl20bnr/spacemacs ~/.emacs.d
+  # run once to generate ~/.spacemacs file
+  # see dotfiles/egg-spacemacs/main.el for edits to ~/.spacemacs
+  # install flyspell, joker
 - tmux?
+- ag:
+  brew install the_silver_searcher
+- spectacle: https://www.spectacleapp.com/
+- clj-kondo (clojure)
+  - https://github.com/clj-kondo/clj-kondo/blob/master/doc/install.md
+- cdhist: https://github.com/bulletmark/cdhist
+- autojump: https://github.com/wting/autojump
+- other homebrew:
+  - brew install aspell [emacs]
+  - brew install z
+  - brew install coreutils
+  - brew install diffutils
+
 Turn off mail and web results in spotlight preferences
 
 Dotfiles are under source control here, and should be symbolically linked from ~:
@@ -22,9 +44,6 @@ DNS servers:
 
 Install XCode command line tools: (under 10.9 and later) xcode-select --install
 
-Chrome prefs:
-	Advanced Sync Settings - password std
-
 Show hidden files:
 	defaults write com.apple.Finder AppleShowAllFiles YES; killall -HUP Finder
 
@@ -34,37 +53,16 @@ Destroy the desktop forever:
 Put screenshots somewhere sensible:
     defaults write com.apple.screencapture location ~/tmp/;killall SystemUIServer
 
-Install up-to-date Java
-  <haven't tried this yet (3/16) but maybe just homebrew!
-    Multiple Java versions seem to run pretty smoothly these days - eg
-    one for intellij (v1.6), one for lein/clojure & main stuff (v1.8). I
-    installed:
-        java 8 jre: http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
-        java 6 jre from apple: https://support.apple.com/kb/DL1572?locale=en_US
-        java 8 jdk: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-        jenv supposedly makes this easy to manage, but I haven't tried it yet.
-            http://www.jenv.be/
-
-Scrobbling:
-	 http://www.last.fm/download
-
-Get fonts:
-    Hack:
-        brew cask install caskroom/fonts/font-hack
-    Inconsolata:
-        *must get from google, other versions have problems*
-        http://www.google.com/fonts/
-    Consolas (because IntelliJ has problems with Inconsolata):
-        http://www.fontpalace.com/font-download/Consolas/
-
-Intellij:
-    - Nice to have key repeat on hold for the editor:
-      defaults write com.jetbrains.intellij.ce ApplePressAndHoldEnabled -bool false
+Install Java & manage versions
+    brew install jenv
+    echo 'export PATH="$HOME/.jenv/bin:$PATH"' >> ~/.local_bashrc
+    echo 'eval "$(jenv init -)"' >> ~/.local_bashrc
+    # download latest LTS from https://adoptopenjdk.net/
+    # jenv add /Library/Java/JavaVirtualMachines/<THAT-VERSION>/Contents/Home/
+    jenv versions
+    # jenv global <THAT-VERSION>
 
 Dev tools:
-    Homebrew: http://mxcl.github.io/homebrew/
-            ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
 	Python general:
         Mostly just do Anaconda now.
             https://store.continuum.io/cshop/anaconda/
@@ -79,38 +77,28 @@ Set up for crypto:
        https://unix.stackexchange.com/questions/231386/how-to-make-gpg-find-gpg-agent
 
 Clojure:
-    Vim:
-        vim-fireplace: https://github.com/tpope/vim-fireplace.git
-        rainbow-parenthesis: https://github.com/kien/rainbow_parentheses.vim.git
-        vim-leiningen: https://github.com/tpope/vim-leiningen.git
-        vim-projectionist: https://github.com/tpope/vim-projectionist.git
-        paredit: https://github.com/vim-scripts/paredit.vim.git
-        vim-dispatch?: git://github.com/tpope/vim-dispatch.git
-        Vim Links:
-            http://www.neo.com/2014/02/25/getting-started-with-clojure-in-vim
-            http://clojure-doc.org/articles/tutorials/vim_fireplace.html
-            http://endot.org/2014/02/12/setting-up-vim-for-clojure/
+    Install:
+        brew install clojure/tools/clojure
     Leiningen:
         Install from http://leiningen.org/
 
-	IDE:
-		Pycharm
-		Eclipse: http://www.eclipse.org/downloads/
-			Pydev: http://pydev.org/updates (point to python and pylint executables)
-			Vrapper: http://vrapper.sourceforge.net/update-site/stable
-			EGit or SourceTree?
-		 http://eblog.chrononsystems.com/dark-eclipse-theme
-			Notes! The jar file actually goes in the plugins directory, not the dropins directory.
-				Must look under general/appearance/theme to activate.
-		Vim as Python IDE
-		Komodo Edit
-        tkdiff for git. http://jeetworks.org/node/90
-
+IDE:
+    Pycharm
+    Eclipse: http://www.eclipse.org/downloads/
+        Pydev: http://pydev.org/updates (point to python and pylint executables)
+        Vrapper: http://vrapper.sourceforge.net/update-site/stable
+        EGit or SourceTree?
+      http://eblog.chrononsystems.com/dark-eclipse-theme
+        Notes! The jar file actually goes in the plugins directory, not the dropins directory.
+            Must look under general/appearance/theme to activate.
+    Vim as Python IDE
+    Komodo Edit
+    tkdiff for git. http://jeetworks.org/node/90
 
 Remap keyboard:
     Download Seil & Karabiner:
        https://pqrs.org/osx/karabiner/seil.html.en
-       https://pqrs.org/osx/karabiner/
+       https://karabiner-elements.pqrs.org/
     Open "System Preferences > Keyboard > Modifier Keys..." and change caps lock configuration to "No Action".
 	Caps-lock to 110 (PC application key) with Seil:
 		See https://pqrs.org/osx/karabiner/faq.html.en#capslock
@@ -134,8 +122,10 @@ iStat Pro is discontinued, but stored in my Software Archive dir, and also curre
 vim:
     Install splice as mergetool.
         http://sjl.bitbucket.org/splice.vim/
+    Install pathogen: https://github.com/tpope/vim-pathogen
     May have to reinstall bundles.
-    Reinstall solarized, at least (instructions in solarized download).
+    Reinstall solarized, at least
+        https://ethanschoonover.com/solarized/
     grab a better ctags:
         brew install ctags-exuberant
     Current bundles:

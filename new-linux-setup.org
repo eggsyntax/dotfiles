@@ -1,5 +1,9 @@
 # (See bottom for extensive notes)
 
+# TODO pcloud => syncthing
+# TODO chrome => firefox
+# TODO don't link .spacemacs; add instructions/do setup for new dotfiles/egg-spacemacs/*
+
 # Before running, you must:
 # sudo apt -y install git && git clone https://github.com/eggsyntax/dotfiles.git && cd dotfiles
 # Wait for Software Updater to finish (visible in ps as /usr/bin/unattended-upgrade) (may take a long time)
@@ -50,7 +54,7 @@ sudo apt -y install curl vim xcape vlc xsel python-pygments openssh-server \
   gnome-tweak-tool gnome-shell-extensions python-setuptools aptik aptik-gtk \
   google-chrome-stable numix-icon-theme-circle numix-icon-theme-square clojure \
   openjdk-11-jdk openjdk-8-jdk python3-pip fonts-firacode fonts-hack-ttf emacs \
-  net-tools chromium-browser tree sshuttle docker-ce docker-ce-cli containerd.io \
+  net-tools chromium-browser tree docker-ce docker-ce-cli containerd.io \
   dconf-editor graphviz gimp python-pip markdown \
   # for system-monitor, see below:
   gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0
