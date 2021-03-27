@@ -4,7 +4,7 @@
 ;; - speculative (specs for core fns from borkdude):
 
 ;; TODO possibly add:
-{:user  {:plugins  [[lein-drip "0.1.2-SNAPSHOT"]
+{:user  {:plugins  [[lein-drip "0.1.1-SNAPSHOT"]
                     [com.jakemccrary/lein-test-refresh "0.23.0"]
                     [venantius/yagni "0.1.4"]
                     [org.clojure/tools.namespace "0.3.0-alpha4"]
@@ -12,14 +12,16 @@
                     ;; [lein-exec "0.3.6"]
 
                     ;; Experiment with Sayid
-                    [com.billpiel/sayid "0.0.18"]
+                    [com.billpiel/sayid "0.0.18" :exclusions [org.clojure/tools.namespace
+                                                              org.clojure/tools.reader
+                                                              org.clojure/java.classpath]]
 
                     ;; Release management:
                     [lein-release "1.0.5"]
                     ;; [io.aviso/pretty "0.1.34"] ; 2019-02-01 removing krak because new lein complains about it
                     ;; [nrepl "0.5.3"]
-                    [cider/cider-nrepl "0.22.4"]
-                    [refactor-nrepl "2.4.0"]
+                    [cider/cider-nrepl "0.25.5"]
+                    [refactor-nrepl "2.5.1" :exclusions [nrepl]]
                     [lein-ancient "0.6.15"]
                     ]
          :dependencies [
@@ -27,7 +29,7 @@
                         [re-find "0.0.1-SNAPSHOT" :exclusions [org.clojure/tools.cli]]
                         [egg-cljc-utils "0.1.0-SNAPSHOT"]
                         [reconstructorepl "0.2.0-SNAPSHOT"]
-                        [datawalk "0.1.12"]
+                        [datawalk "0.1.12" :exclusions [args4j]]
                         [vvvvalvalval/scope-capture "0.3.2"]
                         ;; [datawalk "0.1.17-SNAPSHOT"]
                         ;; [datawalk "0.1.18-SNAPSHOT"]
@@ -82,7 +84,22 @@
                         :quiet true
                         :notify-on-success false
                         }
+         ;; Reify stuff
+         ;; :repositories [["public-github" {:url "git://github.com"}]]
          }
- :repl {:plugins [[cider/cider-nrepl "0.21.1"]]}
+ ;; Reify stuff
+ :repl {:plugins [[cider/cider-nrepl "0.25.5"]
+                  [refactor-nrepl "2.5.1" :exclusions [nrepl]]]
+        ;; :pedantic? :warn
+        ;; :repositories [["public-github" {:url "git://github.com"}]]
+        }
+ ;; :salk {:pedantic? :warn
+ ;;        :dependencies [[figwheel-sidecar "0.5.19" :exclusions [commons-codec ring/ring-core]]
+ ;;                       [cider/piggieback "0.4.2" :exclusions [org.clojure/tools.logging]]
+ ;;                       [cider/cider-nrepl "0.25.5"]
+ ;;                       [refactor-nrepl "2.5.1" :exclusions [nrepl]]]
+ ;;        :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
+ ;; :dev-site {:pedantic? :warn
+ ;;            :repositories [["public-github" {:url "git://github.com"}]]}
 
  }
