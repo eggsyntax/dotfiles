@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+echo "1. Move to backup: mv ~/.lein/profiles.clj ~/.lein/profiles.clj.bak"
+echo "2. Move backup to real: mv ~/.lein/profiles.clj.bak ~/.lein/profiles.clj"
+echo "3. Edit: vim ~/.lein/profiles.clj"
+echo
+
+read choice
+
+case $choice in 
+    [1] ) mv ~/.lein/profiles.clj ~/.lein/profiles.clj.bak;;
+    [2] ) mv ~/.lein/profiles.clj.bak ~/.lein/profiles.clj;;
+    [3] ) vim ~/.lein/profiles.clj;;
+esac
+

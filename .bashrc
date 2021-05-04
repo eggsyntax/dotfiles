@@ -371,9 +371,6 @@ alias pss="ps aux | grep -i"
 alias dk=`which docker`
 alias dkc=`which docker-compose`
 
-### Direnv
-eval "$(direnv hook bash)"
-
 ######### Mac-specific ########
 
 # "How to alter system-wide $PATH for non-interactive, non-login bash shells invoked via sshd?"
@@ -611,4 +608,3 @@ else echo "PLATFORM UNKNOWN! Check output of uname";
 fi
 
 #### [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-

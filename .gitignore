@@ -1,3 +1,5 @@
 *.~undo-tree~
 .#*
 .clojure/.cpcache/*
+.lein/.cider-history
+
