@@ -18,6 +18,9 @@ alias serve='python -m SimpleHTTPServer' # Must be followed by a port of your ch
 alias agc="ag --pager less --clojure"
 alias ag="ag --pager less"
 
+# Quick babashka repl
+alias bbi='rlwrap bb -i'
+
 # Create cd history function (cd --, cd -l, cd -3)
 # https://github.com/bulletmark/cdhist
 source ~/bin/cdhist.bashrc
