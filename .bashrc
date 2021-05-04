@@ -465,7 +465,7 @@ function mac-bashrc {
 
     # z instead of autojump
     . /usr/local/etc/profile.d/z.sh
-    export _Z_CMD="j"
+    #export _Z_CMD="j"
 
     # Set JAVA_HOME
     # export JAVA_HOME="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home"

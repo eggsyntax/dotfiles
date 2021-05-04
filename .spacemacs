@@ -115,7 +115,7 @@ values."
      ;;             (define-key winum-keymap (kbd "M-0") #'treemacs-select-window)
      ;;             ;; Don't notify about treemacs refresh; it gets in the way of repl-started msg
      ;;             (setq treemacs-silent-refresh t)))
-     multiple-cursors ; keybindings: https://github.com/syl20bnr/spacemacs/blob/develop/layers/+misc/multiple-cursors/README.org#evil-mc
+     ;; multiple-cursors ; keybindings: https://github.com/syl20bnr/spacemacs/blob/develop/layers/+misc/multiple-cursors/README.org#evil-mc
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -156,7 +156,7 @@ before layers configuration.
 You should not put any user code in there besides modifying the variable
 values."
   ;; This has to go here, unfortunately.
-  (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  ;; (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
   (add-to-list 'package-pinned-packages '(cider          . "melpa-stable") t)
   (add-to-list 'package-pinned-packages '(cider-nrepl    . "melpa-stable") t)
   ;; (add-to-list 'package-pinned-packages '(clj-refactor   . "melpa-stable") t)
